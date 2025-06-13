@@ -13,6 +13,22 @@ function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+
+  // For emoji effect
+  const [focusField, setFocusField] = useState(null);
+
+  // For add product
+  const [addMode, setAddMode] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    name: '',
+    description: '',
+    price: '',
+    category: '',
+    image: ''
+  });
+
   const API_URL = 'http://localhost:5000';
 
   const handleLogin = async () => {
@@ -56,6 +72,10 @@ function App() {
     const product = products.find((p) => p.id === productId || p._id === productId);
     if (product) {
       setCartItems([...cartItems, product]);
+      setPopupMessage(`${product.name} added to cart!`);
+      setPopupVisible(true);
+      new Audio('https://www.soundjay.com/button/beep-07.wav').play();
+      setTimeout(() => setPopupVisible(false), 2000);
     }
   };
 
@@ -78,47 +98,98 @@ function App() {
     }
   }, [loginError]);
 
-  // 👻 Login/Register Screen
+  // Emoji face logic
+  const getEmoji = () => {
+    if (focusField === "password" || password.length > 0) {
+      return "😑";
+    }
+    return "🙂";
+  };
+
+  // Add Product Handlers
+  const handleAddProductChange = (e) => {
+    const { name, value } = e.target;
+    setNewProduct((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
+    // Simple validation
+    if (!newProduct.name || !newProduct.price || !newProduct.category) {
+      setPopupMessage('Please fill in all required fields!');
+      setPopupVisible(true);
+      setTimeout(() => setPopupVisible(false), 2000);
+      return;
+    }
+    try {
+      await axios.post(`${API_URL}/api/products`, {
+        ...newProduct,
+        price: parseFloat(newProduct.price)
+      }, {
+        headers: { 'Authorization': sessionId }
+      });
+      setPopupMessage('Product added successfully!');
+      setPopupVisible(true);
+      setTimeout(() => setPopupVisible(false), 2000);
+      setAddMode(false);
+      setNewProduct({
+        name: '',
+        description: '',
+        price: '',
+        category: '',
+        image: ''
+      });
+      fetchProducts();
+    } catch (err) {
+      setPopupMessage('Failed to add product!');
+      setPopupVisible(true);
+      setTimeout(() => setPopupVisible(false), 2000);
+    }
+  };
+
   if (!sessionId) {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
+      <div className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
         style={{
-          backgroundImage: `url('https://i.postimg.cc/hjB2qRXH/ecommerce-blog-featured-image.jpg')`,
+          backgroundImage: `url('https://i.postimg.cc/3rnCRvyS/istockphoto-941302930-612x612.jpg')`,
         }}
       >
-        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black bg-opacity-70 z-0" />
-
-        {/* Login Box */}
         <div className="relative z-10 bg-black/60 backdrop-blur-xl border border-orange-800 p-10 rounded-2xl shadow-2xl w-full max-w-md text-white">
+          {/* Emoji face above login */}
+          <div style={{ display: "flex", justifyContent: "center", fontSize: "2rem", marginBottom: "0.5rem" }}>
+            <span>{getEmoji()} <span style={{ fontSize: "1rem", color: "#ff9800" }}>@{email || "username"}</span></span>
+          </div>
           <h2 className="text-3xl font-bold mb-6 text-center text-orange-500">
             {isRegistering ? 'Register' : 'Login'}
           </h2>
-
           <input
-            className="bg-white/10 text-white placeholder-orange-300 border border-orange-700 p-4 w-full mb-4 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="bg-white/10 text-white placeholder-orange-300 border border-orange-700 p-4 w-full mb-4 rounded-md"
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onFocus={() => setFocusField("email")}
+            onBlur={() => setFocusField(null)}
           />
-
           <input
-            className="bg-white/10 text-white placeholder-orange-300 border border-orange-700 p-4 w-full mb-4 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="bg-white/10 text-white placeholder-orange-300 border border-orange-700 p-4 w-full mb-4 rounded-md"
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onFocus={() => setFocusField("password")}
+            onBlur={() => setFocusField(null)}
           />
-
           <button
             className="bg-orange-600 hover:bg-orange-700 text-white w-full py-4 rounded-md font-bold text-lg"
             onClick={isRegistering ? handleRegister : handleLogin}
           >
             {isRegistering ? 'Register' : 'Login'}
           </button>
-
           <p className="text-center text-sm text-orange-200 mt-4">
             {isRegistering ? 'Already have an account?' : "Don't have an account?"}{' '}
             <button
@@ -131,7 +202,7 @@ function App() {
 
           {loginError && (
             <div className="absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center text-white text-center p-6 rounded-2xl animate-pulse z-10">
-              <img src="ghost.png" alt="Halloween Ghost" className="w-32 h-32 animate-bounce mb-4" />
+              <img src="https://i.postimg.cc/SQTP0QMw/download.jpg" alt="Ghost" className="w-32 h-32 animate-bounce mb-4" />
               <p className="text-lg font-semibold text-red-400">Wrong password... 👻</p>
               <p className="text-sm mt-1 text-orange-200">The Halloween spirit has awakened!</p>
             </div>
@@ -140,19 +211,14 @@ function App() {
       </div>
     );
   }
-
   // 🎃 Main Dashboard
   return (
-    <div
-      className="min-h-screen bg-cover bg-center text-white relative"
+    <div className="min-h-screen bg-cover bg-center text-white relative"
       style={{
-        backgroundImage: `url('https://images.unsplash.com/photo-1603207741755-2e08f7626ef0?auto=format&fit=crop&w=1470&q=80')`,
+        backgroundImage: `url('https://i.postimg.cc/hjB2qRXH/ecommerce-blog-featured-image.jpg')`,
       }}
     >
-      {/* Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-80" />
-
-      {/* App Content */}
       <div className="relative z-10 p-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold text-orange-400">🎃 Clothing Store</h1>
@@ -162,6 +228,12 @@ function App() {
               onClick={() => setCartOpen(!cartOpen)}
             >
               🛒 {cartItems.length}
+            </button>
+            <button
+              className="bg-green-700 text-white px-3 py-2 rounded hover:bg-green-800"
+              onClick={() => setAddMode(true)}
+            >
+              + Add Product
             </button>
             <button
               className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
@@ -221,7 +293,7 @@ function App() {
           ))}
         </div>
 
-        {/* Product Modal */}
+        {/* Modal for Product Preview */}
         {selectedProduct && (
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
             <div className="bg-black p-6 rounded-lg border border-orange-700 max-w-md w-full">
@@ -249,7 +321,81 @@ function App() {
           </div>
         )}
 
-        {/* Cart */}
+        {/* Add Product Modal */}
+        {addMode && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+            <form
+              className="bg-black p-8 rounded-2xl border border-orange-600 shadow-2xl max-w-md w-full"
+              onSubmit={handleAddProduct}
+            >
+              <h2 className="text-2xl font-bold text-orange-400 mb-4 text-center">Add New Product</h2>
+              <input
+                className="bg-white/10 text-white placeholder-orange-300 border border-orange-700 p-3 w-full mb-3 rounded"
+                type="text"
+                name="name"
+                placeholder="Product Name"
+                value={newProduct.name}
+                onChange={handleAddProductChange}
+                required
+              />
+              <input
+                className="bg-white/10 text-white placeholder-orange-300 border border-orange-700 p-3 w-full mb-3 rounded"
+                type="number"
+                name="price"
+                placeholder="Price"
+                value={newProduct.price}
+                onChange={handleAddProductChange}
+                min="0"
+                step="0.01"
+                required
+              />
+              <select
+                className="bg-white/10 text-white border border-orange-700 p-3 w-full mb-3 rounded"
+                name="category"
+                value={newProduct.category}
+                onChange={handleAddProductChange}
+                required
+              >
+                <option value="">Select Category</option>
+                <option value="men">Men</option>
+                <option value="women">Women</option>
+                <option value="kids">Kids</option>
+              </select>
+              <input
+                className="bg-white/10 text-white placeholder-orange-300 border border-orange-700 p-3 w-full mb-3 rounded"
+                type="text"
+                name="image"
+                placeholder="Image URL"
+                value={newProduct.image}
+                onChange={handleAddProductChange}
+              />
+              <textarea
+                className="bg-white/10 text-white placeholder-orange-300 border border-orange-700 p-3 w-full mb-3 rounded"
+                name="description"
+                placeholder="Description"
+                value={newProduct.description}
+                onChange={handleAddProductChange}
+              />
+              <div className="flex justify-between mt-4">
+                <button
+                  type="button"
+                  className="bg-gray-700 px-4 py-2 rounded hover:bg-gray-800"
+                  onClick={() => setAddMode(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-700 px-4 py-2 rounded text-white hover:bg-green-800"
+                >
+                  Add Product
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Cart Drawer */}
         {cartOpen && (
           <div className="mt-8 p-4 bg-black/60 border border-orange-700 rounded-lg">
             <h2 className="text-xl font-bold text-orange-300 mb-4">🛒 Your Cart</h2>
@@ -279,6 +425,13 @@ function App() {
                 </div>
               </>
             )}
+          </div>
+        )}
+
+        {/* 🔔 Popup Notification */}
+        {popupVisible && (
+          <div className="fixed top-6 right-6 z-50 bg-green-700 text-white px-6 py-3 rounded shadow-lg transition transform animate-bounce">
+            {popupMessage}
           </div>
         )}
       </div>
