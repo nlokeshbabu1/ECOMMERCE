@@ -1,4 +1,5 @@
 # Flask Backend Code (server/app.py)
+from datetime import date
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from pymongo import MongoClient
@@ -32,7 +33,7 @@ redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=T
 def get_cart_key(session_id):
     return f"cart:{session_id}"
 
-# ✅ FIXED LOGIN ROUTE — no plaintext password match in DB
+# LOgin route
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
@@ -45,7 +46,7 @@ def login():
     
     return jsonify({"error": "Invalid credentials"}), 401
 
-# REGISTER ROUTE — hashing password properly
+# REGISTER ROUTE 
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
@@ -68,6 +69,21 @@ def get_products():
     query = {"category": category} if category else {}
     products = list(products_collection.find(query, {"_id": 0}))
     return jsonify(products)
+
+#add product to Databases
+@app.route('/api/addproducts', methods=['POST'])
+def addproducts():
+    data = request.json
+    #adding productes into Mongodb
+    products_collection.insert_one({
+        "name": data['name'],
+        "description": data['description'],
+        "price": data['price'],
+        "category": data['category'],
+        "image_url": data.get('image_url', ''),
+        "StockAvailable": data['StockAvailable'] 
+    })
+    return jsonify({"message": "Product added successfully"}), 201
 
 # ADD TO CART
 @app.route('/api/cart', methods=['POST'])
