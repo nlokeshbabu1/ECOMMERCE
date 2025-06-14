@@ -38,7 +38,8 @@ function App() {
     price: '',
     category: '',
     image: '',
-    stockAvailable: '' // Added new field for stock availability
+    stockAvailable: '', // Added new field for stock availability
+    size: '' // Added size field for new products
   });
 
   // States for new seller registration fields
@@ -202,18 +203,28 @@ function App() {
    */
   const fetchProducts = async () => {
     try {
+      // Make an actual API call to your backend
       const res = await axios.get(`${API_URL}/api/products?category=${category}&q=${searchQuery}`);
+      
       // Ensure each product has a unique, reliable ID for frontend use
       const processedProducts = res.data.map(product => ({
         ...product,
-        // Use existing id or _id, or generate a UUID if neither exists
-        _displayId: product.id || product._id || crypto.randomUUID()
+        // Map backend's 'image' directly to frontend's 'image'
+        image: product.image || 'https://via.placeholder.com/150/222222/FFFFFF?text=No+Image',
+        // Corrected: Map backend's 'stockavailable' (lowercase 's') to frontend's 'stockAvailable' (camelCase)
+        // Also, parse it to an integer as it might come as a string from MongoDB
+        stockAvailable: parseInt(product.stockavailable), 
+        // Added: Map backend's 'size' to frontend's 'size'
+        size: product.size,
+        // Use existing _id (from MongoDB) or generate a UUID as fallback for _displayId
+        _displayId: product._id || crypto.randomUUID() 
       }));
       setProducts(processedProducts);
-      console.log('Fetched and processed products with _displayId:', processedProducts);
+      console.log('Fetched products from backend. Processed products with _displayId:', processedProducts);
       processedProducts.forEach((product, index) => {
-        console.log(`Product ${index}: ID=${product.id}, _id=${product._id}, _displayId=${product._displayId}, Name=${product.name}`);
+        console.log(`Product in state ${index}: Name=${product.name}, _id=${product._id}, _displayId=${product._displayId}, Stock: ${product.stockAvailable}, Size: ${product.size}`);
       });
+
     } catch (err) {
       console.error('Error fetching products:', err);
       console.error('Backend URL attempted:', `${API_URL}/api/products?category=${category}&q=${searchQuery}`);
@@ -221,15 +232,18 @@ function App() {
         if (err.response) {
           console.error('Response data:', err.response.data);
           console.error('Response status:', err.response.status);
+          setPopupMessage(`Failed to fetch products: ${err.response.data.error || err.response.statusText}. Please check your backend server at ${API_URL}`);
         } else if (err.request) {
           console.error('No response received:', err.request);
+          setPopupMessage(`Failed to fetch products: No response from server. Is your backend running at ${API_URL}?`);
         } else {
           console.error('Error message:', err.message);
+          setPopupMessage(`Failed to fetch products: An unexpected error occurred.`);
         }
       } else {
         console.error('Non-Axios error:', err);
+        setPopupMessage(`Failed to fetch products: An unexpected error occurred.`);
       }
-      setPopupMessage(`Failed to fetch products. Please check your backend server at ${API_URL}`);
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 5000);
     }
@@ -239,6 +253,9 @@ function App() {
   useEffect(() => {
     fetchProducts();
   }, [category, searchQuery]); // Added searchQuery as a dependency
+
+  // Removed the extra useEffect for logging products state changes for debugging, as it's no longer needed.
+
 
   // Effect hook to hide login error message after a delay
   useEffect(() => {
@@ -390,11 +407,17 @@ function App() {
     }
     try {
       // Send new product data to the API with session_id in the body
-      await axios.post(`${API_URL}/api/addproduct`, { // Changed endpoint to /api/addproduct
+      await axios.post(`${API_URL}/api/addproducts`, { // Corrected endpoint to /api/addproducts based on your backend
         ...newProduct,
         price: parseFloat(newProduct.price), // Ensure price is a number
         stockAvailable: parseInt(newProduct.stockAvailable), // Ensure stockAvailable is an integer
-        session_id: sessionId // Pass session_id in the body as required by backend
+        session_id: sessionId, // Pass session_id in the body as required by backend
+        // Corrected: Map frontend's 'image' to backend's 'image' key
+        image: newProduct.image, 
+        // Corrected: Map frontend's 'stockAvailable' to backend's 'stockavailable' (lowercase 's')
+        stockavailable: newProduct.stockAvailable,
+        // Added: Map frontend's 'size' to backend's 'size'
+        size: newProduct.size
       });
       setPopupMessage('Product added successfully!');
       setPopupVisible(true);
@@ -407,12 +430,13 @@ function App() {
         price: '',
         category: '',
         image: '',
-        stockAvailable: ''
+        stockAvailable: '',
+        size: '' // Reset size field
       });
       fetchProducts(); // Refresh product list
     } catch (err) {
       console.error('Failed to add product:', err);
-      console.error('Backend URL attempted:', `${API_URL}/api/addproduct`);
+      console.error('Backend URL attempted:', `${API_URL}/api/addproducts`);
       if (axios.isAxiosError(err)) {
         if (err.response) {
           console.error('Response data:', err.response.data);
@@ -438,16 +462,11 @@ function App() {
 
   // Main Application Structure (always rendered)
   return (
-    <div className="min-h-screen bg-cover bg-center text-white relative" 
-      style={{
-        backgroundImage: `url('https://images.unsplash.com/photo-1621243805936-7c98083818e9?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`, 
-      }}
-    >
-      <div className="absolute inset-0 bg-black bg-opacity-80" /> {/* Darker background overlay */}
+    <div className="min-h-screen bg-white text-gray-900">
       <div className="relative z-10 p-4">
         {/* Header with App Title and Action Buttons */}
-        <div className="flex justify-between items-center mb-4 bg-gray-900/70 backdrop-blur-sm p-4 rounded-lg shadow-md border border-gray-700"> 
-          <h1 className="text-2xl font-bold text-white">🛍️ Modern Clothing Store</h1> 
+        <div className="flex justify-between items-center mb-4 bg-white/70 backdrop-blur-sm p-4 rounded-lg shadow-md border border-gray-300"> 
+          <h1 className="text-2xl font-bold text-gray-900">🛍️ Modern Clothing Store</h1> 
           <div className="flex items-center gap-4">
             {sessionId ? ( // If logged in, show cart and logout
               <>
@@ -484,9 +503,9 @@ function App() {
         </div>
 
         {/* Category Filter and Search Bar */}
-        <div className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-gray-900/70 backdrop-blur-sm p-3 rounded-lg shadow-md border border-gray-700"> 
+        <div className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-white/70 backdrop-blur-sm p-3 rounded-lg shadow-md border border-gray-300"> 
           <select
-            className="bg-gray-800 text-white border border-gray-600 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full md:w-auto" 
+            className="bg-white text-gray-900 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full md:w-auto" 
             value={category}
             onChange={(e) => setCategory(e.target.value)} // Update category filter
           >
@@ -498,7 +517,7 @@ function App() {
           <input
             type="text"
             placeholder="Search products..."
-            className="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+            className="bg-white text-gray-900 placeholder-gray-500 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -509,36 +528,36 @@ function App() {
           {products.map((p) => (
             <div
               key={p._displayId} // Use the guaranteed unique _displayId as key
-              className="border border-gray-700 p-4 rounded-lg bg-gray-900/70 backdrop-blur-sm hover:shadow-lg transition-shadow duration-200" 
+              className="border border-gray-300 p-4 rounded-lg bg-white/70 backdrop-blur-sm hover:shadow-lg transition-shadow duration-200" 
             >
               <img
-                src={p.image || 'https://via.placeholder.com/150/222222/FFFFFF?text=No+Image'} 
+                src={p.image || 'https://via.placeholder.com/150/EEEEEE/000000?text=No+Image'} 
                 alt={p.name}
                 className="w-full h-40 object-cover rounded mb-2 cursor-pointer"
                 onClick={() => setSelectedProduct(p)} // Open product details modal
               />
               <h3
-                className="text-lg font-bold text-white cursor-pointer" 
+                className="text-lg font-bold text-gray-900 cursor-pointer" 
                 onClick={() => setSelectedProduct(p)} // Open product details modal
               >
                 {p.name}
               </h3>
-              <p className="text-sm text-gray-300">{p.description}</p> 
-              <p className="text-green-400 font-bold mt-2">${p.price}</p> 
+              <p className="text-sm text-gray-700">{p.description}</p> 
+              <p className="text-green-600 font-bold mt-2">${p.price}</p> 
               {p.stockAvailable !== undefined && p.stockAvailable !== null && (
-                <p className="text-sm text-gray-400 mt-1">Stock: {p.stockAvailable}</p>
+                <p className="text-sm text-gray-600 mt-1">Stock: {p.stockAvailable}</p>
               )}
               <button
                 className="bg-blue-600 text-white mt-2 px-3 py-1 rounded hover:bg-blue-700 transition duration-200"
                 onClick={() => {
-                  console.log(`Clicked "Add to Cart" for product with _displayId: ${p._displayId}`); // Diagnostic log
+                  console.log(`Clicked "Add to Cart" for product with _displayId: ${p._displayId}, Name: ${p.name}`); // More verbose diagnostic log
                   addToCart(p._displayId); // Pass the _displayId to addToCart
                 }} 
               >
                 Add to Cart
               </button>
               <button
-                className="bg-gray-700 text-white mt-2 ml-2 px-3 py-1 rounded hover:bg-gray-800 transition duration-200"
+                className="bg-gray-400 text-gray-900 mt-2 ml-2 px-3 py-1 rounded hover:bg-gray-500 transition duration-200"
                 onClick={() => {
                   if (!sessionId) { // If not logged in, prompt for login
                     setPopupMessage('Please log in to purchase this item.');
@@ -566,18 +585,22 @@ function App() {
         {/* Modal for Product Preview */}
         {selectedProduct && (
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-            <div className="bg-gray-900 p-6 rounded-lg border border-gray-700 max-w-md w-full text-white"> 
+            <div className="bg-white p-6 rounded-lg border border-gray-300 max-w-md w-full text-gray-900"> 
               <img
-                src={selectedProduct.image || 'https://via.placeholder.com/300/222222/FFFFFF?text=No+Image'}
+                src={selectedProduct.image || 'https://via.placeholder.com/300/EEEEEE/000000?text=No+Image'}
                 alt={selectedProduct.name}
                 className="w-full h-60 object-cover rounded mb-4"
               />
-              <h2 className="text-2xl font-bold text-white mb-2">{selectedProduct.name}</h2>
-              <p className="text-gray-300 mb-2">{selectedProduct.description}</p>
-              <p className="text-green-400 text-lg font-bold mb-4">${selectedProduct.price}</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedProduct.name}</h2>
+              <p className="text-gray-700 mb-2">{selectedProduct.description}</p>
+              <p className="text-green-600 text-lg font-bold mb-4">${selectedProduct.price}</p>
               {/* Display stockAvailable in product details modal */}
               {selectedProduct.stockAvailable !== undefined && selectedProduct.stockAvailable !== null && (
-                <p className="text-sm text-gray-400 mt-1">Stock: {selectedProduct.stockAvailable}</p>
+                <p className="text-sm text-gray-600 mt-1">Stock: {selectedProduct.stockAvailable}</p>
+              )}
+              {/* Display size in product details modal */}
+              {selectedProduct.size && (
+                <p className="text-sm text-gray-600 mt-1">Size: {selectedProduct.size}</p>
               )}
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2 transition duration-200"
@@ -609,12 +632,12 @@ function App() {
         {addMode && userRole === 'admin' && ( // Only show "Add Product" modal if user is admin
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
             <form
-              className="bg-gray-900 p-8 rounded-2xl border border-gray-700 shadow-2xl max-w-md w-full text-white" 
+              className="bg-white p-8 rounded-2xl border border-gray-300 shadow-2xl max-w-md w-full text-gray-900" 
               onSubmit={handleAddProduct}
             >
-              <h2 className="text-2xl font-bold text-white mb-4 text-center">Add New Product</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">Add New Product</h2>
               <input
-                className="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
                 type="text"
                 name="name"
                 placeholder="Product Name"
@@ -623,7 +646,7 @@ function App() {
                 required
               />
               <input
-                className="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
                 type="number"
                 name="price"
                 placeholder="Price"
@@ -634,7 +657,7 @@ function App() {
                 required
               />
               <select
-                className="bg-gray-800 text-white border border-gray-600 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                className="bg-gray-100 text-gray-900 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
                 name="category"
                 value={newProduct.category}
                 onChange={handleAddProductChange}
@@ -646,7 +669,7 @@ function App() {
                 <option value="kids">Kids</option>
               </select>
               <input
-                className="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
                 type="text"
                 name="image"
                 placeholder="Image URL"
@@ -654,7 +677,7 @@ function App() {
                 onChange={handleAddProductChange}
               />
               <input
-                className="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
                 type="number"
                 name="stockAvailable"
                 placeholder="Stock Available"
@@ -664,9 +687,17 @@ function App() {
                 step="1"
                 required
               />
+              <input // New input for size
+                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                type="text"
+                name="size"
+                placeholder="Size (e.g., S, M, L)"
+                value={newProduct.size}
+                onChange={handleAddProductChange}
+              />
               <div className="flex items-center gap-2 mb-3">
                 <textarea
-                  className="bg-gray-800 text-white placeholder-gray-400 border border-gray-600 p-3 w-full rounded resize-y" 
+                  className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full rounded resize-y" 
                   name="description"
                   placeholder="Description"
                   value={newProduct.description}
@@ -678,7 +709,7 @@ function App() {
               <div className="flex justify-between mt-4">
                 <button
                   type="button"
-                  className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition duration-200" 
+                  className="bg-gray-400 text-gray-900 px-4 py-2 rounded hover:bg-gray-500 transition duration-200" 
                   onClick={() => setAddMode(false)} // Cancel adding product
                 >
                   Cancel
@@ -696,14 +727,14 @@ function App() {
 
         {/* Cart Drawer */}
         <div 
-          className={`fixed top-0 right-0 h-full w-full md:w-96 bg-gray-900/90 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out z-40
+          className={`fixed top-0 right-0 h-full w-full md:w-96 bg-white/90 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out z-40
             ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}
         >
           <div className="p-6 h-full flex flex-col">
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-700">
-              <h2 className="text-2xl font-bold text-white">🛒 Your Cart</h2>
+            <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-300">
+              <h2 className="text-2xl font-bold text-gray-900">🛒 Your Cart</h2>
               <button
-                className="text-red-400 hover:text-red-600 text-3xl font-bold"
+                className="text-red-600 hover:text-red-800 text-3xl font-bold"
                 onClick={() => setCartOpen(false)}
               >
                 &times;
@@ -711,22 +742,22 @@ function App() {
             </div>
 
             {cartItems.length === 0 ? (
-              <p className="text-gray-300 flex-grow text-center flex items-center justify-center">No items in the cart.</p> 
+              <p className="text-gray-700 flex-grow text-center flex items-center justify-center">No items in the cart.</p> 
             ) : (
               <div className="flex-grow overflow-y-auto pr-2"> {/* Added overflow for scrollable cart */}
                 {cartItems.map((item) => ( 
                   <div
                     key={item.cartItemId} // Using the unique cartItemId as the key
-                    className="flex items-center justify-between bg-gray-800 p-3 rounded-lg mb-3 shadow-md" 
+                    className="flex items-center justify-between bg-gray-100 p-3 rounded-lg mb-3 shadow-md" 
                   >
                     <img 
-                        src={item.product.image || 'https://via.placeholder.com/50/222222/FFFFFF?text=Item'} 
+                        src={item.product.image || 'https://via.placeholder.com/50/EEEEEE/000000?text=Item'} 
                         alt={item.product.name} 
                         className="w-16 h-16 object-cover rounded-md mr-3"
                     />
                     <div className="flex-grow">
-                      <p className="text-gray-100 font-semibold">{item.product.name}</p> 
-                      <p className="text-green-400 text-sm">${item.product.price.toFixed(2)}</p> 
+                      <p className="text-gray-900 font-semibold">{item.product.name}</p> 
+                      <p className="text-green-600 text-sm">${item.product.price.toFixed(2)}</p> 
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
@@ -735,7 +766,7 @@ function App() {
                       >
                         -
                       </button>
-                      <span className="text-lg font-bold text-white">{item.quantity}</span>
+                      <span className="text-lg font-bold text-gray-900">{item.quantity}</span>
                       <button
                         className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-600 transition duration-200" 
                         onClick={() => addToCart(item.product._displayId)} // Increment
@@ -748,10 +779,10 @@ function App() {
               </div>
             )}
             
-            <div className="mt-auto pt-4 border-t border-gray-700"> {/* Stick to bottom */}
-                <div className="flex justify-between items-center text-xl font-bold text-white mb-4"> 
+            <div className="mt-auto pt-4 border-t border-gray-300"> {/* Stick to bottom */}
+                <div className="flex justify-between items-center text-xl font-bold text-gray-900 mb-4"> 
                     <span>Total:</span>
-                    <span className="text-green-400">${getTotalPrice().toFixed(2)}</span> 
+                    <span className="text-green-600">${getTotalPrice().toFixed(2)}</span> 
                 </div>
                 <button
                     className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200"
@@ -794,9 +825,9 @@ function App() {
       {/* Login/Register Modal (appears over the content when needed) */}
       {showLoginModal && (
         <div className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-80 z-50">
-          <div className="relative z-10 w-full max-w-sm p-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl shadow-2xl overflow-hidden md:p-10">
+          <div className="relative z-10 w-full max-w-sm p-8 bg-white/90 backdrop-blur-md border border-gray-300 rounded-3xl shadow-2xl overflow-hidden md:p-10">
             <button
-              className="absolute top-4 right-4 text-white text-xl"
+              className="absolute top-4 right-4 text-gray-700 text-xl"
               onClick={() => setShowLoginModal(false)} // Close the modal
             >
               &times;
@@ -805,11 +836,11 @@ function App() {
             {showSellerRegisterModal ? (
               // Seller Registration Form
               <>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-purple-400 drop-shadow-lg">
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg">
                   Seller Registration
                 </h2>
                 <input
-                  className="w-full p-3 bg-white/10 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-white/50 text-white transition duration-300 ease-in-out mb-4"
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
                   type="text"
                   placeholder="Name"
                   value={sellerName}
@@ -817,7 +848,7 @@ function App() {
                   required
                 />
                 <input
-                  className="w-full p-3 bg-white/10 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-white/50 text-white transition duration-300 ease-in-out mb-4"
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
                   type="text"
                   placeholder="Phone"
                   value={sellerPhone}
@@ -825,7 +856,7 @@ function App() {
                   required
                 />
                 <input
-                  className="w-full p-3 bg-white/10 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-white/50 text-white transition duration-300 ease-in-out mb-4"
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
                   type="text"
                   placeholder="GST Number"
                   value={sellerGSTNumber}
@@ -833,14 +864,14 @@ function App() {
                   required
                 />
                 <textarea
-                  className="w-full p-3 bg-white/10 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-white/50 text-white transition duration-300 ease-in-out mb-4 resize-y"
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 resize-y"
                   placeholder="Address"
                   value={sellerAddress}
                   onChange={(e) => setSellerAddress(e.target.value)}
                   required
                 ></textarea>
                 <input
-                  className="w-full p-3 bg-white/10 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-white/50 text-white transition duration-300 ease-in-out mb-4"
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
                   type="email"
                   placeholder="Email"
                   value={email}
@@ -850,7 +881,7 @@ function App() {
                   required
                 />
                 <input
-                  className="w-full p-3 bg-white/10 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-white/50 text-white transition duration-300 ease-in-out mb-6"
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6"
                   type="password"
                   placeholder="Password"
                   value={password}
@@ -866,7 +897,7 @@ function App() {
                   Register as Seller
                 </button>
                 <button
-                  className="w-full py-3 px-4 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-3"
+                  className="w-full py-3 px-4 bg-gray-400 hover:bg-gray-500 text-gray-900 font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-3"
                   onClick={() => setShowSellerRegisterModal(false)}
                 >
                   Back to Login
@@ -877,13 +908,13 @@ function App() {
               <>
                 {/* Emoji face above login */}
                 <div className="flex justify-center text-4xl mb-2">
-                  <span>{getEmoji()} <span className="text-xl text-purple-400 ml-2">@{email || "username"}</span></span>
+                  <span className="text-gray-900">{getEmoji()} <span className="text-xl text-purple-700 ml-2">@{email || "username"}</span></span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-purple-400 drop-shadow-lg">
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg">
                   {isRegistering ? 'Register' : 'Login'}
                 </h2>
                 <input
-                  className="w-full p-3 bg-white/10 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-white/50 text-white transition duration-300 ease-in-out mb-4"
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
                   type="email"
                   placeholder="Email"
                   value={email}
@@ -892,7 +923,7 @@ function App() {
                   onBlur={() => setFocusField(null)}
                 />
                 <input
-                  className="w-full p-3 bg-white/10 border border-white/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-white/50 text-white transition duration-300 ease-in-out mb-6"
+                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6"
                   type="password"
                   placeholder="Password"
                   value={password}
@@ -906,10 +937,10 @@ function App() {
                 >
                   {isRegistering ? 'Register' : 'Login'}
                 </button>
-                <p className="text-center text-sm text-white/70 mt-4">
+                <p className="text-center text-sm text-gray-700 mt-4">
                   {isRegistering ? 'Already have an account?' : "Don't have an account?"}{' '}
                   <button
-                    className="text-purple-400 hover:text-purple-300 font-medium transition duration-300 ease-in-out"
+                    className="text-purple-700 hover:text-purple-500 font-medium transition duration-300 ease-in-out"
                     onClick={() => setIsRegistering(!isRegistering)}
                   >
                     {isRegistering ? 'Login here' : 'Register here'}
