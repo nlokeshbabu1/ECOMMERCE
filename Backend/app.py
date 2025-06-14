@@ -22,6 +22,7 @@ mongo_client = MongoClient(uri)
 db = mongo_client['clothing_ecom']
 users_collection = db['users']
 products_collection = db['products']
+SellerRegister = db['SellerRegister']
 
 # Bcrypt setup
 bcrypt = Bcrypt(app)
