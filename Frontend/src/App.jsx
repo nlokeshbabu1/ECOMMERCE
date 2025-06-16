@@ -1,19 +1,85 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Define keyframe animation and base styles here for the background and elements
+const GlobalStyles = () => (
+  <style>
+    {`
+    @keyframes gradient-animation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .animated-background {
+      /* Changed to very light, almost white gradient for an animated white background */
+      background: linear-gradient(270deg, #f0f0f0, #ffffff, #f0f0f0);
+      background-size: 200% 200%; /* Make gradient larger to allow for movement */
+      animation: gradient-animation 15s ease infinite; /* Apply the animation */
+    }
+
+    /* New animation for elements sliding in from the bottom */
+    @keyframes slide-in-up {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-slide-in-up {
+      animation: slide-in-up 0.5s ease-out forwards;
+    }
+
+    /* Staggered animation for grid items */
+    .product-item {
+        opacity: 0; /* Initially hidden */
+        animation: slide-in-up 0.5s ease-out forwards; /* Apply the base animation */
+    }
+    .product-item:nth-child(1) { animation-delay: 0.1s; }
+    .product-item:nth-child(2) { animation-delay: 0.15s; }
+    .product-item:nth-child(3) { animation-delay: 0.2s; }
+    .product-item:nth-child(4) { animation-delay: 0.25s; }
+    .product-item:nth-child(5) { animation-delay: 0.3s; }
+    .product-item:nth-child(6) { animation-delay: 0.35s; }
+    .product-item:nth-child(7) { animation-delay: 0.4s; }
+    .product-item:nth-child(8) { animation-delay: 0.45s; }
+    .product-item:nth-child(9) { animation-delay: 0.5s; }
+    .product-item:nth-child(10) { animation-delay: 0.55s; }
+    .product-item:nth-child(11) { animation-delay: 0.6s; }
+    .product-item:nth-child(12) { animation-delay: 0.65s; }
+    .product-item:nth-child(13) { animation-delay: 0.7s; }
+    .product-item:nth-child(14) { animation-delay: 0.75s; }
+    .product-item:nth-child(15) { animation-delay: 0.8s; }
+    /* Add more nth-child rules for more products if needed */
+    `}
+  </style>
+);
+
+
 function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // Initialize sessionId and userRole from localStorage, defaulting to null if not found
+  // Initialize sessionId, userRole, and sellerEmail from localStorage, defaulting to null if not found
   const [sessionId, setSessionId] = useState(localStorage.getItem('session_id'));
-  const [userRole, setUserRole] = useState(localStorage.getItem('user_role')); // New state for user role
+  const [userRole, setUserRole] = useState(localStorage.getItem('user_role')); 
+  const [sellerEmail, setSellerEmail] = useState(localStorage.getItem('user_email')); // New state for seller's email
 
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState('');
-  const [searchQuery, setSearchQuery] = useState(''); // New state for search query
-  const [isRegistering, setIsRegistering] = useState(false); // For regular user registration
+  const [searchQuery, setSearchQuery] = useState(''); 
+  const [isRegistering, setIsRegistering] = useState(false); 
   const [loginError, setLoginError] = useState(false);
-  const [cartItems, setCartItems] = useState([]); // Cart items will now store { product: {}, quantity: N, cartItemId: uniqueId }
+  const [cartItems, setCartItems] = useState([]); 
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -38,8 +104,8 @@ function App() {
     price: '',
     category: '',
     image: '',
-    stockAvailable: '', // Added new field for stock availability
-    size: '' // Added size field for new products
+    stockAvailable: '', 
+    size: '' 
   });
 
   // States for new seller registration fields
@@ -54,21 +120,23 @@ function App() {
 
   /**
    * Handles user login by sending credentials to the backend.
-   * On success, stores the session ID and user role in localStorage and state.
+   * On success, stores the session ID, user role, and user email in localStorage and state.
    * On failure, sets loginError state and plays an error sound.
    */
   const handleLogin = async () => {
     try {
       const res = await axios.post(`${API_URL}/api/login`, { email, password });
       localStorage.setItem('session_id', res.data.session_id);
-      localStorage.setItem('user_role', res.data.role); // Store user role from backend
+      localStorage.setItem('user_role', res.data.role); 
+      localStorage.setItem('user_email', res.data.user_email); // Store user email
       setSessionId(res.data.session_id);
-      setUserRole(res.data.role); // Set user role in state
-      setShowLoginModal(false); // Close login modal on successful login
+      setUserRole(res.data.role); 
+      setSellerEmail(res.data.user_email); // Set seller email in state
+      setShowLoginModal(false); 
     } catch (err) {
       console.error('Login failed:', err);
       console.error('Backend URL attempted:', `${API_URL}/api/login`);
-      if (axios.isAxiosError(err)) { // Check if it's an Axios error
+      if (axios.isAxiosError(err)) { 
         if (err.response) {
           console.error('Response data:', err.response.data);
           console.error('Response status:', err.response.status);
@@ -80,7 +148,7 @@ function App() {
       } else {
         console.error('Non-Axios error:', err);
       }
-      setLoginError(true); // Indicate login error
+      setLoginError(true); 
       setPopupMessage(`Login failed: ${err.message}. Please check your backend server at ${API_URL}`);
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 5000);
@@ -99,13 +167,11 @@ function App() {
    */
   const handleRegister = async () => {
     try {
-      // Assuming backend /api/register assigns a default 'user' role if none specified
       await axios.post(`${API_URL}/api/register`, { email, password });
       setPopupMessage('Registered successfully. Please log in.');
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
-      setIsRegistering(false); // Switch back to login view
-      // No need to close showLoginModal here, as user still needs to login
+      setIsRegistering(false); 
     } catch (err) {
       console.error('Registration failed:', err);
       console.error('Backend URL attempted:', `${API_URL}/api/register`);
@@ -132,37 +198,30 @@ function App() {
 
   /**
    * Handles seller registration by sending additional credentials to the backend.
-   * IMPORTANT: The backend's /api/register endpoint needs to be updated to accept
-   * these new fields and assign the 'admin' role based on this registration.
    */
   const handleSellerRegister = async () => {
     try {
-      // Sending 'role: admin' and other seller-specific details to the registration endpoint.
-      // Your backend must handle this 'role' and actually set the user as admin.
-      const res = await axios.post(`${API_URL}/api/register`, {
+      const res = await axios.post(`${API_URL}/api/selleregister`, {
         email,
         password,
-        name: sellerName,
-        phone: sellerPhone,
-        gst_number: sellerGSTNumber, // Use snake_case for backend consistency
-        address: sellerAddress,
-        role: 'admin' // Frontend requesting 'admin' role for this registration
+        SellerName: sellerName,
+        SellerPhone: sellerPhone,
+        SellerGSTNumber: sellerGSTNumber, 
+        SellerAddres: sellerAddress,
       });
       setPopupMessage('Seller registered successfully! Please login.');
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
-      setShowSellerRegisterModal(false); // Close seller registration modal
-      // After registration, the user still needs to log in, so keep showLoginModal true
-      setEmail(''); // Clear form fields
+      setShowSellerRegisterModal(false); 
+      setEmail(''); 
       setPassword('');
-      setSellerName('');
+      setSellerName(''); // Corrected variable name from setsellerName
       setSellerPhone('');
       setSellerGSTNumber('');
       setSellerAddress('');
-      console.warn("Note: For seller registration to grant 'admin' access, your backend's /api/register endpoint must be configured to process the 'role: admin' field and assign it in the database.");
     } catch (err) {
       console.error('Seller registration failed:', err);
-      console.error('Backend URL attempted:', `${API_URL}/api/register`);
+      console.error('Backend URL attempted:', `${API_URL}/api/selleregister`);
       if (axios.isAxiosError(err)) {
         if (err.response) {
           console.error('Response data:', err.response.data);
@@ -190,21 +249,29 @@ function App() {
    */
   const handleLogout = () => {
     localStorage.removeItem('session_id');
-    localStorage.removeItem('user_role'); // Clear user role on logout
+    localStorage.removeItem('user_role'); 
+    localStorage.removeItem('user_email'); // Clear user email on logout
     setSessionId(null);
-    setUserRole(null); // Clear user role in state
-    setCartItems([]); // Clear cart on logout
-    setShowLoginModal(false); // User is logged out, so they are back to guest view, login modal can be closed initially
+    setUserRole(null); 
+    setSellerEmail(null); // Clear seller email in state
+    setCartItems([]); 
+    setShowLoginModal(false); 
   };
 
   /**
    * Fetches products from the backend, optionally filtered by category and search query.
-   * This function is called on component mount and when category or search query changes.
+   * If a seller is logged in, it will filter products by their email.
    */
   const fetchProducts = async () => {
     try {
-      // Make an actual API call to your backend
-      const res = await axios.get(`${API_URL}/api/products?category=${category}&q=${searchQuery}`);
+      let url = `${API_URL}/api/products?category=${category}&q=${searchQuery}`;
+      
+      // If a seller is logged in, append their email to the query
+      if (userRole === 'admin' && sellerEmail) {
+        url += `&seller_email=${sellerEmail}`;
+      }
+
+      const res = await axios.get(url);
       
       // Ensure each product has a unique, reliable ID for frontend use
       const processedProducts = res.data.map(product => ({
@@ -212,12 +279,11 @@ function App() {
         // Map backend's 'image' directly to frontend's 'image'
         image: product.image || 'https://via.placeholder.com/150/222222/FFFFFF?text=No+Image',
         // Corrected: Map backend's 'stockavailable' (lowercase 's') to frontend's 'stockAvailable' (camelCase)
-        // Also, parse it to an integer as it might come as a string from MongoDB
         stockAvailable: parseInt(product.stockavailable), 
         // Added: Map backend's 'size' to frontend's 'size'
         size: product.size,
-        // Use existing _id (from MongoDB) or generate a UUID as fallback for _displayId
-        _displayId: product._id || crypto.randomUUID() 
+        // Use existing _id (from MongoDB) or generate a more compatible UUID as fallback for _displayId
+        _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
       }));
       setProducts(processedProducts);
       console.log('Fetched products from backend. Processed products with _displayId:', processedProducts);
@@ -249,19 +315,17 @@ function App() {
     }
   };
 
-  // Effect hook to fetch products on initial load and when category or search query changes
+  // Effect hook to fetch products on initial load and when category, search query, or userRole/sellerEmail changes
   useEffect(() => {
     fetchProducts();
-  }, [category, searchQuery]); // Added searchQuery as a dependency
-
-  // Removed the extra useEffect for logging products state changes for debugging, as it's no longer needed.
+  }, [category, searchQuery, userRole, sellerEmail]); 
 
 
   // Effect hook to hide login error message after a delay
   useEffect(() => {
     if (loginError) {
       const timer = setTimeout(() => setLoginError(false), 5000);
-      return () => clearTimeout(timer); // Cleanup timer on unmount or if loginError changes
+      return () => clearTimeout(timer); 
     }
   }, [loginError]);
 
@@ -277,7 +341,7 @@ function App() {
       setPopupMessage('Please log in to add items to your cart.');
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
-      setShowLoginModal(true); // Show login modal
+      setShowLoginModal(true); 
       return;
     }
     // Find the product using the _displayId
@@ -286,7 +350,7 @@ function App() {
 
     if (!productToAdd) {
       console.error('Product not found in available products for _displayId:', displayId);
-      return; // Product not found
+      return; 
     }
 
     const existingCartItemIndex = cartItems.findIndex(
@@ -300,7 +364,7 @@ function App() {
         setPopupMessage(`Out of stock for ${productToAdd.name} or maximum available added.`);
         setPopupVisible(true);
         try {
-          new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); // Error sound
+          new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); 
         } catch (audioErr) {
           console.warn("Failed to play audio:", audioErr);
         }
@@ -318,17 +382,17 @@ function App() {
       setPopupMessage(`Another ${productToAdd.name} added to cart!`);
     } else {
       // Product not in cart, add new with quantity 1
-      setCartItems([...cartItems, { product: productToAdd, quantity: 1, cartItemId: crypto.randomUUID() }]); // Add unique cartItemId
+      setCartItems([...cartItems, { product: productToAdd, quantity: 1, cartItemId: (Date.now().toString() + Math.random().toString(36).substring(2)) }]); 
       setPopupMessage(`${productToAdd.name} added to cart!`);
     }
     
-    setPopupVisible(true); // Show popup
+    setPopupVisible(true); 
     try {
-      new Audio('https://www.soundjay.com/button/beep-07.wav').play(); // Play sound
+      new Audio('https://www.soundjay.com/button/beep-07.wav').play(); 
     } catch (audioErr) {
       console.warn("Failed to play audio:", audioErr);
     }
-    setTimeout(() => setPopupVisible(false), 2000); // Hide popup after 2 seconds
+    setTimeout(() => setPopupVisible(false), 2000); 
   };
 
   /**
@@ -347,7 +411,7 @@ function App() {
         setCartItems(updatedCartItems);
         setPopupMessage('Item quantity decreased.');
       } else {
-        updatedCartItems.splice(existingCartItemIndex, 1); // Remove item if quantity is 1
+        updatedCartItems.splice(existingCartItemIndex, 1); 
         setCartItems(updatedCartItems);
         setPopupMessage('Item removed from cart.');
       }
@@ -355,6 +419,55 @@ function App() {
       setTimeout(() => setPopupVisible(false), 2000);
     }
   };
+
+  /**
+   * Handles the direct purchase of a product.
+   * Decrements stock locally and shows confirmation.
+   * @param {object} productToBuy - The product object to be purchased.
+   */
+  const handleBuyNow = (productToBuy) => {
+    if (!sessionId) {
+      setPopupMessage('Please log in to purchase items.');
+      setPopupVisible(true);
+      setTimeout(() => setPopupVisible(false), 2000);
+      setShowLoginModal(true); 
+      return;
+    }
+
+    if (productToBuy.stockAvailable <= 0) {
+      setPopupMessage(`Sorry, "${productToBuy.name}" is out of stock!`);
+      setPopupVisible(true);
+      try {
+        new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); 
+      } catch (audioErr) {
+        console.warn("Failed to play audio:", audioErr);
+      }
+      setTimeout(() => setPopupVisible(false), 3000);
+      return;
+    }
+
+    // Decrement stock locally for immediate feedback
+    const updatedProducts = products.map(p =>
+      p._displayId === productToBuy._displayId
+        ? { ...p, stockAvailable: p.stockAvailable - 1 }
+        : p
+    );
+    setProducts(updatedProducts);
+    setSelectedProduct(null); 
+
+    setPopupMessage(`Successfully purchased 1x ${productToBuy.name}!`);
+    setPopupVisible(true);
+    try {
+      new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); 
+    } catch (audioErr) {
+      console.warn("Failed to play audio:", audioErr);
+    }
+    setTimeout(() => setPopupVisible(false), 3000);
+
+    // TODO: Implement backend API call to update stock in the database
+    console.log(`Purchase of ${productToBuy.name} handled locally. REMINDER: Implement backend stock update!`);
+  };
+
 
   /**
    * Calculates the total price of all items in the cart, considering quantities.
@@ -372,12 +485,12 @@ function App() {
    */
   const getEmoji = () => {
     if (focusField === "email") {
-      return "👀"; // Eyes rotating when email field is focused
+      return "👀"; 
     } else if (focusField === "password" && password.length > 0) {
-      return "🙈"; // Eyes covered when typing password
+      return "🙈"; 
     }
     // Default case: neutral face for other scenarios
-    return "🙂";
+    return "🙂"; // Changed from '�' to '🙂' for better emoji display compatibility
   };
 
   /**
@@ -388,7 +501,7 @@ function App() {
     const { name, value } = e.target;
     setNewProduct((prev) => ({
       ...prev,
-      [name]: name === 'price' || name === 'stockAvailable' ? parseFloat(value) : value // Parse numbers
+      [name]: name === 'price' || name === 'stockAvailable' ? parseFloat(value) : value 
     }));
   };
 
@@ -397,8 +510,7 @@ function App() {
    * Performs basic validation and sends product data to the backend.
    */
   const handleAddProduct = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    // Simple validation for required fields
+    e.preventDefault(); 
     if (!newProduct.name || !newProduct.price || !newProduct.category || newProduct.stockAvailable === '') {
       setPopupMessage('Please fill in all required fields!');
       setPopupVisible(true);
@@ -407,23 +519,16 @@ function App() {
     }
     try {
       // Send new product data to the API with session_id in the body
-      await axios.post(`${API_URL}/api/addproducts`, { // Corrected endpoint to /api/addproducts based on your backend
+      await axios.post(`${API_URL}/api/addproducts`, { 
         ...newProduct,
-        price: parseFloat(newProduct.price), // Ensure price is a number
-        stockAvailable: parseInt(newProduct.stockAvailable), // Ensure stockAvailable is an integer
+        price: parseFloat(newProduct.price), 
+        stockAvailable: parseInt(newProduct.stockAvailable), 
         session_id: sessionId, // Pass session_id in the body as required by backend
-        // Corrected: Map frontend's 'image' to backend's 'image' key
-        image: newProduct.image, 
-        // Corrected: Map frontend's 'stockAvailable' to backend's 'stockavailable' (lowercase 's')
-        stockavailable: newProduct.stockAvailable,
-        // Added: Map frontend's 'size' to backend's 'size'
-        size: newProduct.size
       });
       setPopupMessage('Product added successfully!');
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
-      setAddMode(false); // Exit add product mode
-      // Reset new product form fields
+      setAddMode(false); 
       setNewProduct({
         name: '',
         description: '',
@@ -431,9 +536,9 @@ function App() {
         category: '',
         image: '',
         stockAvailable: '',
-        size: '' // Reset size field
+        size: '' 
       });
-      fetchProducts(); // Refresh product list
+      fetchProducts(); 
     } catch (err) {
       console.error('Failed to add product:', err);
       console.error('Backend URL attempted:', `${API_URL}/api/addproducts`);
@@ -449,7 +554,6 @@ function App() {
       } else {
         console.error('Non-Axios error:', err);
       }
-      // Display specific error message from backend if available, otherwise a generic one
       const errorMessage = err.response && err.response.data && err.response.data.error
                            ? err.response.data.error
                            : `Failed to add product! Please check your backend server at ${API_URL}`;
@@ -462,7 +566,9 @@ function App() {
 
   // Main Application Structure (always rendered)
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen animated-background text-gray-900">
+      {/* Include Global Styles for animations */}
+      <GlobalStyles />
       <div className="relative z-10 p-4">
         {/* Header with App Title and Action Buttons */}
         <div className="flex justify-between items-center mb-4 bg-white/70 backdrop-blur-sm p-4 rounded-lg shadow-md border border-gray-300"> 
@@ -503,7 +609,7 @@ function App() {
         </div>
 
         {/* Category Filter and Search Bar */}
-        <div className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-white/70 backdrop-blur-sm p-3 rounded-lg shadow-md border border-gray-300"> 
+        <div className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-white/70 backdrop-blur-sm p-3 rounded-lg shadow-md border border-gray-300 animate-slide-in-up"> 
           <select
             className="bg-white text-gray-900 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full md:w-auto" 
             value={category}
@@ -528,7 +634,7 @@ function App() {
           {products.map((p) => (
             <div
               key={p._displayId} // Use the guaranteed unique _displayId as key
-              className="border border-gray-300 p-4 rounded-lg bg-white/70 backdrop-blur-sm hover:shadow-lg transition-shadow duration-200" 
+              className="border border-gray-300 p-4 rounded-lg bg-white/70 backdrop-blur-sm hover:shadow-lg transition-shadow duration-200 product-item" 
             >
               <img
                 src={p.image || 'https://via.placeholder.com/150/EEEEEE/000000?text=No+Image'} 
@@ -558,23 +664,7 @@ function App() {
               </button>
               <button
                 className="bg-gray-400 text-gray-900 mt-2 ml-2 px-3 py-1 rounded hover:bg-gray-500 transition duration-200"
-                onClick={() => {
-                  if (!sessionId) { // If not logged in, prompt for login
-                    setPopupMessage('Please log in to purchase this item.');
-                    setPopupVisible(true);
-                    setTimeout(() => setPopupVisible(false), 2000);
-                    setShowLoginModal(true);
-                    return;
-                  }
-                  setPopupMessage('Buying now: ' + p.name + ' - Feature coming soon!');
-                  setPopupVisible(true);
-                  try {
-                    new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play();
-                  } catch (audioErr) {
-                    console.warn("Failed to play audio:", audioErr);
-                  }
-                  setTimeout(() => setPopupVisible(false), 2000);
-                }}
+                onClick={() => handleBuyNow(p)} // Call handleBuyNow
               >
                 Buy Now
               </button>
@@ -585,7 +675,7 @@ function App() {
         {/* Modal for Product Preview */}
         {selectedProduct && (
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg border border-gray-300 max-w-md w-full text-gray-900"> 
+            <div className="bg-white p-6 rounded-lg border border-gray-300 max-w-md w-full text-gray-900 animate-slide-in-up"> 
               <img
                 src={selectedProduct.image || 'https://via.placeholder.com/300/EEEEEE/000000?text=No+Image'}
                 alt={selectedProduct.name}
@@ -612,15 +702,15 @@ function App() {
                     setShowLoginModal(true);
                     return;
                   }
-                  addToCart(selectedProduct._displayId); // Use _displayId here too
-                  setSelectedProduct(null); // Close modal after adding to cart
+                  addToCart(selectedProduct._displayId); 
+                  setSelectedProduct(null); 
                 }}
               >
                 Add to Cart
               </button>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200"
-                onClick={() => setSelectedProduct(null)} // Close product details modal
+                onClick={() => setSelectedProduct(null)} 
               >
                 Close
               </button>
@@ -629,8 +719,8 @@ function App() {
         )}
 
         {/* Add Product Modal */}
-        {addMode && userRole === 'admin' && ( // Only show "Add Product" modal if user is admin
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
+        {addMode && userRole === 'admin' && ( 
+          <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
             <form
               className="bg-white p-8 rounded-2xl border border-gray-300 shadow-2xl max-w-md w-full text-gray-900" 
               onSubmit={handleAddProduct}
@@ -687,7 +777,7 @@ function App() {
                 step="1"
                 required
               />
-              <input // New input for size
+              <input 
                 className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
                 type="text"
                 name="size"
@@ -702,15 +792,14 @@ function App() {
                   placeholder="Description"
                   value={newProduct.description}
                   onChange={handleAddProductChange}
-                  rows="4" // Give more space for description
+                  rows="4" 
                 />
-                {/* Removed the "Generate Description" button */}
               </div>
               <div className="flex justify-between mt-4">
                 <button
                   type="button"
                   className="bg-gray-400 text-gray-900 px-4 py-2 rounded hover:bg-gray-500 transition duration-200" 
-                  onClick={() => setAddMode(false)} // Cancel adding product
+                  onClick={() => setAddMode(false)} 
                 >
                   Cancel
                 </button>
@@ -744,10 +833,10 @@ function App() {
             {cartItems.length === 0 ? (
               <p className="text-gray-700 flex-grow text-center flex items-center justify-center">No items in the cart.</p> 
             ) : (
-              <div className="flex-grow overflow-y-auto pr-2"> {/* Added overflow for scrollable cart */}
+              <div className="flex-grow overflow-y-auto pr-2"> 
                 {cartItems.map((item) => ( 
                   <div
-                    key={item.cartItemId} // Using the unique cartItemId as the key
+                    key={item.cartItemId} 
                     className="flex items-center justify-between bg-gray-100 p-3 rounded-lg mb-3 shadow-md" 
                   >
                     <img 
@@ -762,14 +851,14 @@ function App() {
                     <div className="flex items-center space-x-2">
                       <button
                         className="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition duration-200" 
-                        onClick={() => removeFromCart(item.product._displayId)} // Decrement or remove
+                        onClick={() => removeFromCart(item.product._displayId)} 
                       >
                         -
                       </button>
                       <span className="text-lg font-bold text-gray-900">{item.quantity}</span>
                       <button
                         className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-600 transition duration-200" 
-                        onClick={() => addToCart(item.product._displayId)} // Increment
+                        onClick={() => addToCart(item.product._displayId)} 
                       >
                         +
                       </button>
@@ -779,7 +868,7 @@ function App() {
               </div>
             )}
             
-            <div className="mt-auto pt-4 border-t border-gray-300"> {/* Stick to bottom */}
+            <div className="mt-auto pt-4 border-t border-gray-300"> 
                 <div className="flex justify-between items-center text-xl font-bold text-gray-900 mb-4"> 
                     <span>Total:</span>
                     <span className="text-green-600">${getTotalPrice().toFixed(2)}</span> 
@@ -788,14 +877,17 @@ function App() {
                     className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200"
                     onClick={() => {
                         if (cartItems.length > 0) {
-                            setPopupMessage('Proceeding to checkout! (Feature not fully implemented)');
+                            setPopupMessage('Thank you for your purchase! Your order has been placed. (Frontend simulation)');
                             setPopupVisible(true);
                             try {
                                 new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play();
                             } catch (audioErr) {
                                 console.warn("Failed to play audio:", audioErr);
                             }
+                            setCartItems([]); 
+                            setCartOpen(false); 
                             setTimeout(() => setPopupVisible(false), 3000);
+                            console.log('Checkout completed locally. REMINDER: Implement backend order processing and stock updates!');
                         } else {
                             setPopupMessage('Your cart is empty!');
                             setPopupVisible(true);
@@ -824,11 +916,11 @@ function App() {
 
       {/* Login/Register Modal (appears over the content when needed) */}
       {showLoginModal && (
-        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-80 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="relative z-10 w-full max-w-sm p-8 bg-white/90 backdrop-blur-md border border-gray-300 rounded-3xl shadow-2xl overflow-hidden md:p-10">
             <button
               className="absolute top-4 right-4 text-gray-700 text-xl"
-              onClick={() => setShowLoginModal(false)} // Close the modal
+              onClick={() => setShowLoginModal(false)} 
             >
               &times;
             </button>
