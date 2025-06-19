@@ -7,6 +7,7 @@ from urllib.parse import quote_plus
 from bson.objectid import ObjectId # Import ObjectId
 import redis
 from flask_bcrypt import Bcrypt
+import uuid
 
 app = Flask(__name__)
 CORS(app) # Enable CORS for frontend communication
@@ -21,14 +22,14 @@ username = quote_plus(os.getenv("MONGO_USER", "admin"))
 
 #uri = os.getenv("MONGO_HOST")
 
-#uri= os.getenv("MONGO_HOST")
+uri= f"mongodb+srv://admin:g6XptAeuHn3Tvhwf@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 #f"mongodb+srv://admin:g6XptAeuHn3Tvhwf@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 #Bcrypt
 bcrypt=Bcrypt(app)
 
-uri = os.getenv("MONGO_URL")
-print(f"Connecting to MongoDB at: {uri}")  # For debug
+# uri = os.getenv("MONGO_URL")
+# print(f"Connecting to MongoDB at: {uri}")  # For debug
 
 
 

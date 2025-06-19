@@ -696,7 +696,7 @@ const AuthModal = ({ t, showLoginModal, setShowLoginModal, handleLogin, handleRe
   // Determines the emoji to display based on input field focus and password content.
   const getEmoji = () => {
     if (focusField === "email") {
-      return "�"; // Eyes rotating when email field is focused
+      return "👀"; // Eyes rotating when email field is focused
     } else if (focusField === "password" && password.length > 0) {
       return "🙈"; // Eyes covered when typing password
     }
@@ -1015,7 +1015,7 @@ const AddProductModal = ({ t, addMode, userRole, setAddMode, newProduct, setNewP
   const submitAddProduct = async (e) => {
     e.preventDefault(); 
     // Ensure all required fields are filled, including size
-    if (!newProduct.name || !newProduct.price || !newProduct.category || newProduct.stockAvailable === '' || !newProduct.size) { // Added newProduct.size
+    if (!newProduct.name || !newProduct.price || !newProduct.category || newProduct.stockAvailable === '' || !newProduct.size) { 
       setPopupMessage(t('fillAllFields'));
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
@@ -1350,7 +1350,15 @@ function App() {
       const res = await axios.get(url);
       console.log('Raw response data from product service:', res.data); // Added for debugging
 
-      const processedProducts = res.data.products.map(product => ({
+      // Adjusting to directly use res.data as the array of products
+      const fetchedProducts = Array.isArray(res.data) ? res.data : []; // Ensure it's an array
+
+      // For now, set totalProductsCount based on the length of fetched products.
+      // THIS WILL NOT PROVIDE ACCURATE PAGINATION ACROSS ALL PRODUCTS
+      // IF THE BACKEND DOES NOT RETURN THE TOTAL COUNT.
+      const fetchedTotalProducts = fetchedProducts.length; 
+
+      const processedProducts = fetchedProducts.map(product => ({
         ...product,
         image: product.image || 'https://via.placeholder.com/150/222222/FFFFFF?text=No+Image',
         stockAvailable: parseInt(product.stockavailable), 
@@ -1359,7 +1367,7 @@ function App() {
       }));
       console.log('Processed products before setting state:', processedProducts); // Added for debugging
       setProducts(processedProducts);
-      setTotalProductsCount(res.data.total_products); // Update total count
+      setTotalProductsCount(fetchedTotalProducts); // Update total count
 
     } catch (err) {
       console.error('Error fetching products:', err);
