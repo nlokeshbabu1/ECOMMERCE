@@ -1,11 +1,11 @@
 name: CI for frontend
 
 on:
-    push:
-        branches:
-            - feature
-        paths-ignore:
-            - Backend/*
+  push:
+    branches:
+        - feature
+    paths-ignore:
+        - Backend/*
 
 
 jobs:
