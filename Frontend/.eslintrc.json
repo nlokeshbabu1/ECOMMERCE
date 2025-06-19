@@ -1,0 +1,50 @@
+{
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "node": true  // This is important for Node.js based config files like tailwind.config.js
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:react/jsx-runtime" // Recommended for React 17+ with new JSX transform
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2021, // Or a newer version like "latest"
+      "sourceType": "module", // This is correct for your React components (App.jsx)
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "plugins": [
+      "react"
+    ],
+    "rules": {
+      "indent": [
+        "error",
+        2 // Enforce 2 spaces for indentation
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "no-unused-vars": [
+        "warn", // Changed to warn, as 'res' might be used implicitly
+        { "argsIgnorePattern": "^_" } // Allows variables starting with '_' to be unused
+      ],
+      "react/react-in-jsx-scope": "off" // Not needed for React 17+ JSX transform
+    },
+    "settings": {
+      "react": {
+        "version": "detect" // Automatically detects the React version
+      }
+    }
+  }

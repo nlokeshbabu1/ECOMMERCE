@@ -57,7 +57,7 @@ function App() {
    */
   const handleLogin = async () => {
     try {
-      const res = await axios.post(`${API_URL}/api/login`, { email, password });
+      const _res = await axios.post(`${API_URL}/api/login`, { email, password });
       localStorage.setItem('session_id', res.data.session_id);
       localStorage.setItem('user_role', res.data.role); // Store user role from backend
       setSessionId(res.data.session_id);
