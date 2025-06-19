@@ -1,7 +1,615 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Define keyframe animation and base styles here for the background and elements
+// --- Single Backend API Endpoint ---
+// All requests will now go to this single backend server.
+const API_URL = 'http://localhost:5000'; 
+
+// Translations object for multiple languages
+const translations = {
+  en: {
+    flag: "🇬🇧", // UK Flag for English
+    name: "English", // Display name for the language
+    storeName: "Modern Clothing Store",
+    loginRegister: "Login / Register",
+    signOut: "Sign Out",
+    addProduct: "+ Add Product",
+    yourCart: "Your Cart",
+    total: "Total",
+    proceedToCheckout: "Proceed to Checkout",
+    noItemsInCart: "No items in the cart.",
+    addToCart: "Add to Cart",
+    buyNow: "Buy Now",
+    loadingProducts: "Loading products...",
+    allCategories: "All Categories",
+    men: "Men",
+    women: "Women",
+    kids: "Kids",
+    searchProducts: "Search products...",
+    close: "Close",
+    login: "Login",
+    register: "Register",
+    email: "Email",
+    password: "Password",
+    alreadyHaveAccount: "Already have an account?",
+    loginHere: "Login here",
+    dontHaveAccount: "Don't have an account?",
+    registerHere: "Register here",
+    registerAsSeller: "Register as Seller",
+    sellerRegistration: "Seller Registration",
+    displayName: "Name", 
+    phone: "Phone",
+    gstNumber: "GST Number",
+    address: "Address",
+    backToLogin: "Back to Login",
+    productName: "Product Name",
+    price: "Price",
+    selectCategory: "Select Category",
+    imageUrl: "Image URL",
+    stockAvailable: "Stock Available",
+    size: "Size (e.g., S, M, L)",
+    description: "Description",
+    cancel: "Cancel",
+    addProductButton: "Add Product",
+    fillAllFields: "Please fill in all required fields!",
+    productAddedSuccess: "Product added successfully!",
+    failedToAddProduct: "Failed to add product! Please check your backend service at",
+    loginRequiredAddToCart: "Please log in to add items to your cart.",
+    itemAddedToCart: " added to cart!",
+    outOfStock: "Out of stock for ",
+    maxAvailableAdded: " or maximum available added.",
+    loginRequiredManageCart: "Please log in to manage cart.",
+    itemQuantityDecreased: "Item quantity decreased.",
+    itemRemovedFromCart: "Item removed from cart.",
+    failedToRemoveItem: "Failed to remove item from cart. Please check your backend service.",
+    loginRequiredPurchase: "Please log in to purchase items.",
+    outOfStockShort: "Sorry, \"",
+    outOfStockLong: "\" is out of stock!",
+    purchaseSuccess: "Successfully purchased 1x ",
+    thankYouPurchase: "Thank you for your purchase! Your order has been placed. (Frontend simulation)",
+    cartIsEmpty: "Your cart is empty!",
+    loginFailed: "Login failed:",
+    registrationFailed: "Registration failed! Please check your backend server at",
+    sellerRegistrationFailed: "Seller registration failed! Please check your backend server at",
+    registeredSuccessLogin: "Registered successfully. Please log in.",
+    sellerRegisteredSuccessLogin: "Seller registered successfully! Please login.",
+    failedToLoadCart: "Failed to load cart from backend. Please check your backend service.",
+    errorLoadingCartDetails: "Error loading cart details.",
+    checkoutFailed: "Checkout failed due to a server error.",
+    failedToFetchProducts: "Failed to fetch products! Is your backend server running at",
+    checkBackendServerAt: "Please check your backend server at",
+    previous: "Previous",
+    next: "Next",
+    page: "Page",
+  },
+  hi: {
+    flag: "🇮🇳", // Indian Flag for Hindi
+    name: "हिन्दी", // Display name for the language
+    storeName: "आधुनिक कपड़ों की दुकान",
+    loginRegister: "लॉगिन / रजिस्टर करें",
+    signOut: "साइन आउट करें",
+    addProduct: "+ उत्पाद जोड़ें",
+    yourCart: "आपका कार्ट",
+    total: "कुल",
+    proceedToCheckout: "चेकआउट के लिए आगे बढ़ें",
+    noItemsInCart: "कार्ट में कोई आइटम नहीं है।",
+    addToCart: "कार्ट में जोड़ें",
+    buyNow: "अभी खरीदें",
+    loadingProducts: "उत्पाद लोड हो रहे हैं...",
+    allCategories: "सभी श्रेणियां",
+    men: "पुरुष",
+    women: "महिलाएं",
+    kids: "बच्चे",
+    searchProducts: "उत्पादों की खोज करें...",
+    close: "बंद करें",
+    login: "लॉगिन करें",
+    register: "रजिस्टर करें",
+    email: "ईमेल",
+    password: "पासवर्ड",
+    alreadyHaveAccount: "पहले से ही एक खाता है?",
+    loginHere: "यहां लॉगिन करें",
+    dontHaveAccount: "खाता नहीं है?",
+    registerHere: "यहां रजिस्टर करें",
+    registerAsSeller: "विक्रेता के रूप में रजिस्टर करें",
+    sellerRegistration: "विक्रेता पंजीकरण",
+    displayName: "नाम", 
+    phone: "फ़ोन",
+    gstNumber: "जीएसटी नंबर",
+    address: "पता",
+    backToLogin: "लॉगिन पर वापस",
+    productName: "उत्पाद का नाम",
+    price: "कीमत",
+    selectCategory: "श्रेणी चुनें",
+    imageUrl: "छवि यूआरएल",
+    stockAvailable: "उपलब्ध स्टॉक",
+    size: "आकार (उदा. S, M, L)",
+    description: "विवरण",
+    cancel: "रद्द करें",
+    addProductButton: "उत्पाद जोड़ें",
+    fillAllFields: "कृपया सभी आवश्यक फ़ील्ड भरें!",
+    productAddedSuccess: "उत्पाद सफलतापूर्वक जोड़ा गया!",
+    failedToAddProduct: "उत्पाद जोड़ने में विफल! कृपया अपने बैकएंड सेवा की जाँच करें",
+    loginRequiredAddToCart: "आइटम को अपने कार्ट में जोड़ने के लिए कृपया लॉगिन करें।",
+    itemAddedToCart: " कार्ट में जोड़ा गया!",
+    outOfStock: "स्टॉक में नहीं है ",
+    maxAvailableAdded: " या अधिकतम उपलब्ध जोड़ा गया।",
+    loginRequiredManageCart: "कार्ट प्रबंधित करने के लिए कृपया लॉगिन करें।",
+    itemQuantityDecreased: "आइटम की मात्रा घटाई गई।",
+    itemRemovedFromCart: "कार्ट से आइटम हटाया गया।",
+    failedToRemoveItem: "कार्ट से आइटम हटाने में विफल। कृपया अपने बैकएंड सेवा की जाँच करें।",
+    loginRequiredPurchase: "आइटम खरीदने के लिए कृपया लॉगिन करें।",
+    outOfStockShort: "क्षमा करें, \"",
+    outOfStockLong: "\" स्टॉक में नहीं है!",
+    purchaseSuccess: "सफलतापूर्वक 1x खरीदा गया ",
+    thankYouPurchase: "आपकी खरीद के लिए धन्यवाद! आपका ऑर्डर दिया गया है। (फ्रंटएंड सिमुलेशन)",
+    cartIsEmpty: "आपका कार्ट खाली है!",
+    loginFailed: "लॉगिन विफल:",
+    registrationFailed: "पंजीकरण विफल! कृपया अपने बैकएंड सर्वर की जाँच करें",
+    sellerRegistrationFailed: "विक्रेता पंजीकरण विफल! कृपया अपने बैकएंड सर्वर की जाँच करें",
+    registeredSuccessLogin: "सफलतापूर्वक पंजीकृत। कृपया लॉगिन करें।",
+    sellerRegisteredSuccessLogin: "विक्रेता सफलतापूर्वक पंजीकृत! कृपया लॉगिन करें।",
+    failedToLoadCart: "बैकएंड से कार्ट लोड करने में विफल। कृपया अपने बैकएंड सेवा की जाँच करें।",
+    errorLoadingCartDetails: "कार्ट विवरण लोड करने में त्रुटि।",
+    checkoutFailed: "सर्वर त्रुटि के कारण चेकआउट विफल।",
+    failedToFetchProducts: "उत्पाद प्राप्त करने में विफल! क्या आपका बैकएंड सर्वर चल रहा है",
+    checkBackendServerAt: "कृपया अपने बैकएंड सर्वर की जाँच करें",
+    previous: "पिछला",
+    next: "अगला",
+    page: "पृष्ठ",
+  },
+  es: {
+    flag: "🇪🇸", // Spanish Flag
+    name: "Español", // Display name for the language
+    storeName: "Tienda de Ropa Moderna",
+    loginRegister: "Iniciar Sesión / Registrarse",
+    signOut: "Cerrar Sesión",
+    addProduct: "+ Añadir Producto",
+    yourCart: "Tu Carrito",
+    total: "Total",
+    proceedToCheckout: "Proceder al Pago",
+    noItemsInCart: "No hay artículos en el carrito.",
+    addToCart: "Añadir al Carrito",
+    buyNow: "Comprar Ahora",
+    loadingProducts: "Cargando productos...",
+    allCategories: "Todas las Categorías",
+    men: "Hombres",
+    women: "Mujeres",
+    kids: "Niños",
+    searchProducts: "Buscar productos...",
+    close: "Cerrar",
+    login: "Iniciar Sesión",
+    register: "Registrarse",
+    email: "Correo Electrónico",
+    password: "Contraseña",
+    alreadyHaveAccount: "¿Ya tienes una cuenta?",
+    loginHere: "Iniciar sesión aquí",
+    dontHaveAccount: "¿No tienes una cuenta?",
+    registerHere: "Registrarse aquí",
+    registerAsSeller: "Registrarse como Vendedor",
+    sellerRegistration: "Registro de Vendedor",
+    displayName: "Nombre", 
+    phone: "Teléfono",
+    gstNumber: "Número GST",
+    address: "Dirección",
+    backToLogin: "Volver a Iniciar Sesión",
+    productName: "Nombre del Producto",
+    price: "Precio",
+    selectCategory: "Seleccionar Categoría",
+    imageUrl: "URL de la Imagen",
+    stockAvailable: "Stock Disponible",
+    size: "Talla (ej. S, M, L)",
+    description: "Descripción",
+    cancel: "Cancelar",
+    addProductButton: "Añadir Producto",
+    fillAllFields: "¡Por favor, rellena todos los campos requeridos!",
+    productAddedSuccess: "¡Producto añadido exitosamente!",
+    failedToAddProduct: "¡Error al añadir producto! Por favor, verifica tu servicio backend en",
+    loginRequiredAddToCart: "Por favor, inicia sesión para añadir artículos a tu carrito.",
+    itemAddedToCart: " añadido al carrito!",
+    outOfStock: "Sin stock para ",
+    maxAvailableAdded: " o el máximo disponible añadido.",
+    loginRequiredManageCart: "Por favor, inicia sesión para gestionar el carrito.",
+    itemQuantityDecreased: "Cantidad del artículo disminuida.",
+    itemRemovedFromCart: "Artículo eliminado del carrito.",
+    failedToRemoveItem: "Error al eliminar el artículo del carrito. Por favor, verifica tu servicio backend.",
+    loginRequiredPurchase: "Por favor, inicia sesión para comprar artículos.",
+    outOfStockShort: "Lo sentimos, \"",
+    outOfStockLong: "\" está agotado!",
+    purchaseSuccess: "¡Comprado exitosamente 1x ",
+    thankYouPurchase: "¡Gracias por tu compra! Tu pedido ha sido realizado. (Simulación frontend)",
+    cartIsEmpty: "¡Tu carrito está vacío!",
+    loginFailed: "Error al iniciar sesión:",
+    registrationFailed: "¡Error de registro! Por favor, verifica tu servidor backend en",
+    sellerRegistrationFailed: "¡Error de registro de vendedor! Por favor, verifica tu servidor backend en",
+    registeredSuccessLogin: "Registrado exitosamente. Por favor, inicia sesión.",
+    sellerRegisteredSuccessLogin: "¡Vendedor registrado exitosamente! Por favor, inicia sesión.",
+    failedToLoadCart: "Error al cargar el carrito desde el backend. Por favor, verifica tu servicio backend.",
+    errorLoadingCartDetails: "Error al cargar los detalles del carrito.",
+    checkoutFailed: "El pago falló debido a un error del servidor.",
+    failedToFetchProducts: "¡Error al obtener productos! ¿Está funcionando tu servidor backend en",
+    checkBackendServerAt: "Por favor, verifica tu servidor backend en",
+    previous: "Anterior",
+    next: "Siguiente",
+    page: "Página",
+  },
+  fr: {
+    flag: "🇫🇷", // French Flag
+    name: "Français", // Display name for the language
+    storeName: "Magasin de Vêtements Moderne",
+    loginRegister: "Se connecter / S'inscrire",
+    signOut: "Se déconnecter",
+    addProduct: "+ Ajouter un produit",
+    yourCart: "Votre Panier",
+    total: "Total",
+    proceedToCheckout: "Passer à la caisse",
+    noItemsInCart: "Aucun article dans le panier.",
+    addToCart: "Ajouter au panier",
+    buyNow: "Acheter maintenant",
+    loadingProducts: "Chargement des produits...",
+    allCategories: "Toutes les catégories",
+    men: "Hommes",
+    women: "Femmes",
+    kids: "Enfants",
+    searchProducts: "Rechercher des produits...",
+    close: "Fermer",
+    login: "Se connecter",
+    register: "S'inscrire",
+    email: "E-mail",
+    password: "Mot de passe",
+    alreadyHaveAccount: "Vous avez déjà un compte ?",
+    loginHere: "Connectez-vous ici",
+    dontHaveAccount: "Vous n'avez pas de compte ?",
+    registerHere: "Inscrivez-vous ici",
+    registerAsSeller: "S'inscrire en tant que vendeur",
+    sellerRegistration: "Inscription du vendeur",
+    displayName: "Nom", 
+    phone: "Téléphone",
+    gstNumber: "Numéro GST",
+    address: "Adresse",
+    backToLogin: "Retour à la connexion",
+    productName: "Nom du produit",
+    price: "Prix",
+    selectCategory: "Sélectionner une catégorie",
+    imageUrl: "URL de l'image",
+    stockAvailable: "Stock disponible",
+    size: "Taille (ex. S, M, L)",
+    description: "Description",
+    cancel: "Annuler",
+    addProductButton: "Ajouter le produit",
+    fillAllFields: "Veuillez remplir tous les champs obligatoires !",
+    productAddedSuccess: "Produit ajouté avec succès !",
+    failedToAddProduct: "Échec de l'ajout du produit ! Veuillez vérifier votre service backend sur",
+    loginRequiredAddToCart: "Veuillez vous connecter pour ajouter des articles à votre panier.",
+    itemAddedToCart: " ajouté au panier !",
+    outOfStock: "En rupture de stock pour ",
+    maxAvailableAdded: " ou maximum disponible ajouté.",
+    loginRequiredManageCart: "Veuillez vous connecter pour gérer le panier.",
+    itemQuantityDecreased: "Quantité de l'article diminuée.",
+    itemRemovedFromCart: "Article retiré du panier.",
+    failedToRemoveItem: "Échec du retrait de l'article du panier. Veuillez vérifier votre service backend.",
+    loginRequiredPurchase: "Veuillez vous connecter pour acheter des articles.",
+    outOfStockShort: "Désolé, \"",
+    outOfStockLong: "\" est en rupture de stock !",
+    purchaseSuccess: "Acheté avec succès 1x ",
+    thankYouPurchase: "Merci pour votre achat ! Votre commande a été passée. (Simulation frontend)",
+    cartIsEmpty: "Votre panier est vide !",
+    loginFailed: "Échec de la connexion :",
+    registrationFailed: "Échec de l'inscription ! Veuillez vérifier votre serveur backend sur",
+    sellerRegistrationFailed: "Échec de l'inscription du vendeur ! Veuillez vérifier votre serveur backend sur",
+    registeredSuccessLogin: "Inscrit avec succès. Veuillez vous connecter.",
+    sellerRegisteredSuccessLogin: "Vendeur inscrit avec succès ! Veuillez vous connecter.",
+    failedToLoadCart: "Échec du chargement du panier depuis le backend. Veuillez vérifier votre service backend.",
+    errorLoadingCartDetails: "Erreur lors du chargement des détails du panier.",
+    checkoutFailed: "Le paiement a échoué en raison d'une erreur de serveur.",
+    failedToFetchProducts: "Échec de la récupération des produits ! Votre serveur backend est-il en cours d'exécution sur",
+    checkBackendServerAt: "Veuillez vérifier votre serveur backend sur",
+    previous: "Précédent",
+    next: "Suivant",
+    page: "Page",
+  },
+  de: {
+    flag: "🇩🇪", // German Flag
+    name: "Deutsch", // Display name for the language
+    storeName: "Moderner Bekleidungsgeschäft",
+    loginRegister: "Anmelden / Registrieren",
+    signOut: "Abmelden",
+    addProduct: "+ Produkt hinzufügen",
+    yourCart: "Ihr Warenkorb",
+    total: "Gesamt",
+    proceedToCheckout: "Zur Kasse gehen",
+    noItemsInCart: "Keine Artikel im Warenkorb.",
+    addToCart: "In den Warenkorb",
+    buyNow: "Jetzt kaufen",
+    loadingProducts: "Produkte werden geladen...",
+    allCategories: "Alle Kategorien",
+    men: "Herren",
+    women: "Damen",
+    kids: "Kinder",
+    searchProducts: "Produkte suchen...",
+    close: "Schließen",
+    login: "Anmelden",
+    register: "Registrieren",
+    email: "E-Mail",
+    password: "Passwort",
+    alreadyHaveAccount: "Sie haben bereits ein Konto?",
+    loginHere: "Hier anmelden",
+    dontHaveAccount: "Sie haben noch kein Konto?",
+    registerHere: "Hier registrieren",
+    registerAsSeller: "Als Verkäufer registrieren",
+    sellerRegistration: "Verkäuferregistrierung",
+    displayName: "Name", 
+    phone: "Telefon",
+    gstNumber: "GST-Nummer",
+    address: "Adresse",
+    backToLogin: "Zurück zum Login",
+    productName: "Produktname",
+    price: "Preis",
+    selectCategory: "Kategorie auswählen",
+    imageUrl: "Bild-URL",
+    stockAvailable: "Verfügbarer Bestand",
+    size: "Größe (z.B. S, M, L)",
+    description: "Beschreibung",
+    cancel: "Abbrechen",
+    addProductButton: "Produkt hinzufügen",
+    fillAllFields: "Bitte füllen Sie alle Pflichtfelder aus!",
+    productAddedSuccess: "Produkt erfolgreich hinzugefügt!",
+    failedToAddProduct: "Fehler beim Hinzufügen des Produkts! Bitte überprüfen Sie Ihren Backend-Service unter",
+    loginRequiredAddToCart: "Bitte melden Sie sich an, um Artikel in Ihren Warenkorb zu legen.",
+    itemAddedToCart: " in den Warenkorb gelegt!",
+    outOfStock: "Nicht auf Lager für ",
+    maxAvailableAdded: " oder maximal verfügbar hinzugefügt.",
+    loginRequiredManageCart: "Bitte melden Sie sich an, um den Warenkorb zu verwalten.",
+    itemQuantityDecreased: "Artikelmenge reduziert.",
+    itemRemovedFromCart: "Artikel aus dem Warenkorb entfernt.",
+    failedToRemoveItem: "Fehler beim Entfernen des Artikels aus dem Warenkorb. Bitte überprüfen Sie Ihren Backend-Service.",
+    loginRequiredPurchase: "Bitte melden Sie sich an, um Artikel zu kaufen.",
+    outOfStockShort: "Entschuldigung, \"",
+    outOfStockLong: "\" ist nicht auf Lager!",
+    purchaseSuccess: "Erfolgreich 1x gekauft ",
+    thankYouPurchase: "Vielen Dank für Ihren Einkauf! Ihre Bestellung wurde aufgegeben. (Frontend-Simulation)",
+    cartIsEmpty: "Ihr Warenkorb ist leer!",
+    loginFailed: "Login fehlgeschlagen:",
+    registrationFailed: "Registrierung fehlgeschlagen! Bitte überprüfen Sie Ihren Backend-Server unter",
+    sellerRegistrationFailed: "Verkäuferregistrierung fehlgeschlagen! Bitte überprüfen Sie Ihren Backend-Server unter",
+    registeredSuccessLogin: "Erfolgreich registriert. Bitte melden Sie sich an.",
+    sellerRegisteredSuccessLogin: "Verkäufer erfolgreich registriert! Bitte melden Sie sich an.",
+    failedToLoadCart: "Warenkorb konnte vom Backend nicht geladen werden. Bitte überprüfen Sie Ihren Backend-Service.",
+    errorLoadingCartDetails: "Fehler beim Laden der Warenkorbdetails.",
+    checkoutFailed: "Der Checkout ist aufgrund eines Serverfehlers fehlgeschlagen.",
+    failedToFetchProducts: "Produkte konnten nicht abgerufen werden! Läuft Ihr Backend-Server unter",
+    checkBackendServerAt: "Bitte überprüfen Sie Ihren Backend-Server unter",
+    previous: "Zurück",
+    next: "Weiter",
+    page: "Seite",
+  },
+  jp: { // Japanese
+    flag: "🇯🇵",
+    name: "日本語", // Display name for the language
+    storeName: "モダンアパレルストア",
+    loginRegister: "ログイン / 登録",
+    signOut: "サインアウト",
+    addProduct: "+ 商品を追加",
+    yourCart: "あなたのカート",
+    total: "合計",
+    proceedToCheckout: "チェックアウトに進む",
+    noItemsInCart: "カートに商品はありません。",
+    addToCart: "カートに追加",
+    buyNow: "今すぐ購入",
+    loadingProducts: "商品を読み込み中...",
+    allCategories: "すべてのカテゴリ",
+    men: "メンズ",
+    women: "ウィメンズ",
+    kids: "キッズ",
+    searchProducts: "商品を検索...",
+    close: "閉じる",
+    login: "ログイン",
+    register: "登録",
+    email: "メールアドレス",
+    password: "パスワード",
+    alreadyHaveAccount: "すでにアカウントをお持ちですか？",
+    loginHere: "こちらでログイン",
+    dontHaveAccount: "アカウントをお持ちではありませんか？",
+    registerHere: "こちらで登録",
+    registerAsSeller: "販売者として登録",
+    sellerRegistration: "販売者登録",
+    displayName: "名前", 
+    phone: "電話番号",
+    gstNumber: "GST番号", // If applicable, otherwise a placeholder for tax ID
+    address: "住所",
+    backToLogin: "ログインに戻る",
+    productName: "商品名",
+    price: "価格",
+    selectCategory: "カテゴリを選択",
+    imageUrl: "画像URL",
+    stockAvailable: "在庫あり",
+    size: "サイズ (例: S, M, L)",
+    description: "説明",
+    cancel: "キャンセル",
+    addProductButton: "商品を追加",
+    fillAllFields: "すべての必須フィールドに入力してください！",
+    productAddedSuccess: "商品が正常に追加されました！",
+    failedToAddProduct: "商品の追加に失敗しました！バックエンドサービスを確認してください:",
+    loginRequiredAddToCart: "商品をカートに追加するにはログインしてください。",
+    itemAddedToCart: " がカートに追加されました！",
+    outOfStock: "在庫切れです: ",
+    maxAvailableAdded: " または利用可能な最大数に達しました。",
+    loginRequiredManageCart: "カートを管理するにはログインしてください。",
+    itemQuantityDecreased: "商品の数量が減りました。",
+    itemRemovedFromCart: "商品がカートから削除されました。",
+    failedToRemoveItem: "カートから商品を削除できませんでした。バックエンドサービスを確認してください。",
+    loginRequiredPurchase: "商品を購入するにはログインしてください。",
+    outOfStockShort: "申し訳ありませんが、「",
+    outOfStockLong: "」は在庫切れです！",
+    purchaseSuccess: "1x の購入に成功しました: ",
+    thankYouPurchase: "ご購入ありがとうございます！ご注文が完了しました。（フロントエンドシミュレーション）",
+    cartIsEmpty: "カートは空です！",
+    loginFailed: "ログイン失敗:",
+    registrationFailed: "登録失敗！バックエンドサーバーを確認してください:",
+    sellerRegistrationFailed: "販売者登録失敗！バックエンドサーバーを確認してください:",
+    registeredSuccessLogin: "登録に成功しました。ログインしてください。",
+    sellerRegisteredSuccessLogin: "販売者登録に成功しました！ログインしてください。",
+    failedToLoadCart: "バックエンドからカートを読み込めませんでした。バックエンドサービスを確認してください。",
+    errorLoadingCartDetails: "カート詳細の読み込み中にエラーが発生しました。",
+    checkoutFailed: "サーバーエラーによりチェックアウトに失敗しました。",
+    failedToFetchProducts: "商品の取得に失敗しました！バックエンドサーバーは稼働していますか？",
+    checkBackendServerAt: "バックエンドサーバーを確認してください:",
+    previous: "前へ",
+    next: "次へ",
+    page: "ページ",
+  },
+  kr: { // Korean
+    flag: "🇰🇷",
+    name: "한국어", // Display name for the language
+    storeName: "현대 의류 매장",
+    loginRegister: "로그인 / 회원가입",
+    signOut: "로그아웃",
+    addProduct: "+ 상품 추가",
+    yourCart: "장바구니",
+    total: "총액",
+    proceedToCheckout: "결제 진행",
+    noItemsInCart: "장바구니에 상품이 없습니다.",
+    addToCart: "장바구니에 추가",
+    buyNow: "즉시 구매",
+    loadingProducts: "상품 로드 중...",
+    allCategories: "모든 카테고리",
+    men: "남성",
+    women: "여성",
+    kids: "어린이",
+    searchProducts: "상품 검색...",
+    close: "닫기",
+    login: "로그인",
+    register: "회원가입",
+    email: "이메일",
+    password: "비밀번호",
+    alreadyHaveAccount: "이미 계정이 있으신가요?",
+    loginHere: "여기서 로그인",
+    dontHaveAccount: "계정이 없으신가요?",
+    registerHere: "여기서 회원가입",
+    registerAsSeller: "판매자로 등록",
+    sellerRegistration: "판매자 등록",
+    displayName: "이름", 
+    phone: "전화번호",
+    gstNumber: "GST 번호", // If applicable, otherwise a placeholder for tax ID
+    address: "주소",
+    backToLogin: "로그인으로 돌아가기",
+    productName: "상품명",
+    price: "가격",
+    selectCategory: "카테고리 선택",
+    imageUrl: "이미지 URL",
+    stockAvailable: "재고 수량",
+    size: "사이즈 (예: S, M, L)",
+    description: "설명",
+    cancel: "취소",
+    addProductButton: "상품 추가",
+    fillAllFields: "모든 필수 필드를 채워주세요!",
+    productAddedSuccess: "상품이 성공적으로 추가되었습니다!",
+    failedToAddProduct: "상품 추가 실패! 백엔드 서비스를 확인해주세요:",
+    loginRequiredAddToCart: "장바구니에 상품을 추가하려면 로그인해주세요。",
+    itemAddedToCart: " 이(가) 장바구니에 추가되었습니다!",
+    outOfStock: "재고 부족: ",
+    maxAvailableAdded: " 또는 최대 수량 추가됨.",
+    loginRequiredManageCart: "장바구니를 관리하려면 로그인해주세요。",
+    itemQuantityDecreased: "상품 수량이 감소했습니다.",
+    itemRemovedFromCart: "상품이 장바구니에서 제거되었습니다.",
+    failedToRemoveItem: "장바구니에서 상품을 제거하지 못했습니다. 백엔드 서비스를 확인해주세요。",
+    loginRequiredPurchase: "상품을 구매하려면 로그인해주세요。",
+    outOfStockShort: "죄송합니다. \"",
+    outOfStockLong: "\" 재고가 없습니다!",
+    purchaseSuccess: "1x ",
+    thankYouPurchase: "구매해주셔서 감사합니다! 주문이 접수되었습니다. (프론트엔드 시뮬레이션)",
+    cartIsEmpty: "장바구니가 비어있습니다!",
+    loginFailed: "로그인 실패:",
+    registrationFailed: "등록 실패! 백엔드 서버를 확인해주세요:",
+    sellerRegistrationFailed: "판매자 등록 실패! 백엔드 서버를 확인해주세요:",
+    registeredSuccessLogin: "성공적으로 등록되었습니다. 로그인해주세요。",
+    sellerRegisteredSuccessLogin: "판매자가 성공적으로 등록되었습니다! 로그인해주세요。",
+    failedToLoadCart: "백엔드에서 장바구니를 로드하지 못했습니다. 백엔드 서비스를 확인해주세요。",
+    errorLoadingCartDetails: "장바구니 상세 정보 로드 중 오류 발생。",
+    checkoutFailed: "서버 오류로 인해 결제에 실패했습니다。",
+    failedToFetchProducts: "상품을 가져오지 못했습니다! 백엔드 서버가 실행 중입니까?",
+    checkBackendServerAt: "백엔드 서버를 확인해주세요:",
+    previous: "이전",
+    next: "다음",
+    page: "페이지",
+  },
+  cn: { // Chinese (Simplified)
+    flag: "🇨🇳",
+    name: "中文", // Display name for the language
+    storeName: "现代服装店",
+    loginRegister: "登录 / 注册",
+    signOut: "退出",
+    addProduct: "+ 添加商品",
+    yourCart: "您的购物车",
+    total: "总计",
+    proceedToCheckout: "前往结账",
+    noItemsInCart: "购物车中没有商品。",
+    addToCart: "添加到购物车",
+    buyNow: "立即购买",
+    loadingProducts: "正在加载商品...",
+    allCategories: "所有分类",
+    men: "男士",
+    women: "女士",
+    kids: "儿童",
+    searchProducts: "搜索商品...",
+    close: "关闭",
+    login: "登录",
+    register: "注册",
+    email: "电子邮件",
+    password: "密码",
+    alreadyHaveAccount: "已有账户？",
+    loginHere: "在此登录",
+    dontHaveAccount: "没有账户？",
+    registerHere: "在此注册",
+    registerAsSeller: "注册为卖家",
+    sellerRegistration: "卖家注册",
+    displayName: "姓名", 
+    phone: "电话",
+    gstNumber: "消费税号", // If applicable, otherwise a placeholder for tax ID
+    address: "地址",
+    backToLogin: "返回登录",
+    productName: "商品名称",
+    price: "价格",
+    selectCategory: "选择分类",
+    imageUrl: "图片网址",
+    stockAvailable: "库存",
+    size: "尺码 (例如: S, M, L)",
+    description: "描述",
+    cancel: "取消",
+    addProductButton: "添加商品",
+    fillAllFields: "请填写所有必填字段！",
+    productAddedSuccess: "商品添加成功！",
+    failedToAddProduct: "添加商品失败！请检查您的后端服务：",
+    loginRequiredAddToCart: "请登录以将商品添加到购物车。",
+    itemAddedToCart: " 已添加到购物车！",
+    outOfStock: "缺货：",
+    maxAvailableAdded: " 或已达到最大可添加数量。",
+    loginRequiredManageCart: "请登录以管理购物车。",
+    itemQuantityDecreased: "商品数量已减少。",
+    itemRemovedFromCart: "商品已从购物车中移除。",
+    failedToRemoveItem: "无法从购物车中移除商品。请检查您的后端服务。",
+    loginRequiredPurchase: "请登录以购买商品。",
+    outOfStockShort: "抱歉，“",
+    outOfStockLong: "”已售罄！",
+    purchaseSuccess: "成功购买 1x ",
+    thankYouPurchase: "感谢您的购买！您的订单已下达。（前端模拟）",
+    cartIsEmpty: "您的购物车是空的！",
+    loginFailed: "登录失败：",
+    registrationFailed: "注册失败！请检查您的后端服务器：",
+    sellerRegistrationFailed: "卖家注册失败！请检查您的后端服务器：",
+    registeredSuccessLogin: "注册成功。请登录。",
+    sellerRegisteredSuccessLogin: "卖家注册成功！请登录。",
+    failedToLoadCart: "无法从后端加载购物车。请检查您的后端服务。",
+    errorLoadingCartDetails: "加载购物车详情时出错。",
+    checkoutFailed: "由于服务器错误，结账失败。",
+    failedToFetchProducts: "获取商品失败！您的后端服务器是否正在运行？",
+    checkBackendServerAt: "请检查您的后端服务器：",
+    previous: "上一页",
+    next: "下一页",
+    page: "页",
+  },
+};
+
+// Global Styles Component
 const GlobalStyles = () => (
   <style>
     {`
@@ -18,13 +626,11 @@ const GlobalStyles = () => (
     }
 
     .animated-background {
-      /* Changed to very light, almost white gradient for an animated white background */
       background: linear-gradient(270deg, #f0f0f0, #ffffff, #f0f0f0);
-      background-size: 200% 200%; /* Make gradient larger to allow for movement */
-      animation: gradient-animation 15s ease infinite; /* Apply the animation */
+      background-size: 200% 200%;
+      animation: gradient-animation 15s ease infinite;
     }
 
-    /* New animation for elements sliding in from the bottom */
     @keyframes slide-in-up {
       0% {
         opacity: 0;
@@ -40,10 +646,9 @@ const GlobalStyles = () => (
       animation: slide-in-up 0.5s ease-out forwards;
     }
 
-    /* Staggered animation for grid items */
     .product-item {
-        opacity: 0; /* Initially hidden */
-        animation: slide-in-up 0.5s ease-out forwards; /* Apply the base animation */
+        opacity: 0;
+        animation: slide-in-up 0.5s ease-out forwards;
     }
     .product-item:nth-child(1) { animation-delay: 0.1s; }
     .product-item:nth-child(2) { animation-delay: 0.15s; }
@@ -60,591 +665,233 @@ const GlobalStyles = () => (
     .product-item:nth-child(13) { animation-delay: 0.7s; }
     .product-item:nth-child(14) { animation-delay: 0.75s; }
     .product-item:nth-child(15) { animation-delay: 0.8s; }
-    /* Add more nth-child rules for more products if needed */
     `}
   </style>
 );
 
+// Reusable Popup Notification Component
+const GlobalPopup = ({ message, visible, setVisible }) => {
+  useEffect(() => {
+    if (visible) {
+      const timer = setTimeout(() => {
+        setVisible(false);
+      }, 3000); // Popup disappears after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [visible, setVisible]);
 
-function App() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  // Initialize sessionId, userRole, and sellerEmail from localStorage, defaulting to null if not found
-  const [sessionId, setSessionId] = useState(localStorage.getItem('session_id'));
-  const [userRole, setUserRole] = useState(localStorage.getItem('user_role')); 
-  const [sellerEmail, setSellerEmail] = useState(localStorage.getItem('user_email')); // New state for seller's email
+  if (!visible) return null;
 
-  const [products, setProducts] = useState([]);
-  const [category, setCategory] = useState('');
-  const [searchQuery, setSearchQuery] = useState(''); 
-  const [isRegistering, setIsRegistering] = useState(false); 
-  const [loginError, setLoginError] = useState(false);
-  const [cartItems, setCartItems] = useState([]); 
-  const [cartOpen, setCartOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  return (
+    <div className="fixed top-6 right-6 z-50 bg-green-600 text-white px-6 py-3 rounded shadow-lg transition transform animate-bounce">
+      {message}
+    </div>
+  );
+};
 
-  // State for the custom popup notification
-  const [popupVisible, setPopupVisible] = useState(false);
-  const [popupMessage, setPopupMessage] = useState(''); 
-
-  // State for the emoji effect in login
+// AuthModal Component
+const AuthModal = ({ t, showLoginModal, setShowLoginModal, handleLogin, handleRegister, handleSellerRegister, email, setEmail, password, setPassword, isRegistering, setIsRegistering, showSellerRegisterModal, setShowSellerRegisterModal, sellerName, setSellerName, sellerPhone, setSellerPhone, sellerGSTNumber, setSellerGSTNumber, sellerAddress, setSellerAddress, loginError }) => {
   const [focusField, setFocusField] = useState(null);
 
-  // State to control seller registration modal visibility
-  const [showSellerRegisterModal, setShowSellerRegisterModal] = useState(false);
-  // State to control the main login/register modal visibility when not logged in or action requires login
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
-
-  // States for adding a new product
-  const [addMode, setAddMode] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    description: '',
-    price: '',
-    category: '',
-    image: '',
-    stockAvailable: '', 
-    size: '' 
-  });
-
-  // States for new seller registration fields
-  const [sellerName, setSellerName] = useState('');
-  const [sellerPhone, setSellerPhone] = useState('');
-  const [sellerGSTNumber, setSellerGSTNumber] = useState('');
-  const [sellerAddress, setSellerAddress] = useState('');
-
-  // API base URL - IMPORTANT: Ensure this matches your backend's accessible URL.
-  const API_URL = 'http://localhost:5000/';
-  
-
-  /**
-   * Handles user login by sending credentials to the backend.
-   * On success, stores the session ID, user role, and user email in localStorage and state.
-   * On failure, sets loginError state and plays an error sound.
-   */
-  const handleLogin = async () => {
-    try {
-      const res = await axios.post(`${API_URL}/api/login`, { email, password });
-      localStorage.setItem('session_id', res.data.session_id);
-      localStorage.setItem('user_role', res.data.role); 
-      localStorage.setItem('user_email', res.data.user_email); // Store user email
-      setSessionId(res.data.session_id);
-      setUserRole(res.data.role); 
-      setSellerEmail(res.data.user_email); // Set seller email in state
-      setShowLoginModal(false); 
-    } catch (err) {
-      console.error('Login failed:', err);
-      console.error('Backend URL attempted:', `${API_URL}/api/login`);
-      if (axios.isAxiosError(err)) { 
-        if (err.response) {
-          console.error('Response data:', err.response.data);
-          console.error('Response status:', err.response.status);
-        } else if (err.request) {
-          console.error('No response received:', err.request);
-        } else {
-          console.error('Error message:', err.message);
-        }
-      } else {
-        console.error('Non-Axios error:', err);
-      }
-      setLoginError(true); 
-      setPopupMessage(`Login failed: ${err.message}. Please check your backend server at ${API_URL}`);
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 5000);
-      try {
-        new Audio('https://www.soundjay.com/human/sounds/scream-01.mp3').play();
-      } catch (audioErr) {
-        console.warn("Failed to play audio:", audioErr);
-      }
-    }
-  };
-
-  /**
-   * Handles regular user registration by sending credentials to the backend.
-   * On success, shows a success message and switches to login mode.
-   * On failure, shows a registration failed message.
-   */
-  const handleRegister = async () => {
-    try {
-      await axios.post(`${API_URL}/api/register`, { email, password });
-      setPopupMessage('Registered successfully. Please log in.');
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 2000);
-      setIsRegistering(false); 
-    } catch (err) {
-      console.error('Registration failed:', err);
-      console.error('Backend URL attempted:', `${API_URL}/api/register`);
-      if (axios.isAxiosError(err)) {
-        if (err.response) {
-          console.error('Response data:', err.response.data);
-          console.error('Response status:', err.response.status);
-        } else if (err.request) {
-          console.error('No response received:', err.request);
-        } else {
-          console.error('Error message:', err.message);
-        }
-      } else {
-        console.error('Non-Axios error:', err);
-      }
-      const errorMessage = err.response && err.response.data && err.response.data.error
-                           ? err.response.data.error
-                           : `Registration failed! Please check your backend server at ${API_URL}`;
-      setPopupMessage(errorMessage);
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 5000);
-    }
-  };
-
-  /**
-   * Handles seller registration by sending additional credentials to the backend.
-   */
-  const handleSellerRegister = async () => {
-    try {
-      const res = await axios.post(`${API_URL}/api/selleregister`, {
-        email,
-        password,
-        SellerName: sellerName,
-        SellerPhone: sellerPhone,
-        SellerGSTNumber: sellerGSTNumber, 
-        SellerAddres: sellerAddress,
-      });
-      setPopupMessage('Seller registered successfully! Please login.');
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 2000);
-      setShowSellerRegisterModal(false); 
-      setEmail(''); 
-      setPassword('');
-      setSellerName(''); // Corrected variable name from setsellerName
-      setSellerPhone('');
-      setSellerGSTNumber('');
-      setSellerAddress('');
-    } catch (err) {
-      console.error('Seller registration failed:', err);
-      console.error('Backend URL attempted:', `${API_URL}/api/selleregister`);
-      if (axios.isAxiosError(err)) {
-        if (err.response) {
-          console.error('Response data:', err.response.data);
-          console.error('Response status:', err.response.status);
-        } else if (err.request) {
-          console.error('No response received:', err.request);
-        } else {
-          console.error('Error message:', err.message);
-        }
-      } else {
-        console.error('Non-Axios error:', err);
-      }
-      const errorMessage = err.response && err.response.data && err.response.data.error
-                           ? err.response.data.error
-                           : `Seller registration failed! Please check your backend server at ${API_URL}`;
-      setPopupMessage(errorMessage);
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 5000);
-    }
-  };
-
-  /**
-   * Handles user logout by removing the session ID and user role from localStorage and state.
-   * Also clears the cart items.
-   */
-  const handleLogout = () => {
-    localStorage.removeItem('session_id');
-    localStorage.removeItem('user_role'); 
-    localStorage.removeItem('user_email'); // Clear user email on logout
-    setSessionId(null);
-    setUserRole(null); 
-    setSellerEmail(null); // Clear seller email in state
-    setCartItems([]); 
-    setShowLoginModal(false); 
-  };
-
-  /**
-   * Fetches products from the backend, optionally filtered by category and search query.
-   * If a seller is logged in, it will filter products by their email.
-   */
-  const fetchProducts = async () => {
-    try {
-      let url = `${API_URL}/api/products?category=${category}&q=${searchQuery}`;
-      
-      // If a seller is logged in, append their email to the query
-      if (userRole === 'admin' && sellerEmail) {
-        url += `&seller_email=${sellerEmail}`;
-      }
-
-      const res = await axios.get(url);
-      
-      // Ensure each product has a unique, reliable ID for frontend use
-      const processedProducts = res.data.map(product => ({
-        ...product,
-        // Map backend's 'image' directly to frontend's 'image'
-        image: product.image || 'https://via.placeholder.com/150/222222/FFFFFF?text=No+Image',
-        // Corrected: Map backend's 'stockavailable' (lowercase 's') to frontend's 'stockAvailable' (camelCase)
-        stockAvailable: parseInt(product.stockavailable), 
-        // Added: Map backend's 'size' to frontend's 'size'
-        size: product.size,
-        // Use existing _id (from MongoDB) or generate a more compatible UUID as fallback for _displayId
-        _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
-      }));
-      setProducts(processedProducts);
-      console.log('Fetched products from backend. Processed products with _displayId:', processedProducts);
-      processedProducts.forEach((product, index) => {
-        console.log(`Product in state ${index}: Name=${product.name}, _id=${product._id}, _displayId=${product._displayId}, Stock: ${product.stockAvailable}, Size: ${product.size}`);
-      });
-
-    } catch (err) {
-      console.error('Error fetching products:', err);
-      console.error('Backend URL attempted:', `${API_URL}/api/products?category=${category}&q=${searchQuery}`);
-      if (axios.isAxiosError(err)) {
-        if (err.response) {
-          console.error('Response data:', err.response.data);
-          console.error('Response status:', err.response.status);
-          setPopupMessage(`Failed to fetch products: ${err.response.data.error || err.response.statusText}. Please check your backend server at ${API_URL}`);
-        } else if (err.request) {
-          console.error('No response received:', err.request);
-          setPopupMessage(`Failed to fetch products: No response from server. Is your backend running at ${API_URL}?`);
-        } else {
-          console.error('Error message:', err.message);
-          setPopupMessage(`Failed to fetch products: An unexpected error occurred.`);
-        }
-      } else {
-        console.error('Non-Axios error:', err);
-        setPopupMessage(`Failed to fetch products: An unexpected error occurred.`);
-      }
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 5000);
-    }
-  };
-
-  // Effect hook to fetch products on initial load and when category, search query, or userRole/sellerEmail changes
-  useEffect(() => {
-    fetchProducts();
-  }, [category, searchQuery, userRole, sellerEmail]); 
-
-
-  // Effect hook to hide login error message after a delay
-  useEffect(() => {
-    if (loginError) {
-      const timer = setTimeout(() => setLoginError(false), 5000);
-      return () => clearTimeout(timer); 
-    }
-  }, [loginError]);
-
-  /**
-   * Adds a product to the shopping cart.
-   * If not logged in, prompts for login.
-   * If logged in, checks stock and adds/updates quantity.
-   * @param {string} displayId - The unique display ID of the product to add.
-   */
-  const addToCart = (displayId) => {
-    console.log('Attempting to add product with _displayId:', displayId);
-    if (!sessionId) {
-      setPopupMessage('Please log in to add items to your cart.');
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 2000);
-      setShowLoginModal(true); 
-      return;
-    }
-    // Find the product using the _displayId
-    const productToAdd = products.find((p) => p._displayId === displayId);
-    console.log('Product found from products array:', productToAdd);
-
-    if (!productToAdd) {
-      console.error('Product not found in available products for _displayId:', displayId);
-      return; 
-    }
-
-    const existingCartItemIndex = cartItems.findIndex(
-      (item) => item.product._displayId === displayId
-    );
-
-    // Check if there's enough stock
-    if (productToAdd.stockAvailable !== undefined && productToAdd.stockAvailable !== null) {
-      const currentQuantityInCart = existingCartItemIndex !== -1 ? cartItems[existingCartItemIndex].quantity : 0;
-      if (currentQuantityInCart >= productToAdd.stockAvailable) {
-        setPopupMessage(`Out of stock for ${productToAdd.name} or maximum available added.`);
-        setPopupVisible(true);
-        try {
-          new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); 
-        } catch (audioErr) {
-          console.warn("Failed to play audio:", audioErr);
-        }
-        setTimeout(() => setPopupVisible(false), 2000);
-        return;
-      }
-    }
-
-
-    if (existingCartItemIndex !== -1) {
-      // Product already in cart, increment quantity
-      const updatedCartItems = [...cartItems];
-      updatedCartItems[existingCartItemIndex].quantity += 1;
-      setCartItems(updatedCartItems);
-      setPopupMessage(`Another ${productToAdd.name} added to cart!`);
-    } else {
-      // Product not in cart, add new with quantity 1
-      setCartItems([...cartItems, { product: productToAdd, quantity: 1, cartItemId: (Date.now().toString() + Math.random().toString(36).substring(2)) }]); 
-      setPopupMessage(`${productToAdd.name} added to cart!`);
-    }
-    
-    setPopupVisible(true); 
-    try {
-      new Audio('https://www.soundjay.com/button/beep-07.wav').play(); 
-    } catch (audioErr) {
-      console.warn("Failed to play audio:", audioErr);
-    }
-    setTimeout(() => setPopupVisible(false), 2000); 
-  };
-
-  /**
-   * Removes a product from the shopping cart. Decrements quantity or removes item entirely.
-   * @param {string} displayId - The unique display ID of the product to remove.
-   */
-  const removeFromCart = (displayId) => {
-    const existingCartItemIndex = cartItems.findIndex(
-      (item) => item.product._displayId === displayId
-    );
-
-    if (existingCartItemIndex !== -1) {
-      const updatedCartItems = [...cartItems];
-      if (updatedCartItems[existingCartItemIndex].quantity > 1) {
-        updatedCartItems[existingCartItemIndex].quantity -= 1;
-        setCartItems(updatedCartItems);
-        setPopupMessage('Item quantity decreased.');
-      } else {
-        updatedCartItems.splice(existingCartItemIndex, 1); 
-        setCartItems(updatedCartItems);
-        setPopupMessage('Item removed from cart.');
-      }
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 2000);
-    }
-  };
-
-  /**
-   * Handles the direct purchase of a product.
-   * Decrements stock locally and shows confirmation.
-   * @param {object} productToBuy - The product object to be purchased.
-   */
-  const handleBuyNow = (productToBuy) => {
-    if (!sessionId) {
-      setPopupMessage('Please log in to purchase items.');
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 2000);
-      setShowLoginModal(true); 
-      return;
-    }
-
-    if (productToBuy.stockAvailable <= 0) {
-      setPopupMessage(`Sorry, "${productToBuy.name}" is out of stock!`);
-      setPopupVisible(true);
-      try {
-        new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); 
-      } catch (audioErr) {
-        console.warn("Failed to play audio:", audioErr);
-      }
-      setTimeout(() => setPopupVisible(false), 3000);
-      return;
-    }
-
-    // Decrement stock locally for immediate feedback
-    const updatedProducts = products.map(p =>
-      p._displayId === productToBuy._displayId
-        ? { ...p, stockAvailable: p.stockAvailable - 1 }
-        : p
-    );
-    setProducts(updatedProducts);
-    setSelectedProduct(null); 
-
-    setPopupMessage(`Successfully purchased 1x ${productToBuy.name}!`);
-    setPopupVisible(true);
-    try {
-      new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); 
-    } catch (audioErr) {
-      console.warn("Failed to play audio:", audioErr);
-    }
-    setTimeout(() => setPopupVisible(false), 3000);
-
-    // TODO: Implement backend API call to update stock in the database
-    console.log(`Purchase of ${productToBuy.name} handled locally. REMINDER: Implement backend stock update!`);
-  };
-
-
-  /**
-   * Calculates the total price of all items in the cart, considering quantities.
-   * @returns {number} - The total price.
-   */
-  const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
-  };
-
-  /**
-   * Determines the emoji to display based on input field focus and password content.
-   * - Rotating eyes (👀) when the email field is focused.
-   * - Covered eyes (🙈) when there's content in the password field.
-   * - Otherwise, a neutral face.
-   */
+  // Determines the emoji to display based on input field focus and password content.
   const getEmoji = () => {
     if (focusField === "email") {
-      return "👀"; 
+      return "�"; // Eyes rotating when email field is focused
     } else if (focusField === "password" && password.length > 0) {
-      return "🙈"; 
+      return "🙈"; // Eyes covered when typing password
     }
     // Default case: neutral face for other scenarios
-    return "🙂"; // Changed from '�' to '🙂' for better emoji display compatibility
+    return "🙂"; 
   };
 
-  /**
-   * Handles changes in the "Add Product" form fields.
-   * @param {Object} e - The event object from the input change.
-   */
-  const handleAddProductChange = (e) => {
-    const { name, value } = e.target;
-    setNewProduct((prev) => ({
-      ...prev,
-      [name]: name === 'price' || name === 'stockAvailable' ? parseFloat(value) : value 
-    }));
-  };
-
-  /**
-   * Handles the submission of the "Add Product" form.
-   * Performs basic validation and sends product data to the backend.
-   */
-  const handleAddProduct = async (e) => {
-    e.preventDefault(); 
-    if (!newProduct.name || !newProduct.price || !newProduct.category || newProduct.stockAvailable === '') {
-      setPopupMessage('Please fill in all required fields!');
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 2000);
-      return;
-    }
-    try {
-      // Send new product data to the API with session_id in the body
-      await axios.post(`${API_URL}/api/addproducts`, { 
-        ...newProduct,
-        price: parseFloat(newProduct.price), 
-        stockAvailable: parseInt(newProduct.stockAvailable), 
-        session_id: sessionId, // Pass session_id in the body as required by backend
-      });
-      setPopupMessage('Product added successfully!');
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 2000);
-      setAddMode(false); 
-      setNewProduct({
-        name: '',
-        description: '',
-        price: '',
-        category: '',
-        image: '',
-        stockAvailable: '',
-        size: '' 
-      });
-      fetchProducts(); 
-    } catch (err) {
-      console.error('Failed to add product:', err);
-      console.error('Backend URL attempted:', `${API_URL}/api/addproducts`);
-      if (axios.isAxiosError(err)) {
-        if (err.response) {
-          console.error('Response data:', err.response.data);
-          console.error('Response status:', err.response.status);
-        } else if (err.request) {
-          console.error('No response received:', err.request);
-        } else {
-          console.error('Error message:', err.message);
-        }
-      } else {
-        console.error('Non-Axios error:', err);
-      }
-      const errorMessage = err.response && err.response.data && err.response.data.error
-                           ? err.response.data.error
-                           : `Failed to add product! Please check your backend server at ${API_URL}`;
-      setPopupMessage(errorMessage);
-      setPopupVisible(true);
-      setTimeout(() => setPopupVisible(false), 5000);
-    }
-  };
-
-
-  // Main Application Structure (always rendered)
   return (
-    <div className="min-h-screen animated-background text-gray-900">
-      {/* Include Global Styles for animations */}
-      <GlobalStyles />
-      <div className="relative z-10 p-4">
-        {/* Header with App Title and Action Buttons */}
-        <div className="flex justify-between items-center mb-4 bg-white/70 backdrop-blur-sm p-4 rounded-lg shadow-md border border-gray-300"> 
-          <h1 className="text-2xl font-bold text-gray-900">🛍️ Modern Clothing Store</h1> 
-          <div className="flex items-center gap-4">
-            {sessionId ? ( // If logged in, show cart and logout
-              <>
-                <button
-                  className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition duration-200"
-                  onClick={() => setCartOpen(!cartOpen)} // Toggle cart visibility
-                >
-                  🛒 {cartItems.length} {/* Display number of items in cart */}
-                </button>
-                {userRole === 'admin' && ( // Only show "Add Product" button if user is admin
-                  <button
-                    className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition duration-200"
-                    onClick={() => setAddMode(true)} // Open add product modal
-                  >
-                    + Add Product
-                  </button>
-                )}
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200"
-                  onClick={handleLogout} // Handle logout
-                >
-                  Sign Out
-                </button>
-              </>
-            ) : ( // If not logged in, show a general Login button
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+      <div className="relative z-10 w-full max-w-sm p-8 bg-white/90 backdrop-blur-md border border-gray-300 rounded-3xl shadow-2xl overflow-hidden md:p-10">
+        <button
+          className="absolute top-4 right-4 text-gray-700 text-xl"
+          onClick={() => setShowLoginModal(false)}
+        >
+          &times;
+        </button>
+        {showSellerRegisterModal ? (
+          // Seller Registration Form
+          <>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg">
+              {t('sellerRegistration')}
+            </h2>
+            <input
+              className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
+              type="text"
+              placeholder={t('displayName')} // Updated to displayName
+              value={sellerName}
+              onChange={(e) => setSellerName(e.target.value)}
+              required
+            />
+            <input
+              className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
+              type="text"
+              placeholder={t('phone')}
+              value={sellerPhone}
+              onChange={(e) => setSellerPhone(e.target.value)}
+              required
+            />
+            <input
+              className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
+              type="text"
+              placeholder={t('gstNumber')}
+              value={sellerGSTNumber}
+              onChange={(e) => setSellerGSTNumber(e.target.value)}
+              required
+            />
+            <textarea
+              className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 resize-y"
+              placeholder={t('address')}
+              value={sellerAddress}
+              onChange={(e) => setSellerAddress(e.target.value)}
+              required
+            ></textarea>
+            <input
+              className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
+              type="email"
+              placeholder={t('email')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setFocusField("email")}
+              onBlur={() => setFocusField(null)}
+              required
+            />
+            <input
+              className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6"
+              type="password"
+              placeholder={t('password')}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setFocusField("password")}
+              onBlur={() => setFocusField(null)}
+              required
+            />
+            <button
+              className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-800"
+              onClick={handleSellerRegister}
+            >
+              {t('registerAsSeller')}
+            </button>
+            <button
+              className="w-full py-3 px-4 bg-gray-400 hover:bg-gray-500 text-gray-900 font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-3"
+              onClick={() => setShowSellerRegisterModal(false)}
+            >
+              {t('backToLogin')}
+            </button>
+          </>
+        ) : (
+          // Regular Login/Register Form
+          <>
+            {/* Emoji face above login */}
+            <div className="flex justify-center text-4xl mb-2">
+              <span className="text-gray-900">{getEmoji()} <span className="text-xl text-purple-700 ml-2">@{email || "username"}</span></span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg">
+              {isRegistering ? t('register') : t('login')}
+            </h2>
+            <input
+              className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
+              type="email"
+              placeholder={t('email')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setFocusField("email")}
+              onBlur={() => setFocusField(null)}
+            />
+            <input
+              className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6"
+              type="password"
+              placeholder={t('password')}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setFocusField("password")}
+              onBlur={() => setFocusField(null)}
+            />
+            <button
+              className="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-gray-800"
+              onClick={isRegistering ? handleRegister : handleLogin}
+            >
+              {isRegistering ? t('register') : t('login')}
+            </button>
+            <p className="text-center text-sm text-gray-700 mt-4">
+              {isRegistering ? t('alreadyHaveAccount') : t('dontHaveAccount')}{' '}
               <button
-                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded-xl transition duration-300"
-                onClick={() => setShowLoginModal(true)}
+                className="text-purple-700 hover:text-purple-500 font-medium transition duration-300 ease-in-out"
+                onClick={() => setIsRegistering(!isRegistering)}
               >
-                Login / Register
+                {isRegistering ? t('loginHere') : t('registerHere')}
               </button>
-            )}
+            </p>
+            <button
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-4"
+              onClick={() => setShowSellerRegisterModal(true)}
+            >
+              {t('registerAsSeller')}
+            </button>
+          </>
+        )}
+
+        {loginError && (
+          <div className="absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center text-white text-center p-6 rounded-2xl animate-pulse z-20"> 
+            <img src="https://i.postimg.cc/SQTP0QMw/download.jpg" alt="Ghost" className="w-32 h-32 animate-bounce mb-4" />
+            <p className="text-lg font-semibold text-red-400">Wrong password... 👻</p>
+            <p className="text-sm mt-1 text-purple-200">The Halloween spirit has awakened!</p>
           </div>
-        </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
-        {/* Category Filter and Search Bar */}
-        <div className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-white/70 backdrop-blur-sm p-3 rounded-lg shadow-md border border-gray-300 animate-slide-in-up"> 
-          <select
-            className="bg-white text-gray-900 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full md:w-auto" 
-            value={category}
-            onChange={(e) => setCategory(e.target.value)} // Update category filter
-          >
-            <option value="">All Categories</option>
-            <option value="men">Men</option>
-            <option value="women">Women</option>
-            <option value="kids">Kids</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="bg-white text-gray-900 placeholder-gray-500 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+// ProductGrid Component
+const ProductGrid = ({ t, products, addToCart, handleBuyNow, setSelectedProduct, category, setCategory, searchQuery, setSearchQuery, isLoading, currentPage, totalPages, handlePageChange }) => {
+  return (
+    <>
+      {/* Category Filter and Search Bar */}
+      <div className="flex flex-col md:flex-row gap-4 items-center mb-4 bg-white/70 backdrop-blur-sm p-3 rounded-lg shadow-md border border-gray-300 animate-slide-in-up"> 
+        <select
+          className="bg-white text-gray-900 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full md:w-auto" 
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          <option value="">{t('allCategories')}</option>
+          <option value="men">{t('men')}</option>
+          <option value="women">{t('women')}</option>
+          <option value="kids">{t('kids')}</option>
+        </select>
+        <input
+          type="text"
+          placeholder={t('searchProducts')}
+          className="bg-white text-gray-900 placeholder-gray-500 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
 
-        {/* Products Grid - Visible to all users (logged-in or guest) */}
+      {isLoading ? (
+        <div className="text-center text-gray-700 text-lg font-semibold my-8 animate-pulse">
+          {t('loadingProducts')}
+        </div>
+      ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.map((p) => (
             <div
-              key={p._displayId} // Use the guaranteed unique _displayId as key
+              key={p._displayId}
               className="border border-gray-300 p-4 rounded-lg bg-white/70 backdrop-blur-sm hover:shadow-lg transition-shadow duration-200 product-item" 
             >
               <img
                 src={p.image || 'https://via.placeholder.com/150/EEEEEE/000000?text=No+Image'} 
                 alt={p.name}
                 className="w-full h-40 object-cover rounded mb-2 cursor-pointer"
-                onClick={() => setSelectedProduct(p)} // Open product details modal
+                onClick={() => setSelectedProduct(p)}
               />
               <h3
                 className="text-lg font-bold text-gray-900 cursor-pointer" 
-                onClick={() => setSelectedProduct(p)} // Open product details modal
+                onClick={() => setSelectedProduct(p)}
               >
                 {p.name}
               </h3>
@@ -655,407 +902,772 @@ function App() {
               )}
               <button
                 className="bg-blue-600 text-white mt-2 px-3 py-1 rounded hover:bg-blue-700 transition duration-200"
-                onClick={() => {
-                  console.log(`Clicked "Add to Cart" for product with _displayId: ${p._displayId}, Name: ${p.name}`); // More verbose diagnostic log
-                  addToCart(p._displayId); // Pass the _displayId to addToCart
-                }} 
+                onClick={() => addToCart(p._displayId, p._id)} 
               >
-                Add to Cart
+                {t('addToCart')}
               </button>
               <button
                 className="bg-gray-400 text-gray-900 mt-2 ml-2 px-3 py-1 rounded hover:bg-gray-500 transition duration-200"
-                onClick={() => handleBuyNow(p)} // Call handleBuyNow
+                onClick={() => handleBuyNow(p)}
               >
-                Buy Now
+                {t('buyNow')}
               </button>
             </div>
           ))}
         </div>
+      )}
 
-        {/* Modal for Product Preview */}
-        {selectedProduct && (
-          <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg border border-gray-300 max-w-md w-full text-gray-900 animate-slide-in-up"> 
-              <img
-                src={selectedProduct.image || 'https://via.placeholder.com/300/EEEEEE/000000?text=No+Image'}
-                alt={selectedProduct.name}
-                className="w-full h-60 object-cover rounded mb-4"
-              />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedProduct.name}</h2>
-              <p className="text-gray-700 mb-2">{selectedProduct.description}</p>
-              <p className="text-green-600 text-lg font-bold mb-4">${selectedProduct.price}</p>
-              {/* Display stockAvailable in product details modal */}
-              {selectedProduct.stockAvailable !== undefined && selectedProduct.stockAvailable !== null && (
-                <p className="text-sm text-gray-600 mt-1">Stock: {selectedProduct.stockAvailable}</p>
-              )}
-              {/* Display size in product details modal */}
-              {selectedProduct.size && (
-                <p className="text-sm text-gray-600 mt-1">Size: {selectedProduct.size}</p>
-              )}
-              <button
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2 transition duration-200"
-                onClick={() => {
-                  if (!sessionId) { // If not logged in, prompt for login
-                    setPopupMessage('Please log in to add items to your cart.');
-                    setPopupVisible(true);
-                    setTimeout(() => setPopupVisible(false), 2000);
-                    setShowLoginModal(true);
-                    return;
-                  }
-                  addToCart(selectedProduct._displayId); 
-                  setSelectedProduct(null); 
-                }}
-              >
-                Add to Cart
-              </button>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200"
-                onClick={() => setSelectedProduct(null)} 
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Add Product Modal */}
-        {addMode && userRole === 'admin' && ( 
-          <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-            <form
-              className="bg-white p-8 rounded-2xl border border-gray-300 shadow-2xl max-w-md w-full text-gray-900" 
-              onSubmit={handleAddProduct}
-            >
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">Add New Product</h2>
-              <input
-                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
-                type="text"
-                name="name"
-                placeholder="Product Name"
-                value={newProduct.name}
-                onChange={handleAddProductChange}
-                required
-              />
-              <input
-                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
-                type="number"
-                name="price"
-                placeholder="Price"
-                value={newProduct.price}
-                onChange={handleAddProductChange}
-                min="0"
-                step="0.01"
-                required
-              />
-              <select
-                className="bg-gray-100 text-gray-900 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
-                name="category"
-                value={newProduct.category}
-                onChange={handleAddProductChange}
-                required
-              >
-                <option value="">Select Category</option>
-                <option value="men">Men</option>
-                <option value="women">Women</option>
-                <option value="kids">Kids</option>
-              </select>
-              <input
-                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
-                type="text"
-                name="image"
-                placeholder="Image URL"
-                value={newProduct.image}
-                onChange={handleAddProductChange}
-              />
-              <input
-                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
-                type="number"
-                name="stockAvailable"
-                placeholder="Stock Available"
-                value={newProduct.stockAvailable}
-                onChange={handleAddProductChange}
-                min="0"
-                step="1"
-                required
-              />
-              <input 
-                className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" 
-                type="text"
-                name="size"
-                placeholder="Size (e.g., S, M, L)"
-                value={newProduct.size}
-                onChange={handleAddProductChange}
-              />
-              <div className="flex items-center gap-2 mb-3">
-                <textarea
-                  className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full rounded resize-y" 
-                  name="description"
-                  placeholder="Description"
-                  value={newProduct.description}
-                  onChange={handleAddProductChange}
-                  rows="4" 
-                />
-              </div>
-              <div className="flex justify-between mt-4">
-                <button
-                  type="button"
-                  className="bg-gray-400 text-gray-900 px-4 py-2 rounded hover:bg-gray-500 transition duration-200" 
-                  onClick={() => setAddMode(false)} 
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200"
-                >
-                  Add Product
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* Cart Drawer */}
-        <div 
-          className={`fixed top-0 right-0 h-full w-full md:w-96 bg-white/90 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out z-40
-            ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}
+      {/* Pagination Controls */}
+      <div className="flex justify-center items-center mt-8 space-x-4 bg-white/70 backdrop-blur-sm p-3 rounded-lg shadow-md border border-gray-300 animate-slide-in-up">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
         >
-          <div className="p-6 h-full flex flex-col">
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-300">
-              <h2 className="text-2xl font-bold text-gray-900">🛒 Your Cart</h2>
-              <button
-                className="text-red-600 hover:text-red-800 text-3xl font-bold"
-                onClick={() => setCartOpen(false)}
-              >
-                &times;
-              </button>
-            </div>
+          {t('previous')}
+        </button>
+        <span className="text-lg font-semibold text-gray-900">
+          {t('page')} {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+        >
+          {t('next')}
+        </button>
+      </div>
+    </>
+  );
+};
 
-            {cartItems.length === 0 ? (
-              <p className="text-gray-700 flex-grow text-center flex items-center justify-center">No items in the cart.</p> 
-            ) : (
-              <div className="flex-grow overflow-y-auto pr-2"> 
-                {cartItems.map((item) => ( 
-                  <div
-                    key={item.cartItemId} 
-                    className="flex items-center justify-between bg-gray-100 p-3 rounded-lg mb-3 shadow-md" 
-                  >
-                    <img 
-                        src={item.product.image || 'https://via.placeholder.com/50/EEEEEE/000000?text=Item'} 
-                        alt={item.product.name} 
-                        className="w-16 h-16 object-cover rounded-md mr-3"
-                    />
-                    <div className="flex-grow">
-                      <p className="text-gray-900 font-semibold">{item.product.name}</p> 
-                      <p className="text-green-600 text-sm">${item.product.price.toFixed(2)}</p> 
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        className="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition duration-200" 
-                        onClick={() => removeFromCart(item.product._displayId)} 
-                      >
-                        -
-                      </button>
-                      <span className="text-lg font-bold text-gray-900">{item.quantity}</span>
-                      <button
-                        className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-600 transition duration-200" 
-                        onClick={() => addToCart(item.product._displayId)} 
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            <div className="mt-auto pt-4 border-t border-gray-300"> 
-                <div className="flex justify-between items-center text-xl font-bold text-gray-900 mb-4"> 
-                    <span>Total:</span>
-                    <span className="text-green-600">${getTotalPrice().toFixed(2)}</span> 
+// ProductDetailsModal Component
+const ProductDetailsModal = ({ t, selectedProduct, setSelectedProduct, addToCart, sessionId, setPopupMessage, setPopupVisible, setShowLoginModal }) => {
+  if (!selectedProduct) return null;
+
+  // Log the selected product to see its exact structure
+  console.log("Selected Product in Modal:", selectedProduct);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg border border-gray-300 max-w-md w-full text-gray-900 animate-slide-in-up"> 
+        <img
+          src={selectedProduct.image || 'https://via.placeholder.com/300/EEEEEE/000000?text=No+Image'}
+          alt={selectedProduct.name}
+          className="w-full h-60 object-cover rounded mb-4"
+        />
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedProduct.name}</h2>
+        <p className="text-gray-700 mb-2">{selectedProduct.description}</p>
+        <p className="text-green-600 text-lg font-bold mb-4">${selectedProduct.price}</p>
+        
+        {/* Combined Stock and Size information */}
+        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 mt-1">
+          {selectedProduct.stockAvailable !== undefined && selectedProduct.stockAvailable !== null && (
+            <span>Stock: {selectedProduct.stockAvailable}</span>
+          )}
+          {selectedProduct.stockAvailable !== undefined && selectedProduct.stockAvailable !== null && selectedProduct.size && (
+            <span className="mx-1">|</span> // Separator only if both are present
+          )}
+          {selectedProduct.size && (
+            <span>Size: {selectedProduct.size}</span>
+          )}
+        </div>
+
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2 transition duration-200"
+          onClick={() => {
+            if (!sessionId) { 
+              setPopupMessage(t('loginRequiredAddToCart'));
+              setPopupVisible(true);
+              setTimeout(() => setPopupVisible(false), 2000);
+              setShowLoginModal(true);
+              return;
+            }
+            addToCart(selectedProduct._displayId, selectedProduct._id); 
+            setSelectedProduct(null); 
+          }}
+        >
+          {t('addToCart')}
+        </button>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200"
+          onClick={() => setSelectedProduct(null)} 
+        >
+          {t('close')}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// AddProductModal Component
+const AddProductModal = ({ t, addMode, userRole, setAddMode, newProduct, setNewProduct, setPopupMessage, setPopupVisible, sessionId, fetchProducts }) => {
+  if (!addMode || userRole !== 'admin') return null;
+
+  const handleAddProductChange = (e) => {
+    const { name, value } = e.target;
+    setNewProduct((prev) => ({
+      ...prev,
+      [name]: name === 'price' || name === 'stockAvailable' ? parseFloat(value) : value 
+    }));
+  };
+
+  const submitAddProduct = async (e) => {
+    e.preventDefault(); 
+    // Ensure all required fields are filled, including size
+    if (!newProduct.name || !newProduct.price || !newProduct.category || newProduct.stockAvailable === '' || !newProduct.size) { // Added newProduct.size
+      setPopupMessage(t('fillAllFields'));
+      setPopupVisible(true);
+      setTimeout(() => setPopupVisible(false), 2000);
+      return;
+    }
+    try {
+      // Use API_URL here
+      await axios.post(`${API_URL}/api/addproducts`, { 
+        ...newProduct,
+        price: parseFloat(newProduct.price), 
+        stockAvailable: parseInt(newProduct.stockAvailable), 
+        session_id: sessionId, 
+      });
+      setPopupMessage(t('productAddedSuccess'));
+      setPopupVisible(true);
+      setTimeout(() => setPopupVisible(false), 2000);
+      setAddMode(false); 
+      setNewProduct({
+        name: '', description: '', price: '', category: '',
+        image: '', stockAvailable: '', size: '' 
+      });
+      fetchProducts(); 
+    } catch (err) {
+      console.error('Failed to add product:', err);
+      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('failedToAddProduct')} ${API_URL}`;
+      setPopupMessage(errorMessage);
+      setPopupVisible(true);
+      setTimeout(() => setPopupVisible(false), 5000);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+      <form
+        className="bg-white p-8 rounded-2xl border border-gray-300 shadow-2xl max-w-md w-full text-gray-900" 
+        onSubmit={submitAddProduct}
+      >
+        <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">{t('addProductButton')}</h2>
+        <input className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" name="name" placeholder={t('productName')} value={newProduct.name} onChange={handleAddProductChange} required />
+        <input className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" name="price" placeholder={t('price')} value={newProduct.price} onChange={handleAddProductChange} min="0" step="0.01" required />
+        <select className="bg-gray-100 text-gray-900 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" name="category" value={newProduct.category} onChange={handleAddProductChange} required>
+          <option value="">{t('selectCategory')}</option>
+          <option value="men">{t('men')}</option>
+          <option value="women">{t('women')}</option>
+          <option value="kids">{t('kids')}</option>
+        </select>
+        <input className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" name="image" placeholder={t('imageUrl')} value={newProduct.image} onChange={handleAddProductChange} />
+        <input className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" type="number" name="stockAvailable" placeholder={t('stockAvailable')} value={newProduct.stockAvailable} onChange={handleAddProductChange} min="0" step="1" required />
+        <input className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" type="text" name="size" placeholder={t('size')} value={newProduct.size} onChange={handleAddProductChange} required /> {/* Made required */}
+        <div className="flex items-center gap-2 mb-3">
+          <textarea className="bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full rounded resize-y" name="description" placeholder={t('description')} value={newProduct.description} onChange={handleAddProductChange} rows="4" />
+        </div>
+        <div className="flex justify-between mt-4">
+          <button type="button" className="bg-gray-400 text-gray-900 px-4 py-2 rounded hover:bg-gray-500 transition duration-200" onClick={() => setAddMode(false)}>{t('cancel')}</button>
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200">{t('addProductButton')}</button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+// CartDrawer Component
+const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addToCart, getTotalPrice, setPopupMessage, setPopupVisible, setCartItems, sessionId, products }) => {
+  // Function to fetch full product details for items in cart from the product service
+  const fetchCartProductDetails = async (cartData) => {
+    const productIds = Object.keys(cartData);
+    if (productIds.length === 0) return [];
+
+    try {
+      const detailedCartItems = await Promise.all(
+        productIds.map(async (productId) => {
+          const product = products.find(p => p._id === productId); 
+          if (product) {
+            return { product: product, quantity: cartData[productId] };
+          }
+          return null; 
+        })
+      );
+      return detailedCartItems.filter(item => item !== null);
+    } catch (error) {
+      console.error('Error fetching cart product details:', error);
+      setPopupMessage(t('errorLoadingCartDetails')); // New translation key
+      setPopupVisible(true);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const syncCartWithBackend = async () => {
+      if (sessionId && cartOpen) { 
+        try {
+          // Use API_URL here
+          const res = await axios.get(`${API_URL}/api/cart/${sessionId}`); 
+          const backendCartData = res.data; 
+          
+          const newCartItems = await fetchCartProductDetails(backendCartData);
+          setCartItems(newCartItems);
+
+        } catch (err) {
+          console.error('Error fetching cart from backend:', err);
+          const errorMessage = err.response?.data?.error || `${t('failedToLoadCart')} ${API_URL}`;
+          setPopupMessage(errorMessage);
+          setPopupVisible(true);
+        }
+      }
+    };
+
+    syncCartWithBackend();
+  }, [sessionId, cartOpen, products]); 
+
+  const currentTotalPrice = getTotalPrice();
+
+  return (
+    <div 
+      className={`fixed top-0 right-0 h-full w-full md:w-96 bg-white/90 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out z-40
+        ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}
+    >
+      <div className="p-6 h-full flex flex-col">
+        <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-300">
+          <h2 className="text-2xl font-bold text-gray-900">🛒 {t('yourCart')}</h2>
+          <button
+            className="text-red-600 hover:text-red-800 text-3xl font-bold"
+            onClick={() => setCartOpen(false)}
+          >
+            &times;
+          </button>
+        </div>
+
+        {cartItems.length === 0 ? (
+          <p className="text-gray-700 flex-grow text-center flex items-center justify-center">{t('noItemsInCart')}</p> 
+        ) : (
+          <div className="flex-grow overflow-y-auto pr-2">
+            {cartItems.map((item) => ( 
+              <div
+                key={item.product._id} 
+                className="flex items-center justify-between bg-gray-100 p-3 rounded-lg mb-3 shadow-md" 
+              >
+                <img 
+                    src={item.product.image || 'https://via.placeholder.com/50/EEEEEE/000000?text=Item'} 
+                    alt={item.product.name} 
+                    className="w-16 h-16 object-cover rounded-md mr-3"
+                />
+                <div className="flex-grow">
+                  <p className="text-gray-900 font-semibold">{item.product.name}</p> 
+                  <p className="text-green-600 text-sm">${item.product.price.toFixed(2)}</p> 
                 </div>
-                <button
-                    className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200"
-                    onClick={() => {
-                        if (cartItems.length > 0) {
-                            setPopupMessage('Thank you for your purchase! Your order has been placed. (Frontend simulation)');
+                <div className="flex items-center space-x-2">
+                  <button
+                    className="bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition duration-200" 
+                    onClick={() => removeFromCart(item.product._displayId, item.product._id)} 
+                  >
+                    -
+                  </button>
+                  <span className="text-lg font-bold text-gray-900">{item.quantity}</span>
+                  <button
+                    className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-600 transition duration-200" 
+                    onClick={() => addToCart(item.product._displayId, item.product._id)} 
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        <div className="mt-auto pt-4 border-t border-gray-300"> 
+            <div className="flex justify-between items-center text-xl font-bold text-gray-900 mb-4"> 
+                <span>{t('total')}:</span>
+                <span className="text-green-600">${currentTotalPrice.toFixed(2)}</span> 
+            </div>
+            <button
+                className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200"
+                onClick={async () => { 
+                    if (cartItems.length > 0) {
+                        try {
+                            // Use API_URL here
+                            await Promise.all(cartItems.map(item => 
+                                axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: item.product._id } })
+                            ));
+                            setPopupMessage(t('thankYouPurchase'));
                             setPopupVisible(true);
-                            try {
-                                new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play();
-                            } catch (audioErr) {
-                                console.warn("Failed to play audio:", audioErr);
-                            }
+                            try { new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
                             setCartItems([]); 
                             setCartOpen(false); 
                             setTimeout(() => setPopupVisible(false), 3000);
-                            console.log('Checkout completed locally. REMINDER: Implement backend order processing and stock updates!');
-                        } else {
-                            setPopupMessage('Your cart is empty!');
+                            console.log('Checkout completed locally and cart cleared via Cart Service. REMINDER: Implement a full Order Service!');
+                        } catch (error) {
+                            console.error('Error during checkout:', error);
+                            const errorMessage = error.response?.data?.error || `${t('checkoutFailed')} ${API_URL}`;
+                            setPopupMessage(errorMessage);
                             setPopupVisible(true);
-                            try {
-                                new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play();
-                            } catch (audioErr) {
-                                console.warn("Failed to play audio:", audioErr);
-                            }
-                            setTimeout(() => setPopupVisible(false), 2000);
+                            try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
                         }
-                    }}
-                >
-                    Proceed to Checkout
-                </button>
-            </div>
-          </div>
-        </div>
-
-        {/* 🔔 Popup Notification */}
-        {popupVisible && (
-          <div className="fixed top-6 right-6 z-50 bg-green-600 text-white px-6 py-3 rounded shadow-lg transition transform animate-bounce">
-            {popupMessage}
-          </div>
-        )}
-      </div>
-
-      {/* Login/Register Modal (appears over the content when needed) */}
-      {showLoginModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="relative z-10 w-full max-w-sm p-8 bg-white/90 backdrop-blur-md border border-gray-300 rounded-3xl shadow-2xl overflow-hidden md:p-10">
-            <button
-              className="absolute top-4 right-4 text-gray-700 text-xl"
-              onClick={() => setShowLoginModal(false)} 
+                    } else {
+                        setPopupMessage(t('cartIsEmpty'));
+                        setPopupVisible(true);
+                        try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
+                    }
+                }}
             >
-              &times;
+                {t('proceedToCheckout')}
             </button>
-            {/* Conditional rendering for regular login/register or seller register */}
-            {showSellerRegisterModal ? (
-              // Seller Registration Form
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Main App Component (acting as the container/shell)
+function App() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [sessionId, setSessionId] = useState(localStorage.getItem('session_id'));
+  const [userRole, setUserRole] = useState(localStorage.getItem('user_role')); 
+  const [sellerEmail, setSellerEmail] = useState(localStorage.getItem('user_email')); 
+
+  const [products, setProducts] = useState([]);
+  const [category, setCategory] = useState('');
+  const [searchQuery, setSearchQuery] = useState(''); 
+  const [isRegistering, setIsRegistering] = useState(false); 
+  const [loginError, setLoginError] = useState(false);
+  const [cartItems, setCartItems] = useState([]); 
+  const [cartOpen, setCartOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // New loading state for products
+
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupMessage, setPopupMessage] = useState(''); 
+
+  const [showSellerRegisterModal, setShowSellerRegisterModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const [addMode, setAddMode] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    name: '', description: '', price: '', category: '',
+    image: '', stockAvailable: '', size: '' 
+  });
+
+  const [sellerName, setSellerName] = useState('');
+  const [sellerPhone, setSellerPhone] = useState('');
+  const [sellerGSTNumber, setSellerGSTNumber] = useState('');
+  const [sellerAddress, setSellerAddress] = useState('');
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(8); // Display 8 products per page
+  const [totalProductsCount, setTotalProductsCount] = useState(0); // To store total count from backend
+
+  // Language state and translation function
+  const [language, setLanguage] = useState(localStorage.getItem('language') || 'en');
+  const t = (key) => translations[language][key] || key; 
+
+  // Handles user login by sending credentials to the backend.
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post(`${API_URL}/api/login`, { email, password });
+      localStorage.setItem('session_id', res.data.session_id);
+      localStorage.setItem('user_role', res.data.role); 
+      localStorage.setItem('user_email', res.data.user_email); 
+      setSessionId(res.data.session_id);
+      setUserRole(res.data.role); 
+      setShowLoginModal(false); 
+    } catch (err) {
+      console.error('Login failed:', err);
+      setLoginError(true); 
+      setPopupMessage(`${t('loginFailed')} ${err.message}. ${t('checkBackendServerAt')} ${API_URL}`); // Updated
+      setPopupVisible(true);
+      try { new Audio('https://www.soundjay.com/human/sounds/scream-01.mp3').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
+    }
+  };
+
+  // Handles regular user registration.
+  const handleRegister = async () => {
+    try {
+      await axios.post(`${API_URL}/api/register`, { email, password });
+      setPopupMessage(t('registeredSuccessLogin')); // Updated
+      setPopupVisible(true);
+      setTimeout(() => setPopupVisible(false), 2000);
+      setIsRegistering(false); 
+    } catch (err) {
+      console.error('Registration failed:', err);
+      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('registrationFailed')} ${API_URL}`; // Updated
+      setPopupMessage(errorMessage);
+      setPopupVisible(true);
+    }
+  };
+
+  // Handles seller registration.
+  const handleSellerRegister = async () => {
+    try {
+      await axios.post(`${API_URL}/api/selleregister`, {
+        email, password, SellerName: sellerName, SellerPhone: sellerPhone,
+        SellerGSTNumber: sellerGSTNumber, SellerAddres: sellerAddress,
+      });
+      setPopupMessage(t('sellerRegisteredSuccessLogin')); // Updated
+      setPopupVisible(true);
+      setTimeout(() => setPopupVisible(false), 2000);
+      setShowSellerRegisterModal(false); 
+      setEmail(''); setPassword(''); setSellerName(''); setSellerPhone('');
+      setSellerGSTNumber(''); setSellerAddress('');
+    } catch (err) {
+      console.error('Seller registration failed:', err);
+      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('sellerRegistrationFailed')} ${API_URL}`; // Updated
+      setPopupMessage(errorMessage);
+      setPopupVisible(true);
+    }
+  };
+
+  // Handles user logout.
+  const handleLogout = () => {
+    localStorage.removeItem('session_id');
+    localStorage.removeItem('user_role'); 
+    localStorage.removeItem('user_email');
+    setSessionId(null);
+    setUserRole(null); 
+    setSellerEmail(null); 
+    setCartItems([]); 
+    setShowLoginModal(false); 
+  };
+
+  // Fetches products from the backend with pagination parameters.
+  const fetchProducts = async () => {
+    setIsLoading(true); // Set loading true when fetching starts
+    try {
+      // Pass page and limit parameters to the backend
+      let url = `${API_URL}/api/products?category=${category}&q=${searchQuery}&page=${currentPage}&limit=${productsPerPage}`; 
+      if (userRole === 'admin' && sellerEmail) {
+        url += `&seller_email=${sellerEmail}`;
+      }
+      console.log(`Fetching products from: ${url}`); // Added for debugging
+      const res = await axios.get(url);
+      console.log('Raw response data from product service:', res.data); // Added for debugging
+
+      const processedProducts = res.data.products.map(product => ({
+        ...product,
+        image: product.image || 'https://via.placeholder.com/150/222222/FFFFFF?text=No+Image',
+        stockAvailable: parseInt(product.stockavailable), 
+        size: product.size,
+        _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      }));
+      console.log('Processed products before setting state:', processedProducts); // Added for debugging
+      setProducts(processedProducts);
+      setTotalProductsCount(res.data.total_products); // Update total count
+
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('failedToFetchProducts')} ${API_URL}?`; // Updated
+      setPopupMessage(errorMessage);
+      setPopupVisible(true);
+    } finally {
+      setIsLoading(false); // Set loading false when fetching finishes (success or error)
+    }
+  };
+
+  // Handler for changing pagination page
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Calculate total pages
+  const totalPages = Math.ceil(totalProductsCount / productsPerPage);
+
+  // Add to Cart Logic (now interacts with Cart Service)
+  const addToCart = async (displayId, backendProductId) => {
+    if (!sessionId) {
+      setPopupMessage(t('loginRequiredAddToCart')); // Updated
+      setPopupVisible(true);
+      setShowLoginModal(true); 
+      return;
+    }
+    const productToAdd = products.find((p) => p._displayId === displayId);
+    if (!productToAdd) return;
+
+    // Check stock locally before sending to backend to give faster feedback
+    const existingCartItem = cartItems.find((item) => item.product._id === backendProductId);
+    const currentQuantityInCart = existingCartItem ? existingCartItem.quantity : 0;
+
+    if (productToAdd.stockAvailable !== undefined && productToAdd.stockAvailable !== null && currentQuantityInCart >= productToAdd.stockAvailable) {
+      setPopupMessage(`${t('outOfStock')}${productToAdd.name}${t('maxAvailableAdded')}`); // Updated
+      setPopupVisible(true);
+      try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
+      return;
+    }
+
+    try {
+      await axios.post(`${API_URL}/api/cart`, {
+        session_id: sessionId,
+        product_id: backendProductId, 
+        quantity: 1 
+      });
+
+      const cartRes = await axios.get(`${API_URL}/api/cart/${sessionId}`);
+      const backendCartData = cartRes.data;
+      const newCartItems = await Promise.all(
+          Object.keys(backendCartData).map(async (pid) => {
+              const p = products.find(prod => prod._id === pid);
+              return p ? { product: p, quantity: backendCartData[pid] } : null;
+          })
+      );
+      setCartItems(newCartItems.filter(item => item !== null));
+
+      setPopupMessage(`${productToAdd.name}${t('itemAddedToCart')}`); // Updated
+      setPopupVisible(true);
+      try { new Audio('https://www.soundjay.com/button/beep-07.wav').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
+
+    } catch (err) {
+      console.error('Error adding to cart via service:', err);
+      const errorMessage = err.response?.data?.error || `${t('failedToAddItemToCart')} ${API_URL}`; // Updated
+      setPopupMessage(errorMessage);
+      setPopupVisible(true);
+      try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
+    }
+  };
+
+  // Remove from Cart Logic (now interacts with Cart Service)
+  const removeFromCart = async (displayId, backendProductId) => {
+    if (!sessionId) { 
+      setPopupMessage(t('loginRequiredManageCart')); // Updated
+      setPopupVisible(true);
+      setShowLoginModal(true); 
+      return;
+    }
+
+    const existingCartItem = cartItems.find((item) => item.product._id === backendProductId);
+    if (!existingCartItem) return;
+
+    try {
+      if (existingCartItem.quantity > 1) {
+        await axios.put(`${API_URL}/api/cart`, {
+          session_id: sessionId,
+          product_id: backendProductId,
+          quantity: existingCartItem.quantity - 1
+        });
+        setPopupMessage(t('itemQuantityDecreased')); // Updated
+      } else {
+        await axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: backendProductId } });
+        setPopupMessage(t('itemRemovedFromCart')); // Updated
+      }
+
+      const cartRes = await axios.get(`${API_URL}/api/cart/${sessionId}`);
+      const backendCartData = cartRes.data;
+      const newCartItems = await Promise.all(
+          Object.keys(backendCartData).map(async (pid) => {
+              const p = products.find(prod => prod._id === pid);
+              return p ? { product: p, quantity: backendCartData[pid] } : null;
+          })
+      );
+      setCartItems(newCartItems.filter(item => item !== null));
+      setPopupVisible(true);
+
+    } catch (err) {
+      console.error('Error removing from cart via service:', err);
+      const errorMessage = err.response?.data?.error || `${t('failedToRemoveItem')} ${API_URL}`; // Updated
+      setPopupMessage(errorMessage);
+      setPopupVisible(true);
+      try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
+    }
+  };
+
+  // Handle Buy Now Logic (no change to backend interaction yet as it's local stock decrement)
+  const handleBuyNow = (productToBuy) => {
+    if (!sessionId) {
+      setPopupMessage(t('loginRequiredPurchase')); // Updated
+      setPopupVisible(true);
+      setShowLoginModal(true); 
+      return;
+    }
+
+    if (productToBuy.stockAvailable <= 0) {
+      setPopupMessage(`${t('outOfStockShort')}${productToBuy.name}${t('outOfStockLong')}`); // Updated
+      setPopupVisible(true);
+      try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
+      return;
+    }
+
+    const updatedProducts = products.map(p => p._displayId === productToBuy._displayId ? { ...p, stockAvailable: p.stockAvailable - 1 } : p);
+    setProducts(updatedProducts);
+    setSelectedProduct(null); 
+
+    setPopupMessage(`${t('purchaseSuccess')}${productToBuy.name}!`); // Updated
+    setPopupVisible(true);
+    try { new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); } catch (audioErr) { console.warn("Failed to play audio:", audioErr); }
+  };
+
+  // Calculate Total Price
+  const getTotalPrice = () => {
+    return cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  };
+
+  // Effects
+  useEffect(() => {
+    fetchProducts();
+  }, [category, searchQuery, userRole, sellerEmail, language, currentPage]); // Added currentPage to dependencies
+
+  useEffect(() => {
+    if (loginError) {
+      const timer = setTimeout(() => setLoginError(false), 5000);
+      return () => clearTimeout(timer); 
+    }
+  }, [loginError]);
+
+  // Save selected language to localStorage
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
+
+  return (
+    <div className="min-h-screen animated-background text-gray-900">
+      <GlobalStyles />
+      <div className="relative z-10 p-4">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-4 bg-white/70 backdrop-blur-sm p-4 rounded-lg shadow-md border border-gray-300"> 
+          <h1 className="text-2xl font-bold text-gray-900">🛍️ {t('storeName')}</h1> 
+          <div className="flex items-center gap-4">
+            {/* Language Selector */}
+            <select
+              className="bg-white text-gray-900 border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+            >
+              {Object.keys(translations).map((langKey) => (
+                <option key={langKey} value={langKey}>
+                  {translations[langKey].flag} {translations[langKey].name}
+                </option>
+              ))}
+            </select>
+
+            {sessionId ? (
               <>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg">
-                  Seller Registration
-                </h2>
-                <input
-                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
-                  type="text"
-                  placeholder="Name"
-                  value={sellerName}
-                  onChange={(e) => setSellerName(e.target.value)}
-                  required
-                />
-                <input
-                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
-                  type="text"
-                  placeholder="Phone"
-                  value={sellerPhone}
-                  onChange={(e) => setSellerPhone(e.target.value)}
-                  required
-                />
-                <input
-                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
-                  type="text"
-                  placeholder="GST Number"
-                  value={sellerGSTNumber}
-                  onChange={(e) => setSellerGSTNumber(e.target.value)}
-                  required
-                />
-                <textarea
-                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 resize-y"
-                  placeholder="Address"
-                  value={sellerAddress}
-                  onChange={(e) => setSellerAddress(e.target.value)}
-                  required
-                ></textarea>
-                <input
-                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onFocus={() => setFocusField("email")}
-                  onBlur={() => setFocusField(null)}
-                  required
-                />
-                <input
-                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6"
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onFocus={() => setFocusField("password")}
-                  onBlur={() => setFocusField(null)}
-                  required
-                />
                 <button
-                  className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-800"
-                  onClick={handleSellerRegister}
+                  className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition duration-200"
+                  onClick={() => setCartOpen(!cartOpen)}
                 >
-                  Register as Seller
+                  🛒 {cartItems.length}
                 </button>
+                {userRole === 'admin' && (
+                  <button
+                    className="bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition duration-200"
+                    onClick={() => setAddMode(true)}
+                  >
+                    {t('addProduct')}
+                  </button>
+                )}
                 <button
-                  className="w-full py-3 px-4 bg-gray-400 hover:bg-gray-500 text-gray-900 font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-3"
-                  onClick={() => setShowSellerRegisterModal(false)}
+                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-200"
+                  onClick={handleLogout}
                 >
-                  Back to Login
+                  {t('signOut')}
                 </button>
               </>
             ) : (
-              // Regular Login/Register Form
-              <>
-                {/* Emoji face above login */}
-                <div className="flex justify-center text-4xl mb-2">
-                  <span className="text-gray-900">{getEmoji()} <span className="text-xl text-purple-700 ml-2">@{email || "username"}</span></span>
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg">
-                  {isRegistering ? 'Register' : 'Login'}
-                </h2>
-                <input
-                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4"
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onFocus={() => setFocusField("email")}
-                  onBlur={() => setFocusField(null)}
-                />
-                <input
-                  className="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6"
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onFocus={() => setFocusField("password")}
-                  onBlur={() => setFocusField(null)}
-                />
-                <button
-                  className="w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-gray-800"
-                  onClick={isRegistering ? handleRegister : handleLogin}
-                >
-                  {isRegistering ? 'Register' : 'Login'}
-                </button>
-                <p className="text-center text-sm text-gray-700 mt-4">
-                  {isRegistering ? 'Already have an account?' : "Don't have an account?"}{' '}
-                  <button
-                    className="text-purple-700 hover:text-purple-500 font-medium transition duration-300 ease-in-out"
-                    onClick={() => setIsRegistering(!isRegistering)}
-                  >
-                    {isRegistering ? 'Login here' : 'Register here'}
-                  </button>
-                </p>
-                <button
-                  className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-4"
-                  onClick={() => setShowSellerRegisterModal(true)}
-                >
-                  Register as Seller
-                </button>
-              </>
-            )}
-
-            {loginError && (
-              <div className="absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center text-white text-center p-6 rounded-2xl animate-pulse z-20"> 
-                <img src="https://i.postimg.cc/SQTP0QMw/download.jpg" alt="Ghost" className="w-32 h-32 animate-bounce mb-4" />
-                <p className="text-lg font-semibold text-red-400">Wrong password... 👻</p>
-                <p className="text-sm mt-1 text-purple-200">The Halloween spirit has awakened!</p>
-              </div>
+              <button
+                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded-xl transition duration-300"
+                onClick={() => setShowLoginModal(true)}
+              >
+                {t('loginRegister')}
+              </button>
             )}
           </div>
         </div>
+
+        {/* Product Grid Component */}
+        <ProductGrid 
+          t={t} // Pass translation function
+          products={products} 
+          addToCart={addToCart} 
+          handleBuyNow={handleBuyNow} 
+          setSelectedProduct={setSelectedProduct} 
+          category={category}
+          setCategory={setCategory}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          isLoading={isLoading} 
+          currentPage={currentPage} // Pass pagination states and handlers
+          totalPages={totalPages}
+          handlePageChange={handlePageChange}
+        />
+
+        {/* Product Details Modal Component */}
+        <ProductDetailsModal 
+          t={t} // Pass translation function
+          selectedProduct={selectedProduct} 
+          setSelectedProduct={setSelectedProduct} 
+          addToCart={addToCart} 
+          sessionId={sessionId} 
+          setPopupMessage={setPopupMessage} 
+          setPopupVisible={setPopupVisible}
+          setShowLoginModal={setShowLoginModal}
+        />
+
+        {/* Add Product Modal Component */}
+        <AddProductModal 
+          t={t} // Pass translation function
+          addMode={addMode} 
+          userRole={userRole} 
+          setAddMode={setAddMode} 
+          newProduct={newProduct} 
+          setNewProduct={setNewProduct} 
+          setPopupMessage={setPopupMessage} 
+          setPopupVisible={setPopupVisible} 
+          sessionId={sessionId}
+          fetchProducts={fetchProducts}
+        />
+
+        {/* Cart Drawer Component */}
+        <CartDrawer 
+          t={t} // Pass translation function
+          cartOpen={cartOpen} 
+          setCartOpen={setCartOpen} 
+          cartItems={cartItems} 
+          removeFromCart={removeFromCart} 
+          addToCart={addToCart} 
+          getTotalPrice={getTotalPrice} 
+          setPopupMessage={setPopupMessage} 
+          setPopupVisible={setPopupVisible}
+          setCartItems={setCartItems}
+          sessionId={sessionId} 
+          products={products} 
+        />
+
+        {/* Global Popup Notification Component */}
+        <GlobalPopup message={popupMessage} visible={popupVisible} setVisible={setPopupVisible} />
+      </div>
+
+      {/* Auth Modal Component */}
+      {showLoginModal && (
+        <AuthModal 
+          t={t} // Pass translation function
+          showLoginModal={showLoginModal} 
+          setShowLoginModal={setShowLoginModal} 
+          handleLogin={handleLogin} 
+          handleRegister={handleRegister} 
+          handleSellerRegister={handleSellerRegister} 
+          email={email} 
+          setEmail={setEmail} 
+          password={password} 
+          setPassword={setPassword} 
+          isRegistering={isRegistering} 
+          setIsRegistering={setIsRegistering} 
+          showSellerRegisterModal={showSellerRegisterModal} 
+          setShowSellerRegisterModal={setShowSellerRegisterModal} 
+          sellerName={sellerName} 
+          setSellerName={setSellerName} 
+          sellerPhone={sellerPhone} 
+          setSellerPhone={setSellerPhone} 
+          sellerGSTNumber={sellerGSTNumber} 
+          setSellerGSTNumber={setSellerGSTNumber} 
+          sellerAddress={sellerAddress} 
+          setSellerAddress={setSellerAddress} 
+          loginError={loginError}
+        />
       )}
     </div>
   );
