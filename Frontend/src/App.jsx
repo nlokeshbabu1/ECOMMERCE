@@ -1,9 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+
 // --- Single Backend API Endpoint ---
 // All requests will now go to this single backend server.
 const API_URL = 'http://localhost:5000'; 
+
+// --- Currency Conversion Rates (Simulated) ---
+// Base currency is assumed to be USD ($).
+const exchangeRates = {
+  USD: 1.0,
+  INR: 83.5, // 1 USD = 83.5 INR (approx)
+  EUR: 0.93, // 1 USD = 0.93 EUR (approx)
+  JPY: 156.5, // 1 USD = 156.5 JPY (approx)
+  KRW: 1380.0, // 1 USD = 1380 KRW (approx)
+  CNY: 7.25, // 1 USD = 7.25 CNY (approx)
+};
+
+// Helper function to convert price based on target currency
+const convertPrice = (price, targetCurrencyCode) => {
+  const basePriceUSD = parseFloat(price); // Assuming all prices from backend are in USD
+  if (isNaN(basePriceUSD)) return price; // Return original if not a valid number
+
+  const rate = exchangeRates[targetCurrencyCode];
+  if (rate) {
+    return (basePriceUSD * rate).toFixed(2); // Format to 2 decimal places
+  }
+  return basePriceUSD.toFixed(2); // Fallback to USD price if currency not found
+};
 
 // Translations object for multiple languages
 const translations = {
@@ -11,6 +35,8 @@ const translations = {
     flag: "🇬🇧", // UK Flag for English
     name: "English", // Display name for the language
     storeName: "Modern Clothing Store",
+    currencySymbol: "$",
+    currencyCode: "USD",
     loginRegister: "Login / Register",
     signOut: "Sign Out",
     addProduct: "+ Add Product",
@@ -86,6 +112,8 @@ const translations = {
     flag: "🇮🇳", // Indian Flag for Hindi
     name: "हिन्दी", // Display name for the language
     storeName: "आधुनिक कपड़ों की दुकान",
+    currencySymbol: "₹",
+    currencyCode: "INR",
     loginRegister: "लॉगिन / रजिस्टर करें",
     signOut: "साइन आउट करें",
     addProduct: "+ उत्पाद जोड़ें",
@@ -161,6 +189,8 @@ const translations = {
     flag: "🇪🇸", // Spanish Flag
     name: "Español", // Display name for the language
     storeName: "Tienda de Ropa Moderna",
+    currencySymbol: "€",
+    currencyCode: "EUR",
     loginRegister: "Iniciar Sesión / Registrarse",
     signOut: "Cerrar Sesión",
     addProduct: "+ Añadir Producto",
@@ -236,6 +266,8 @@ const translations = {
     flag: "🇫🇷", // French Flag
     name: "Français", // Display name for the language
     storeName: "Magasin de Vêtements Moderne",
+    currencySymbol: "€",
+    currencyCode: "EUR",
     loginRegister: "Se connecter / S'inscrire",
     signOut: "Se déconnecter",
     addProduct: "+ Ajouter un produit",
@@ -308,9 +340,11 @@ const translations = {
     page: "Page",
   },
   de: {
-    flag: "🇩🇪", // German Flag
+    flag: "�🇪", // German Flag
     name: "Deutsch", // Display name for the language
     storeName: "Moderner Bekleidungsgeschäft",
+    currencySymbol: "€",
+    currencyCode: "EUR",
     loginRegister: "Anmelden / Registrieren",
     signOut: "Abmelden",
     addProduct: "+ Produkt hinzufügen",
@@ -370,7 +404,7 @@ const translations = {
     cartIsEmpty: "Ihr Warenkorb ist leer!",
     loginFailed: "Login fehlgeschlagen:",
     registrationFailed: "Registrierung fehlgeschlagen! Bitte überprüfen Sie Ihren Backend-Server unter",
-    sellerRegistrationFailed: "Verkäuferregistrierung fehlgeschlagen! Bitte überprüfen Sie Ihren Backend-Server unter",
+    sellerRegistrationFailed: "Verkäuferregistrierung fehlgeschlagen! Bitte überprüfen Sie Ihren Backend-SERVER unter",
     registeredSuccessLogin: "Erfolgreich registriert. Bitte melden Sie sich an.",
     sellerRegisteredSuccessLogin: "Verkäufer erfolgreich registriert! Bitte melden Sie sich an.",
     failedToLoadCart: "Warenkorb konnte vom Backend nicht geladen werden. Bitte überprüfen Sie Ihren Backend-Service.",
@@ -386,6 +420,8 @@ const translations = {
     flag: "🇯🇵",
     name: "日本語", // Display name for the language
     storeName: "モダンアパレルストア",
+    currencySymbol: "¥",
+    currencyCode: "JPY",
     loginRegister: "ログイン / 登録",
     signOut: "サインアウト",
     addProduct: "+ 商品を追加",
@@ -461,6 +497,8 @@ const translations = {
     flag: "🇰🇷",
     name: "한국어", // Display name for the language
     storeName: "현대 의류 매장",
+    currencySymbol: "₩",
+    currencyCode: "KRW",
     loginRegister: "로그인 / 회원가입",
     signOut: "로그아웃",
     addProduct: "+ 상품 추가",
@@ -509,8 +547,8 @@ const translations = {
     outOfStock: "재고 부족: ",
     maxAvailableAdded: " 또는 최대 수량 추가됨.",
     loginRequiredManageCart: "장바구니를 관리하려면 로그인해주세요。",
-    itemQuantityDecreased: "상품 수량이 감소했습니다.",
-    itemRemovedFromCart: "상품이 장바구니에서 제거되었습니다.",
+    itemQuantityDecreased: "상품 수량이 감소했습니다。",
+    itemRemovedFromCart: "상품이 장바구니에서 제거되었습니다。",
     failedToRemoveItem: "장바구니에서 상품을 제거하지 못했습니다. 백엔드 서비스를 확인해주세요。",
     loginRequiredPurchase: "상품을 구매하려면 로그인해주세요。",
     outOfStockShort: "죄송합니다. \"",
@@ -536,6 +574,8 @@ const translations = {
     flag: "🇨🇳",
     name: "中文", // Display name for the language
     storeName: "现代服装店",
+    currencySymbol: "¥",
+    currencyCode: "CNY",
     loginRegister: "登录 / 注册",
     signOut: "退出",
     addProduct: "+ 添加商品",
@@ -849,6 +889,9 @@ const AuthModal = ({ t, showLoginModal, setShowLoginModal, handleLogin, handleRe
 
 // ProductGrid Component
 const ProductGrid = ({ t, products, addToCart, handleBuyNow, setSelectedProduct, category, setCategory, searchQuery, setSearchQuery, isLoading, currentPage, totalPages, handlePageChange }) => {
+  const currentCurrencySymbol = t('currencySymbol');
+  const currentCurrencyCode = t('currencyCode');
+
   return (
     <>
       {/* Category Filter and Search Bar */}
@@ -896,7 +939,7 @@ const ProductGrid = ({ t, products, addToCart, handleBuyNow, setSelectedProduct,
                 {p.name}
               </h3>
               <p className="text-sm text-gray-700">{p.description}</p> 
-              <p className="text-green-600 font-bold mt-2">${p.price}</p> 
+              <p className="text-green-600 font-bold mt-2">{currentCurrencySymbol}{convertPrice(p.price, currentCurrencyCode)}</p> 
               {p.stockAvailable !== undefined && p.stockAvailable !== null && (
                 <p className="text-sm text-gray-600 mt-1">Stock: {p.stockAvailable}</p>
               )}
@@ -945,6 +988,9 @@ const ProductGrid = ({ t, products, addToCart, handleBuyNow, setSelectedProduct,
 const ProductDetailsModal = ({ t, selectedProduct, setSelectedProduct, addToCart, sessionId, setPopupMessage, setPopupVisible, setShowLoginModal }) => {
   if (!selectedProduct) return null;
 
+  const currentCurrencySymbol = t('currencySymbol');
+  const currentCurrencyCode = t('currencyCode');
+
   // Log the selected product to see its exact structure
   console.log("Selected Product in Modal:", selectedProduct);
 
@@ -958,7 +1004,7 @@ const ProductDetailsModal = ({ t, selectedProduct, setSelectedProduct, addToCart
         />
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedProduct.name}</h2>
         <p className="text-gray-700 mb-2">{selectedProduct.description}</p>
-        <p className="text-green-600 text-lg font-bold mb-4">${selectedProduct.price}</p>
+        <p className="text-green-600 text-lg font-bold mb-4">{currentCurrencySymbol}{convertPrice(selectedProduct.price, currentCurrencyCode)}</p>
         
         {/* Combined Stock and Size information */}
         <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 mt-1">
@@ -1079,6 +1125,9 @@ const AddProductModal = ({ t, addMode, userRole, setAddMode, newProduct, setNewP
 
 // CartDrawer Component
 const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addToCart, getTotalPrice, setPopupMessage, setPopupVisible, setCartItems, sessionId, products }) => {
+  const currentCurrencySymbol = t('currencySymbol');
+  const currentCurrencyCode = t('currencyCode');
+
   // Function to fetch full product details for items in cart from the product service
   const fetchCartProductDetails = async (cartData) => {
     const productIds = Object.keys(cartData);
@@ -1160,7 +1209,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
                 />
                 <div className="flex-grow">
                   <p className="text-gray-900 font-semibold">{item.product.name}</p> 
-                  <p className="text-green-600 text-sm">${item.product.price.toFixed(2)}</p> 
+                  <p className="text-green-600 text-sm">{currentCurrencySymbol}{convertPrice(item.product.price, currentCurrencyCode)}</p> 
                 </div>
                 <div className="flex items-center space-x-2">
                   <button
@@ -1185,7 +1234,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
         <div className="mt-auto pt-4 border-t border-gray-300"> 
             <div className="flex justify-between items-center text-xl font-bold text-gray-900 mb-4"> 
                 <span>{t('total')}:</span>
-                <span className="text-green-600">${currentTotalPrice.toFixed(2)}</span> 
+                <span className="text-green-600">{currentCurrencySymbol}{convertPrice(currentTotalPrice, currentCurrencyCode)}</span> 
             </div>
             <button
                 className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200"
@@ -1272,6 +1321,7 @@ function App() {
   // Handles user login by sending credentials to the backend.
   const handleLogin = async () => {
     try {
+      // Correctly using 'res'
       const res = await axios.post(`${API_URL}/api/login`, { email, password });
       localStorage.setItem('session_id', res.data.session_id);
       localStorage.setItem('user_role', res.data.role); 
