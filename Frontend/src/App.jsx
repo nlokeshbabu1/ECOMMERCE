@@ -139,7 +139,7 @@ function App() {
         address: sellerAddress,
         role: 'admin' // Frontend requesting 'admin' role for this registration
       });
-      setPopupMessage('Seller registered successfully! Please login.');
+      setPopupMessage('Seller registered successfully! Please logins.');
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
       setShowSellerRegisterModal(false); // Close seller registration modal
