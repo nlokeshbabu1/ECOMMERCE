@@ -1257,12 +1257,8 @@ function App() {
   // Handles user login by sending credentials to the backend.
   const handleLogin = async () => {
     try {
-<<<<<<< HEAD
-      const _res = await axios.post(`${API_URL}/api/login`, { email, password });
-=======
       // Correctly using 'res'
       const res = await axios.post(`${API_URL}/api/login`, { email, password });
->>>>>>> feature
       localStorage.setItem('session_id', res.data.session_id);
       localStorage.setItem('user_role', res.data.role);
       localStorage.setItem('user_email', res.data.user_email);
@@ -1301,11 +1297,7 @@ function App() {
         email, password, SellerName: sellerName, SellerPhone: sellerPhone,
         SellerGSTNumber: sellerGSTNumber, SellerAddres: sellerAddress,
       });
-<<<<<<< HEAD
-      setPopupMessage('Seller registered successfully! Please logins.');
-=======
       setPopupMessage(t('sellerRegisteredSuccessLogin')); // Updated
->>>>>>> feature
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
       setShowSellerRegisterModal(false);
