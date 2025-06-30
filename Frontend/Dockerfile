@@ -17,7 +17,7 @@ COPY . .
 #Build the application 
 RUN npm run build
 
-#production
+#production and the main dockerfile
 FROM nginx:alpine
 
 #Copy the nginx.conf file
