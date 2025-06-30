@@ -38,3 +38,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=10s \
   CMD curl -f http://localhost:5000/healthz || exit 1
 
 CMD ["python3", "app.py"]
+

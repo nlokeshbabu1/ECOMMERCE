@@ -1,35 +1,66 @@
-# Flask Backend Code (server/app.py)
-from datetime import date
-from flask import Flask, request, jsonify, session
+# product_service/product_service.py
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
-import redis
-import uuid
 import os
 from urllib.parse import quote_plus
+from bson.objectid import ObjectId # Import ObjectId
+import redis
 from flask_bcrypt import Bcrypt
+import uuid
 
 app = Flask(__name__)
-CORS(app)
-app.secret_key = os.getenv("API_SECRETS_KEY", "fallback-secret")
+CORS(app) # Enable CORS for frontend communication
 
-# MongoDB Setup
+# MongoDB Setup (Product Service specific collections)
 username = quote_plus(os.getenv("MONGO_USER", "admin"))
-password = quote_plus(os.getenv("MONGO_PASS", "admin@123"))
-uri = f"mongodb+srv://{username}:{password}@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+#password = quote_plus(os.getenv("MONGO_PASS", "admin@123"))
+#mongo_host = os.getenv("MONGO_HOST", "localhost:27017")
+#uri = f"mongodb://{username}:{password}@{mongo_host}/?retryWrites=true&w=majority&authSource=admin"
+
+#os.getenv("MONGO_HOST", "localhost:27017")
+
+#uri = os.getenv("MONGO_HOST")
+
+uri= f"mongodb+srv://admin:g6XptAeuHn3Tvhwf@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+#f"mongodb+srv://admin:g6XptAeuHn3Tvhwf@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
+#Bcrypt
+bcrypt=Bcrypt(app)
+
+# uri = os.getenv("MONGO_URL")
+# print(f"Connecting to MongoDB at: {uri}")  # For debug
+
+
 
 mongo_client = MongoClient(uri)
 db = mongo_client['clothing_ecom']
-users_collection = db['users']
 products_collection = db['products']
+users_collection = db['users'] # Need users collection to verify seller email if session is not passed
 
-# Bcrypt setup
-bcrypt = Bcrypt(app)
+# --- MongoDB Indexing ---
+# Create an index on the 'category' field for faster filtering
+products_collection.create_index("category")
+print("MongoDB index on 'category' for products collection ensured.")
 
-# Redis Setup
-redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+# Redis Setup (for session management and potential caching in the future)
+redis_host = os.getenv("REDIS_HOST", "localhost")
+redis_port = int(os.getenv("REDIS_PORT", 6379))
+redis_client = redis.Redis(host=redis_host, port=redis_port, db=0, decode_responses=True)
 
-# Helper Functions
+
+
+def get_user_email_from_session(session_id):
+    user_id_str = redis_client.get(f"session:{session_id}")
+    if user_id_str:
+        try:
+            user = users_collection.find_one({"_id": ObjectId(user_id_str)})
+            if user and user.get('role') == 'admin': # Ensure only admins can add products
+                return user.get('email')
+        except Exception as e:
+            print(f"Error fetching user by ObjectId in Product Service: {e}")
+    return None
+
 def get_cart_key(session_id):
     return f"cart:{session_id}"
 
@@ -62,46 +93,62 @@ def register():
     })
     return jsonify({"message": "User registered"}), 201
 
-# GET PRODUCTS — with optional category filter
+# GET PRODUCTS — with optional category filter and seller filter
 @app.route('/api/products', methods=['GET'])
 def get_products():
     category = request.args.get('category')
-    query = {"category": category} if category else {}
-    products = list(products_collection.find(query, {"_id": 0}))
+    seller_email = request.args.get('seller_email') 
+    
+    query = {}
+    if category:
+        query["category"] = category
+    if seller_email:
+        query["seller_email"] = seller_email 
+
+    products_cursor = products_collection.find(query)
+    products = []
+    for product in products_cursor:
+        product['_id'] = str(product['_id']) # Convert ObjectId to string
+        products.append(product)
+    
     return jsonify(products)
 
-#add product to Databases
+# Add product to Databases
 @app.route('/api/addproducts', methods=['POST'])
 def addproducts():
     data = request.json
-    #adding productes into Mongodb
+    session_id = data.get('session_id') 
+    
+    seller_email = get_user_email_from_session(session_id)
+    if not seller_email:
+        return jsonify({"error": "Unauthorized: Invalid session or not logged in as admin"}), 403
+
+    required_fields = ['name', 'price', 'category', 'stockAvailable']
+    for field in required_fields:
+        if field not in data or data[field] is None:
+            return jsonify({"error": f"{field} is required"}), 400
+
+    try:
+        price = float(data['price'])
+        stock_available = int(data['stockAvailable'])
+    except ValueError:
+        return jsonify({"error": "Price and Stock Available must be valid numbers"}), 400
+
     products_collection.insert_one({
         "name": data['name'],
-        "description": data['description'],
-        "price": data['price'],
+        "description": data.get('description', ''),
+        "price": price,
         "category": data['category'],
-        "image_url": data.get('image_url', ''),
-        "StockAvailable": data['StockAvailable'] 
+        "image": data.get('image', ''), 
+        "stockavailable": stock_available, 
+        "size": data.get('size', ''),
+        "seller_email": seller_email # Associate product with the seller's email
     })
     return jsonify({"message": "Product added successfully"}), 201
 
-# ADD TO CART
-@app.route('/api/cart', methods=['POST'])
-def add_to_cart():
-    data = request.json
-    session_id = data['session_id']
-    product_id = data['product_id']
-    quantity = int(data['quantity'])
-    cart_key = get_cart_key(session_id)
-    redis_client.hincrby(cart_key, product_id, quantity)
-    return jsonify({"message": "Item added to cart"})
-
-# GET CART
-@app.route('/api/cart/<session_id>', methods=['GET'])
-def get_cart(session_id):
-    cart_key = get_cart_key(session_id)
-    cart = redis_client.hgetall(cart_key)
-    return jsonify(cart)
+@app.route('/healthz')
+def healthz():
+    return "OK", 200
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=5000) # Product Service on port 5002
