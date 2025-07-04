@@ -1139,9 +1139,9 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
                 className='flex items-center justify-between bg-gray-100 p-3 rounded-lg mb-3 shadow-md'
               >
                 <img
-                  src={item.product.image || 'https://via.placeholder.com/50/EEEEEE/000000?text=Item'}
-                  alt={item.product.name}
-                  className='w-16 h-16 object-cover rounded-md mr-3'
+                    src={item.product.image || 'https://via.placeholder.com/50/EEEEEE/000000?text=Item'}
+                    alt={item.product.name}
+                    className='w-16 h-16 object-cover rounded-md mr-3'
                 />
                 <div className='flex-grow'>
                   <p className='text-gray-900 font-semibold'>{item.product.name}</p>
@@ -1168,42 +1168,42 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
         )}
 
         <div className='mt-auto pt-4 border-t border-gray-300'>
-          <div className='flex justify-between items-center text-xl font-bold text-gray-900 mb-4'>
-            <span>{t('total')}:</span>
-            <span className='text-green-600'>{currentCurrencySymbol}{convertPrice(currentTotalPrice, currentCurrencyCode)}</span>
-          </div>
-          <button
-            className='w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200'
-            onClick={async () => {
-              if (cartItems.length > 0) {
-                try {
-                  // Use API_URL here
-                  await Promise.all(cartItems.map(item =>
-                    axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: item.product._id } })
-                  ));
-                  setPopupMessage(t('thankYouPurchase'));
-                  setPopupVisible(true);
-                  try { new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
-                  setCartItems([]);
-                  setCartOpen(false);
-                  setTimeout(() => setPopupVisible(false), 3000);
-                  console.log('Checkout completed locally and cart cleared via Cart Service. REMINDER: Implement a full Order Service!');
-                } catch (error) {
-                  console.error('Error during checkout:', error);
-                  const errorMessage = error.response?.data?.error || `${t('checkoutFailed')} ${API_URL}`;
-                  setPopupMessage(errorMessage);
-                  setPopupVisible(true);
-                  try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
-                }
-              } else {
-                setPopupMessage(t('cartIsEmpty'));
-                setPopupVisible(true);
-                try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
-              }
-            }}
-          >
-            {t('proceedToCheckout')}
-          </button>
+            <div className='flex justify-between items-center text-xl font-bold text-gray-900 mb-4'>
+                <span>{t('total')}:</span>
+                <span className='text-green-600'>{currentCurrencySymbol}{convertPrice(currentTotalPrice, currentCurrencyCode)}</span>
+            </div>
+            <button
+                className='w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200'
+                onClick={async () => {
+                    if (cartItems.length > 0) {
+                        try {
+                            // Use API_URL here
+                            await Promise.all(cartItems.map(item =>
+                                axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: item.product._id } })
+                            ));
+                            setPopupMessage(t('thankYouPurchase'));
+                            setPopupVisible(true);
+                            // try { new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
+                            setCartItems([]);
+                            setCartOpen(false);
+                            setTimeout(() => setPopupVisible(false), 3000);
+                            console.log('Checkout completed locally and cart cleared via Cart Service. REMINDER: Implement a full Order Service!');
+                        } catch (error) {
+                            console.error('Error during checkout:', error);
+                            const errorMessage = error.response?.data?.error || `${t('checkoutFailed')} ${API_URL}`;
+                            setPopupMessage(errorMessage);
+                            setPopupVisible(true);
+                            // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
+                        }
+                    } else {
+                        setPopupMessage(t('cartIsEmpty'));
+                        setPopupVisible(true);
+                        // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
+                    }
+                }}
+            >
+                {t('proceedToCheckout')}
+            </button>
         </div>
       </div>
     </div>
@@ -1270,7 +1270,7 @@ function App() {
       setLoginError(true);
       setPopupMessage(`${t('loginFailed')} ${err.message}. ${t('checkBackendServerAt')} ${API_URL}`); // Updated
       setPopupVisible(true);
-      try { new Audio('https://www.soundjay.com/human/sounds/scream-01.mp3').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
+      // try { new Audio('https://www.soundjay.com/human/sounds/scream-01.mp3').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
     }
   };
 
@@ -1391,7 +1391,7 @@ function App() {
     if (productToAdd.stockAvailable !== undefined && productToAdd.stockAvailable !== null && currentQuantityInCart >= productToAdd.stockAvailable) {
       setPopupMessage(`${t('outOfStock')}${productToAdd.name}${t('maxAvailableAdded')}`); // Updated
       setPopupVisible(true);
-      try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
+      // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
       return;
     }
 
@@ -1405,23 +1405,23 @@ function App() {
       const cartRes = await axios.get(`${API_URL}/api/cart/${sessionId}`);
       const backendCartData = cartRes.data;
       const newCartItems = await Promise.all(
-        Object.keys(backendCartData).map(async (pid) => {
-          const p = products.find(prod => prod._id === pid);
-          return p ? { product: p, quantity: backendCartData[pid] } : null;
-        })
+          Object.keys(backendCartData).map(async (pid) => {
+              const p = products.find(prod => prod._id === pid);
+              return p ? { product: p, quantity: backendCartData[pid] } : null;
+          })
       );
       setCartItems(newCartItems.filter(item => item !== null));
 
       setPopupMessage(`${productToAdd.name}${t('itemAddedToCart')}`); // Updated
       setPopupVisible(true);
-      try { new Audio('https://www.soundjay.com/button/beep-07.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
+      // try { new Audio('https://www.soundjay.com/button/beep-07.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
 
     } catch (err) {
       console.error('Error adding to cart via service:', err);
       const errorMessage = err.response?.data?.error || `${t('failedToAddItemToCart')} ${API_URL}`; // Updated
       setPopupMessage(errorMessage);
       setPopupVisible(true);
-      try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
+      // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
     }
   };
 
@@ -1453,10 +1453,10 @@ function App() {
       const cartRes = await axios.get(`${API_URL}/api/cart/${sessionId}`);
       const backendCartData = cartRes.data;
       const newCartItems = await Promise.all(
-        Object.keys(backendCartData).map(async (pid) => {
-          const p = products.find(prod => prod._id === pid);
-          return p ? { product: p, quantity: backendCartData[pid] } : null;
-        })
+          Object.keys(backendCartData).map(async (pid) => {
+              const p = products.find(prod => prod._id === pid);
+              return p ? { product: p, quantity: backendCartData[pid] } : null;
+          })
       );
       setCartItems(newCartItems.filter(item => item !== null));
       setPopupVisible(true);
@@ -1466,7 +1466,7 @@ function App() {
       const errorMessage = err.response?.data?.error || `${t('failedToRemoveItem')} ${API_URL}`; // Updated
       setPopupMessage(errorMessage);
       setPopupVisible(true);
-      try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
+      // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
     }
   };
 
@@ -1482,7 +1482,7 @@ function App() {
     if (productToBuy.stockAvailable <= 0) {
       setPopupMessage(`${t('outOfStockShort')}${productToBuy.name}${t('outOfStockLong')}`); // Updated
       setPopupVisible(true);
-      try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
+      // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
       return;
     }
 
@@ -1492,7 +1492,7 @@ function App() {
 
     setPopupMessage(`${t('purchaseSuccess')}${productToBuy.name}!`); // Updated
     setPopupVisible(true);
-    try { new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); }
+    // try { new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
   };
 
   // Calculate Total Price
@@ -1675,6 +1675,11 @@ function App() {
           loginError={loginError}
         />
       )}
+
+      {/* Footer */}
+      <footer className='w-full text-center py-4 bg-white/70 backdrop-blur-sm text-gray-700 mt-8 rounded-lg shadow-md border border-gray-300'>
+        <p>&copy; 2025 All rights reserved.</p>
+      </footer>
     </div>
   );
 }
