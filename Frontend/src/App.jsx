@@ -2,37 +2,36 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // --- Single Backend API Endpoint ---
-// All requests will now go to this single backend server.
+// All frontend API calls will now go to this single endpoint.
 const API_URL = 'http://localhost:5000';
 
 // --- Currency Conversion Rates (Simulated) ---
-// Base currency is assumed to be USD ($).
 const exchangeRates = {
   USD: 1.0,
-  INR: 83.5, // 1 USD = 83.5 INR (approx)
-  EUR: 0.93, // 1 USD = 0.93 EUR (approx)
-  JPY: 156.5, // 1 USD = 156.5 JPY (approx)
-  KRW: 1380.0, // 1 USD = 1380 KRW (approx)
-  CNY: 7.25, // 1 USD = 7.25 CNY (approx)
+  INR: 83.5,
+  EUR: 0.93,
+  JPY: 156.5,
+  KRW: 1380.0,
+  CNY: 7.25,
 };
 
 // Helper function to convert price based on target currency
 const convertPrice = (price, targetCurrencyCode) => {
-  const basePriceUSD = parseFloat(price); // Assuming all prices from backend are in USD
-  if (isNaN(basePriceUSD)) return price; // Return original if not a valid number
+  const basePriceUSD = parseFloat(price);
+  if (isNaN(basePriceUSD)) return price;
 
   const rate = exchangeRates[targetCurrencyCode];
   if (rate) {
-    return (basePriceUSD * rate).toFixed(2); // Format to 2 decimal places
+    return (basePriceUSD * rate).toFixed(2);
   }
-  return basePriceUSD.toFixed(2); // Fallback to USD price if currency not found
+  return basePriceUSD.toFixed(2);
 };
 
 // Translations object for multiple languages
 const translations = {
   en: {
-    flag: '🇬🇧', // UK Flag for English
-    name: 'English', // Display name for the language
+    flag: '🇬🇧',
+    name: 'English',
     storeName: 'Modern Clothing Store',
     currencySymbol: '$',
     currencyCode: 'USD',
@@ -110,8 +109,8 @@ const translations = {
     orders: 'Orders'
   },
   hi: {
-    flag: '🇮🇳', // Indian Flag for Hindi
-    name: 'हिन्दी', // Display name for the language
+    flag: '🇮🇳',
+    name: 'हिन्दी',
     storeName: 'आधुनिक कपड़ों की दुकान',
     currencySymbol: '₹',
     currencyCode: 'INR',
@@ -189,8 +188,8 @@ const translations = {
     orders: 'आदेश'
   },
   es: {
-    flag: '🇪🇸', // Spanish Flag
-    name: 'Español', // Display name for the language
+    flag: '🇪🇸',
+    name: 'Español',
     storeName: 'Tienda de Ropa Moderna',
     currencySymbol: '€',
     currencyCode: 'EUR',
@@ -268,8 +267,8 @@ const translations = {
     orders: 'Pedidos'
   },
   fr: {
-    flag: '🇫🇷', // French Flag
-    name: 'Français', // Display name for the language
+    flag: '🇫🇷',
+    name: 'Français',
     storeName: 'Magasin de Vêtements Moderne',
     currencySymbol: '€',
     currencyCode: 'EUR',
@@ -347,8 +346,8 @@ const translations = {
     orders: 'Commandes'
   },
   de: {
-    flag: '🇩🇪', // German Flag
-    name: 'Deutsch', // Display name for the language
+    flag: '🇩🇪',
+    name: 'Deutsch',
     storeName: 'Moderner Bekleidungsgeschäft',
     currencySymbol: '€',
     currencyCode: 'EUR',
@@ -376,7 +375,7 @@ const translations = {
     loginHere: 'Hier anmelden',
     dontHaveAccount: 'Sie haben noch kein Konto?',
     registerHere: 'Hier registrieren',
-    registerAsSeller: 'Als Verkäufer registrieren',
+    addProducts: 'Produkt hinzufügen',
     sellerRegistration: 'Verkäuferregistrierung',
     displayName: 'Name',
     phone: 'Telefon',
@@ -425,9 +424,9 @@ const translations = {
     settings: 'Einstellungen',
     orders: 'Bestellungen'
   },
-  jp: { // Japanese
+  jp: {
     flag: '🇯🇵',
-    name: '日本語', // Display name for the language
+    name: '日本語',
     storeName: 'モダンアパレルストア',
     currencySymbol: '¥',
     currencyCode: 'JPY',
@@ -484,7 +483,7 @@ const translations = {
     failedToRemoveItem: 'カートから商品を削除できませんでした。バックエンドサービスを確認してください。',
     loginRequiredPurchase: '商品を購入するにはログインしてください。',
     outOfStockShort: '申し訳ありませんが、「',
-    outOfStockLong: '」は在庫切れです！',
+    outOfStockLong: '" is out of stock!',
     purchaseSuccess: '1x の購入に成功しました: ',
     thankYouPurchase: 'ご購入ありがとうございます！ご注文が完了しました。（フロントエンドシミュレーション）',
     cartIsEmpty: 'カートは空です！',
@@ -494,19 +493,19 @@ const translations = {
     registeredSuccessLogin: '登録に成功しました。ログインしてください。',
     sellerRegisteredSuccessLogin: '販売者登録に成功しました！ログインしてください。',
     failedToLoadCart: 'バックエンドからカートを読み込めませんでした。バックエンドサービスを確認してください。',
-    errorLoadingCartDetails: 'カート詳細の読み込み中にエラーが発生しました。',
-    checkoutFailed: 'サーバーエラーによりチェックアウトに失敗しました。',
-    failedToFetchProducts: '商品の取得に失敗しました！バックエンドサーバーは稼働していますか？',
-    checkBackendServerAt: 'バックエンドサーバーを確認してください:',
+    errorLoadingCartDetails: 'カート詳細の読み込み中にエラーが発生했습니다。',
+    checkoutFailed: 'サーバーエラーによりチェックアウトに失敗했습니다。',
+    failedToFetchProducts: '상품을 가져오지 못했습니다! 백엔드 서버가 실행 중입니까?',
+    checkBackendServerAt: '백엔드 서버를 확인해주세요:',
     previous: '前へ',
     next: '次へ',
     page: 'ページ',
     settings: '設定',
     orders: '注文'
   },
-  kr: { // Korean
-    flag: '🇰🇷',
-    name: '한국어', // Display name for the language
+  kr: {
+    flag: '�🇷',
+    name: '한국어',
     storeName: '현대 의류 매장',
     currencySymbol: '₩',
     currencyCode: 'KRW',
@@ -666,8 +665,27 @@ const GlobalPopup = ({ message, visible, setVisible }) => {
 };
 
 // AuthModal Component
-const AuthModal = ({ t, _showLoginModal, setShowLoginModal, handleLogin, handleRegister, handleSellerRegister, email, setEmail, password, setPassword, isRegistering, setIsRegistering, showSellerRegisterModal, setShowSellerRegisterModal, sellerName, setSellerName, sellerPhone, setSellerPhone, sellerGSTNumber, setSellerGSTNumber, sellerAddress, setSellerAddress, loginError }) => {
+const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSellerRegister, email, setEmail, password, setPassword, isRegistering, setIsRegistering, showSellerRegisterModal, setShowSellerRegisterModal, sellerName, setSellerName, sellerPhone, setSellerPhone, sellerGSTNumber, setSellerGSTNumber, sellerAddress, setSellerAddress, loginError }) => {
   const [focusField, setFocusField] = useState(null);
+  const [captchaValue, setCaptchaValue] = useState('');
+  const [userCaptchaInput, setUserCaptchaInput] = useState('');
+  const [captchaError, setCaptchaError] = useState(false);
+
+  // Function to generate a simple CAPTCHA string
+  const generateCaptcha = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setCaptchaValue(result);
+    setUserCaptchaInput(''); // Clear user input on new CAPTCHA
+    setCaptchaError(false); // Clear any previous CAPTCHA error
+  };
+
+  useEffect(() => {
+    generateCaptcha(); // Generate CAPTCHA on component mount
+  }, []);
 
   // Determines the emoji to display based on input field focus and password content.
   const getEmoji = () => {
@@ -678,6 +696,17 @@ const AuthModal = ({ t, _showLoginModal, setShowLoginModal, handleLogin, handleR
     }
     // Default case: neutral face for other scenarios
     return '🙂';
+  };
+
+  // Handle form submission (login/register/seller register)
+  const handleSubmit = (actionHandler) => {
+    if (userCaptchaInput !== captchaValue) {
+      setCaptchaError(true);
+      generateCaptcha(); // Regenerate CAPTCHA on incorrect attempt
+      return;
+    }
+    // If CAPTCHA is correct, proceed with the actual action
+    actionHandler();
   };
 
   return (
@@ -698,7 +727,7 @@ const AuthModal = ({ t, _showLoginModal, setShowLoginModal, handleLogin, handleR
             <input
               className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
               type='text'
-              placeholder={t('displayName')} // Updated to displayName
+              placeholder={t('displayName')}
               value={sellerName}
               onChange={(e) => setSellerName(e.target.value)}
               required
@@ -746,9 +775,32 @@ const AuthModal = ({ t, _showLoginModal, setShowLoginModal, handleLogin, handleR
               onBlur={() => setFocusField(null)}
               required
             />
+            {/* CAPTCHA for Seller Registration */}
+            <div className='flex items-center justify-between mb-4'>
+              <span className='text-xl font-bold text-gray-800 bg-gray-200 px-4 py-2 rounded-lg select-none tracking-wider'>
+                {captchaValue}
+              </span>
+              <button
+                type='button'
+                onClick={generateCaptcha}
+                className='text-sm text-blue-600 hover:underline'
+              >
+                Refresh CAPTCHA
+              </button>
+            </div>
+            <input
+              className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6 ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
+              type='text'
+              placeholder='Enter CAPTCHA'
+              value={userCaptchaInput}
+              onChange={(e) => setUserCaptchaInput(e.target.value)}
+              required
+            />
+            {captchaError && <p className='text-red-500 text-sm mb-4'>Incorrect CAPTCHA. Please try again.</p>}
+
             <button
               className='w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-800'
-              onClick={handleSellerRegister}
+              onClick={() => handleSubmit(handleSellerRegister)}
             >
               {t('registerAsSeller')}
             </button>
@@ -767,7 +819,7 @@ const AuthModal = ({ t, _showLoginModal, setShowLoginModal, handleLogin, handleR
               <span className='text-gray-900'>{getEmoji()} <span className='text-xl text-purple-700 ml-2'>@{email || 'username'}</span></span>
             </div>
             <h2 className='text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg'>
-              {isRegistering ? t('register') : t('login')}
+              {t(isRegistering ? 'register' : 'login')}
             </h2>
             <input
               className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
@@ -787,11 +839,34 @@ const AuthModal = ({ t, _showLoginModal, setShowLoginModal, handleLogin, handleR
               onFocus={() => setFocusField('password')}
               onBlur={() => setFocusField(null)}
             />
+            {/* CAPTCHA for Login/Register */}
+            <div className='flex items-center justify-between mb-4'>
+              <span className='text-xl font-bold text-gray-800 bg-gray-200 px-4 py-2 rounded-lg select-none tracking-wider'>
+                {captchaValue}
+              </span>
+              <button
+                type='button'
+                onClick={generateCaptcha}
+                className='text-sm text-blue-600 hover:underline'
+              >
+                Refresh CAPTCHA
+              </button>
+            </div>
+            <input
+              className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6 ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
+              type='text'
+              placeholder='Enter CAPTCHA'
+              value={userCaptchaInput}
+              onChange={(e) => setUserCaptchaInput(e.target.value)}
+              required
+            />
+            {captchaError && <p className='text-red-500 text-sm mb-4'>Incorrect CAPTCHA. Please try again.</p>}
+
             <button
               className='w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-gray-800'
-              onClick={isRegistering ? handleRegister : handleLogin}
+              onClick={() => handleSubmit(isRegistering ? handleRegister : handleLogin)}
             >
-              {isRegistering ? t('register') : t('login')}
+              {t(isRegistering ? 'register' : 'login')}
             </button>
             <p className='text-center text-sm text-gray-700 mt-4'>
               {isRegistering ? t('alreadyHaveAccount') : t('dontHaveAccount')}{' '}
@@ -799,7 +874,7 @@ const AuthModal = ({ t, _showLoginModal, setShowLoginModal, handleLogin, handleR
                 className='text-purple-700 hover:text-purple-500 font-medium transition duration-300 ease-in-out'
                 onClick={() => setIsRegistering(!isRegistering)}
               >
-                {isRegistering ? t('loginHere') : t('registerHere')}
+                {t(isRegistering ? 'loginHere' : 'registerHere')}
               </button>
             </p>
             <button
@@ -824,10 +899,7 @@ const AuthModal = ({ t, _showLoginModal, setShowLoginModal, handleLogin, handleR
 };
 
 // ProductGrid Component
-const ProductGrid = ({ t, products, addToCart, handleBuyNow, setSelectedProduct, category, setCategory, searchQuery, setSearchQuery, isLoading, currentPage, totalPages, handlePageChange }) => {
-  const currentCurrencySymbol = t('currencySymbol');
-  const currentCurrencyCode = t('currencyCode');
-
+const ProductGrid = ({ t, products, addToCart, handleBuyNow, setSelectedProduct, category, setCategory, searchQuery, setSearchQuery, isLoading, currentPage, totalPages, handlePageChange, convertPrice, currencySymbol, currencyCode }) => {
   return (
     <>
       {/* Category Filter and Search Bar */}
@@ -875,7 +947,7 @@ const ProductGrid = ({ t, products, addToCart, handleBuyNow, setSelectedProduct,
                 {p.name}
               </h3>
               <p className='text-sm text-gray-700'>{p.description}</p>
-              <p className='text-green-600 font-bold mt-2'>{currentCurrencySymbol}{convertPrice(p.price, currentCurrencyCode)}</p>
+              <p className='text-green-600 font-bold mt-2'>{currencySymbol}{convertPrice(p.price, currencyCode)}</p>
               {p.stockAvailable !== undefined && p.stockAvailable !== null && (
                 <p className='text-sm text-gray-600 mt-1'>Stock: {p.stockAvailable}</p>
               )}
@@ -921,14 +993,8 @@ const ProductGrid = ({ t, products, addToCart, handleBuyNow, setSelectedProduct,
 };
 
 // ProductDetailsModal Component
-const ProductDetailsModal = ({ t, selectedProduct, setSelectedProduct, addToCart, sessionId, setPopupMessage, setPopupVisible, setShowLoginModal }) => {
+const ProductDetailsModal = ({ t, selectedProduct, setSelectedProduct, addToCart, sessionId, setPopupMessage, setPopupVisible, setShowLoginModal, convertPrice, currencySymbol, currencyCode }) => {
   if (!selectedProduct) return null;
-
-  const currentCurrencySymbol = t('currencySymbol');
-  const currentCurrencyCode = t('currencyCode');
-
-  // Log the selected product to see its exact structure
-  console.log('Selected Product in Modal:', selectedProduct);
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50'>
@@ -940,7 +1006,7 @@ const ProductDetailsModal = ({ t, selectedProduct, setSelectedProduct, addToCart
         />
         <h2 className='text-2xl font-bold text-gray-900 mb-2'>{selectedProduct.name}</h2>
         <p className='text-gray-700 mb-2'>{selectedProduct.description}</p>
-        <p className='text-green-600 text-lg font-bold mb-4'>{currentCurrencySymbol}{convertPrice(selectedProduct.price, currentCurrencyCode)}</p>
+        <p className='text-green-600 text-lg font-bold mb-4'>{currencySymbol}{convertPrice(selectedProduct.price, currencyCode)}</p>
 
         {/* Combined Stock and Size information */}
         <div className='flex flex-wrap items-center gap-2 text-sm text-gray-600 mt-1'>
@@ -984,7 +1050,8 @@ const ProductDetailsModal = ({ t, selectedProduct, setSelectedProduct, addToCart
 
 // AddProductModal Component
 const AddProductModal = ({ t, addMode, userRole, setAddMode, newProduct, setNewProduct, setPopupMessage, setPopupVisible, sessionId, fetchProducts }) => {
-  if (!addMode || userRole !== 'admin') return null;
+  // Changed from 'admin' to 'seller'
+  if (!addMode || userRole !== 'seller') return null;
 
   const handleAddProductChange = (e) => {
     const { name, value } = e.target;
@@ -1046,7 +1113,7 @@ const AddProductModal = ({ t, addMode, userRole, setAddMode, newProduct, setNewP
         </select>
         <input className='bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400' type='text' name='image' placeholder={t('imageUrl')} value={newProduct.image} onChange={handleAddProductChange} />
         <input className='bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400' type='number' name='stockAvailable' placeholder={t('stockAvailable')} value={newProduct.stockAvailable} onChange={handleAddProductChange} min='0' step='1' required />
-        <input className='bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400' type='text' name='size' placeholder={t('size')} value={newProduct.size} onChange={handleAddProductChange} required /> {/* Made required */}
+        <input className='bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full mb-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-400' type='text' name='size' placeholder={t('size')} value={newProduct.size} onChange={handleAddProductChange} required />
         <div className='flex items-center gap-2 mb-3'>
           <textarea className='bg-gray-100 text-gray-900 placeholder-gray-500 border border-gray-300 p-3 w-full rounded resize-y' name='description' placeholder={t('description')} value={newProduct.description} onChange={handleAddProductChange} rows='4' />
         </div>
@@ -1060,10 +1127,7 @@ const AddProductModal = ({ t, addMode, userRole, setAddMode, newProduct, setNewP
 };
 
 // CartDrawer Component
-const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addToCart, getTotalPrice, setPopupMessage, setPopupVisible, setCartItems, sessionId, products }) => {
-  const currentCurrencySymbol = t('currencySymbol');
-  const currentCurrencyCode = t('currencyCode');
-
+const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addToCart, getTotalPrice, setPopupMessage, setPopupVisible, setCartItems, sessionId, products, convertPrice, currencySymbol, currencyCode }) => {
   // Function to fetch full product details for items in cart from the product service
   const fetchCartProductDetails = async (cartData) => {
     const productIds = Object.keys(cartData);
@@ -1082,7 +1146,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
       return detailedCartItems.filter(item => item !== null);
     } catch (error) {
       console.error('Error fetching cart product details:', error);
-      setPopupMessage(t('errorLoadingCartDetails')); // New translation key
+      setPopupMessage(t('errorLoadingCartDetails'));
       setPopupVisible(true);
       return [];
     }
@@ -1092,8 +1156,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
     const syncCartWithBackend = async () => {
       if (sessionId && cartOpen) {
         try {
-          // Use API_URL here
-          const res = await axios.get(`${API_URL}/api/cart/${sessionId}`);
+          const res = await axios.get(`${API_URL}/api/cart/${sessionId}`); // Use API_URL
           const backendCartData = res.data;
 
           const newCartItems = await fetchCartProductDetails(backendCartData);
@@ -1109,7 +1172,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
     };
 
     syncCartWithBackend();
-  }, [sessionId, cartOpen, products]);
+  }, [sessionId, cartOpen, products, t, setPopupMessage, setPopupVisible, setCartItems]); // Added dependencies
 
   const currentTotalPrice = getTotalPrice();
 
@@ -1145,7 +1208,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
                 />
                 <div className='flex-grow'>
                   <p className='text-gray-900 font-semibold'>{item.product.name}</p>
-                  <p className='text-green-600 text-sm'>{currentCurrencySymbol}{convertPrice(item.product.price, currentCurrencyCode)}</p>
+                  <p className='text-green-600 text-sm'>{currencySymbol}{convertPrice(item.product.price, currencyCode)}</p>
                 </div>
                 <div className='flex items-center space-x-2'>
                   <button
@@ -1170,20 +1233,18 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
         <div className='mt-auto pt-4 border-t border-gray-300'>
             <div className='flex justify-between items-center text-xl font-bold text-gray-900 mb-4'>
                 <span>{t('total')}:</span>
-                <span className='text-green-600'>{currentCurrencySymbol}{convertPrice(currentTotalPrice, currentCurrencyCode)}</span>
+                <span className='text-green-600'>{currencySymbol}{convertPrice(currentTotalPrice, currencyCode)}</span>
             </div>
             <button
                 className='w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200'
                 onClick={async () => {
                     if (cartItems.length > 0) {
                         try {
-                            // Use API_URL here
                             await Promise.all(cartItems.map(item =>
-                                axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: item.product._id } })
+                                axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: item.product._id } }) // Use API_URL
                             ));
                             setPopupMessage(t('thankYouPurchase'));
                             setPopupVisible(true);
-                            // try { new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
                             setCartItems([]);
                             setCartOpen(false);
                             setTimeout(() => setPopupVisible(false), 3000);
@@ -1193,12 +1254,10 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
                             const errorMessage = error.response?.data?.error || `${t('checkoutFailed')} ${API_URL}`;
                             setPopupMessage(errorMessage);
                             setPopupVisible(true);
-                            // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
                         }
                     } else {
                         setPopupMessage(t('cartIsEmpty'));
                         setPopupVisible(true);
-                        // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
                     }
                 }}
             >
@@ -1209,6 +1268,39 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
     </div>
   );
 };
+
+// SettingsModal Component
+const SettingsModal = ({ t, showSettingsModal, setShowSettingsModal, userEmail, userRole }) => {
+  if (!showSettingsModal) return null;
+
+  return (
+    <div className='fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50'>
+      <div className='relative z-10 w-full max-w-sm p-8 bg-white/90 backdrop-blur-md border border-gray-300 rounded-3xl shadow-2xl overflow-hidden md:p-10'>
+        <button
+          className='absolute top-4 right-4 text-gray-700 text-xl'
+          onClick={() => setShowSettingsModal(false)}
+        >
+          &times;
+        </button>
+        <h2 className='text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg'>
+          Account Settings
+        </h2>
+        <div className='text-gray-800 text-lg space-y-4'>
+          <p><strong>Email:</strong> {userEmail}</p>
+          <p><strong>Role:</strong> {userRole}</p>
+          {/* Add more account details here if available from backend */}
+        </div>
+        <button
+          className='w-full py-3 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-6'
+          onClick={() => setShowSettingsModal(false)}
+        >
+          {t('close')}
+        </button>
+      </div>
+    </div>
+  );
+};
+
 
 // Main App Component (acting as the container/shell)
 function App() {
@@ -1226,13 +1318,14 @@ function App() {
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // New loading state for products
+  const [isLoading, setIsLoading] = useState(false);
 
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
 
   const [showSellerRegisterModal, setShowSellerRegisterModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false); // New state for settings modal
 
   const [addMode, setAddMode] = useState(false);
   const [newProduct, setNewProduct] = useState({
@@ -1247,8 +1340,8 @@ function App() {
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(8); // Display 8 products per page
-  const [totalProductsCount, setTotalProductsCount] = useState(0); // To store total count from backend
+  const [productsPerPage] = useState(8);
+  const [totalProductsCount, setTotalProductsCount] = useState(0);
 
   // Language state and translation function
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'en');
@@ -1257,34 +1350,33 @@ function App() {
   // Handles user login by sending credentials to the backend.
   const handleLogin = async () => {
     try {
-      // Correctly using 'res'
-      const res = await axios.post(`${API_URL}/api/login`, { email, password });
+      const res = await axios.post(`${API_URL}/api/login`, { email, password }); // Use API_URL
       localStorage.setItem('session_id', res.data.session_id);
       localStorage.setItem('user_role', res.data.role);
-      localStorage.setItem('user_email', res.data.user_email);
+      localStorage.setItem('user_email', res.data.user_email); // Now user_email is returned by backend
       setSessionId(res.data.session_id);
       setUserRole(res.data.role);
+      setSellerEmail(res.data.user_email); // Ensure sellerEmail is set on login
       setShowLoginModal(false);
     } catch (err) {
       console.error('Login failed:', err);
       setLoginError(true);
-      setPopupMessage(`${t('loginFailed')} ${err.message}. ${t('checkBackendServerAt')} ${API_URL}`); // Updated
+      setPopupMessage(`${t('loginFailed')} ${err.message}. ${t('checkBackendServerAt')} ${API_URL}`); // Use API_URL
       setPopupVisible(true);
-      // try { new Audio('https://www.soundjay.com/human/sounds/scream-01.mp3').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
     }
   };
 
   // Handles regular user registration.
   const handleRegister = async () => {
     try {
-      await axios.post(`${API_URL}/api/register`, { email, password });
-      setPopupMessage(t('registeredSuccessLogin')); // Updated
+      await axios.post(`${API_URL}/api/register`, { email, password }); // Use API_URL
+      setPopupMessage(t('registeredSuccessLogin'));
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
       setIsRegistering(false);
     } catch (err) {
       console.error('Registration failed:', err);
-      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('registrationFailed')} ${API_URL}`; // Updated
+      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('registrationFailed')} ${API_URL}`; // Use API_URL
       setPopupMessage(errorMessage);
       setPopupVisible(true);
     }
@@ -1293,11 +1385,11 @@ function App() {
   // Handles seller registration.
   const handleSellerRegister = async () => {
     try {
-      await axios.post(`${API_URL}/api/selleregister`, {
+      await axios.post(`${API_URL}/api/selleregister`, { // Use API_URL
         email, password, SellerName: sellerName, SellerPhone: sellerPhone,
         SellerGSTNumber: sellerGSTNumber, SellerAddres: sellerAddress,
       });
-      setPopupMessage(t('sellerRegisteredSuccessLogin')); // Updated
+      setPopupMessage(t('sellerRegisteredSuccessLogin'));
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
       setShowSellerRegisterModal(false);
@@ -1305,7 +1397,7 @@ function App() {
       setSellerGSTNumber(''); setSellerAddress('');
     } catch (err) {
       console.error('Seller registration failed:', err);
-      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('sellerRegistrationFailed')} ${API_URL}`; // Updated
+      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('sellerRegistrationFailed')} ${API_URL}`; // Use API_URL
       setPopupMessage(errorMessage);
       setPopupVisible(true);
     }
@@ -1325,23 +1417,19 @@ function App() {
 
   // Fetches products from the backend with pagination parameters.
   const fetchProducts = async () => {
-    setIsLoading(true); // Set loading true when fetching starts
+    setIsLoading(true);
     try {
-      // Pass page and limit parameters to the backend
-      let url = `${API_URL}/api/products?category=${category}&q=${searchQuery}&page=${currentPage}&limit=${productsPerPage}`;
-      if (userRole === 'admin' && sellerEmail) {
-        url += `&seller_email=${sellerEmail}`;
+      let url = `${API_URL}/api/products?category=${category}&q=${searchQuery}&page=${currentPage}&limit=${productsPerPage}`; // Use API_URL
+      // If the user is a 'seller', filter products by their email
+      // Changed from 'admin' to 'seller'
+      if (userRole === 'seller' && sellerEmail) {
+        url += `&session_id=${sessionId}`; // Pass session_id to backend for seller filtering
       }
-      console.log(`Fetching products from: ${url}`); // Added for debugging
+      console.log(`Fetching products from: ${url}`); // Log the URL for debugging
       const res = await axios.get(url);
-      console.log('Raw response data from product service:', res.data); // Added for debugging
+      console.log('Raw response data from product service:', res.data);
 
-      // Adjusting to directly use res.data as the array of products
-      const fetchedProducts = Array.isArray(res.data) ? res.data : []; // Ensure it's an array
-
-      // For now, set totalProductsCount based on the length of fetched products.
-      // THIS WILL NOT PROVIDE ACCURATE PAGINATION ACROSS ALL PRODUCTS
-      // IF THE BACKEND DOES NOT RETURN THE TOTAL COUNT.
+      const fetchedProducts = Array.isArray(res.data) ? res.data : [];
       const fetchedTotalProducts = fetchedProducts.length;
 
       const processedProducts = fetchedProducts.map(product => ({
@@ -1351,17 +1439,16 @@ function App() {
         size: product.size,
         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
       }));
-      console.log('Processed products before setting state:', processedProducts); // Added for debugging
       setProducts(processedProducts);
-      setTotalProductsCount(fetchedTotalProducts); // Update total count
+      setTotalProductsCount(fetchedTotalProducts);
 
     } catch (err) {
       console.error('Error fetching products:', err);
-      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('failedToFetchProducts')} ${API_URL}?`; // Updated
+      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('failedToFetchProducts')} ${API_URL}?`; // Use API_URL
       setPopupMessage(errorMessage);
       setPopupVisible(true);
     } finally {
-      setIsLoading(false); // Set loading false when fetching finishes (success or error)
+      setIsLoading(false);
     }
   };
 
@@ -1376,7 +1463,7 @@ function App() {
   // Add to Cart Logic (now interacts with Cart Service)
   const addToCart = async (displayId, backendProductId) => {
     if (!sessionId) {
-      setPopupMessage(t('loginRequiredAddToCart')); // Updated
+      setPopupMessage(t('loginRequiredAddToCart'));
       setPopupVisible(true);
       setShowLoginModal(true);
       return;
@@ -1384,25 +1471,23 @@ function App() {
     const productToAdd = products.find((p) => p._displayId === displayId);
     if (!productToAdd) return;
 
-    // Check stock locally before sending to backend to give faster feedback
     const existingCartItem = cartItems.find((item) => item.product._id === backendProductId);
     const currentQuantityInCart = existingCartItem ? existingCartItem.quantity : 0;
 
     if (productToAdd.stockAvailable !== undefined && productToAdd.stockAvailable !== null && currentQuantityInCart >= productToAdd.stockAvailable) {
-      setPopupMessage(`${t('outOfStock')}${productToAdd.name}${t('maxAvailableAdded')}`); // Updated
+      setPopupMessage(`${t('outOfStock')}${productToAdd.name}${t('maxAvailableAdded')}`);
       setPopupVisible(true);
-      // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
       return;
     }
 
     try {
-      await axios.post(`${API_URL}/api/cart`, {
+      await axios.post(`${API_URL}/api/cart`, { // Use API_URL
         session_id: sessionId,
         product_id: backendProductId,
         quantity: 1
       });
 
-      const cartRes = await axios.get(`${API_URL}/api/cart/${sessionId}`);
+      const cartRes = await axios.get(`${API_URL}/api/cart/${sessionId}`); // Use API_URL
       const backendCartData = cartRes.data;
       const newCartItems = await Promise.all(
           Object.keys(backendCartData).map(async (pid) => {
@@ -1412,23 +1497,21 @@ function App() {
       );
       setCartItems(newCartItems.filter(item => item !== null));
 
-      setPopupMessage(`${productToAdd.name}${t('itemAddedToCart')}`); // Updated
+      setPopupMessage(`${productToAdd.name}${t('itemAddedToCart')}`);
       setPopupVisible(true);
-      // try { new Audio('https://www.soundjay.com/button/beep-07.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
 
     } catch (err) {
       console.error('Error adding to cart via service:', err);
-      const errorMessage = err.response?.data?.error || `${t('failedToAddItemToCart')} ${API_URL}`; // Updated
+      const errorMessage = err.response?.data?.error || `${t('failedToAddItemToCart')} ${API_URL}`; // Use API_URL
       setPopupMessage(errorMessage);
       setPopupVisible(true);
-      // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
     }
   };
 
   // Remove from Cart Logic (now interacts with Cart Service)
   const removeFromCart = async (displayId, backendProductId) => {
     if (!sessionId) {
-      setPopupMessage(t('loginRequiredManageCart')); // Updated
+      setPopupMessage(t('loginRequiredManageCart'));
       setPopupVisible(true);
       setShowLoginModal(true);
       return;
@@ -1439,18 +1522,18 @@ function App() {
 
     try {
       if (existingCartItem.quantity > 1) {
-        await axios.put(`${API_URL}/api/cart`, {
+        await axios.put(`${API_URL}/api/cart`, { // Use API_URL
           session_id: sessionId,
           product_id: backendProductId,
           quantity: existingCartItem.quantity - 1
         });
-        setPopupMessage(t('itemQuantityDecreased')); // Updated
+        setPopupMessage(t('itemQuantityDecreased'));
       } else {
-        await axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: backendProductId } });
-        setPopupMessage(t('itemRemovedFromCart')); // Updated
+        await axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: backendProductId } }); // Use API_URL
+        setPopupMessage(t('itemRemovedFromCart'));
       }
 
-      const cartRes = await axios.get(`${API_URL}/api/cart/${sessionId}`);
+      const cartRes = await axios.get(`${API_URL}/api/cart/${sessionId}`); // Use API_URL
       const backendCartData = cartRes.data;
       const newCartItems = await Promise.all(
           Object.keys(backendCartData).map(async (pid) => {
@@ -1463,26 +1546,24 @@ function App() {
 
     } catch (err) {
       console.error('Error removing from cart via service:', err);
-      const errorMessage = err.response?.data?.error || `${t('failedToRemoveItem')} ${API_URL}`; // Updated
+      const errorMessage = err.response?.data?.error || `${t('failedToRemoveItem')} ${API_URL}`; // Use API_URL
       setPopupMessage(errorMessage);
       setPopupVisible(true);
-      // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
     }
   };
 
   // Handle Buy Now Logic (no change to backend interaction yet as it's local stock decrement)
   const handleBuyNow = (productToBuy) => {
     if (!sessionId) {
-      setPopupMessage(t('loginRequiredPurchase')); // Updated
+      setPopupMessage(t('loginRequiredPurchase'));
       setPopupVisible(true);
       setShowLoginModal(true);
       return;
     }
 
     if (productToBuy.stockAvailable <= 0) {
-      setPopupMessage(`${t('outOfStockShort')}${productToBuy.name}${t('outOfStockLong')}`); // Updated
+      setPopupMessage(`${t('outOfStockShort')}${productToBuy.name}${t('outOfStockLong')}`);
       setPopupVisible(true);
-      // try { new Audio('https://www.soundjay.com/error/sounds/error-01.wav').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
       return;
     }
 
@@ -1490,9 +1571,8 @@ function App() {
     setProducts(updatedProducts);
     setSelectedProduct(null);
 
-    setPopupMessage(`${t('purchaseSuccess')}${productToBuy.name}!`); // Updated
+    setPopupMessage(`${t('purchaseSuccess')}${productToBuy.name}!`);
     setPopupVisible(true);
-    // try { new Audio('https://www.soundjay.com/misc/sounds/pop.mp3').play(); } catch (audioErr) { console.warn('Failed to play audio:', audioErr); } // Commented out
   };
 
   // Calculate Total Price
@@ -1503,7 +1583,7 @@ function App() {
   // Effects
   useEffect(() => {
     fetchProducts();
-  }, [category, searchQuery, userRole, sellerEmail, language, currentPage]); // Added currentPage to dependencies
+  }, [category, searchQuery, userRole, sellerEmail, language, currentPage]);
 
   useEffect(() => {
     if (loginError) {
@@ -1540,25 +1620,39 @@ function App() {
 
             {sessionId ? (
               <>
+                {/* Display logged-in user's email and role for debugging */}
+                <span className='text-sm text-gray-700'>
+                  {sellerEmail} ({userRole})
+                </span>
+
+                {/* Always show Settings for logged-in users */}
                 <button
                   className='bg-gray-400 text-gray-900 px-3 py-2 rounded hover:bg-gray-500 transition duration-200'
-                  onClick={() => setPopupMessage('Settings clicked! (Functionality to be added)') && setPopupVisible(true)}
+                  onClick={() => setShowSettingsModal(true)}
                 >
                   ⚙️ {t('settings')}
                 </button>
-                <button
-                  className='bg-gray-400 text-gray-900 px-3 py-2 rounded hover:bg-gray-500 transition duration-200'
-                  onClick={() => setPopupMessage('Orders clicked! (Functionality to be added)') && setPopupVisible(true)}
-                >
-                  📦 {t('orders')}
-                </button>
-                <button
-                  className='bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition duration-200'
-                  onClick={() => setCartOpen(!cartOpen)}
-                >
-                  🛒 {cartItems.length}
-                </button>
-                {userRole === 'admin' && (
+
+                {/* Show Orders and Cart only if not seller role */}
+                {userRole !== 'seller' && ( // Changed from 'admin' to 'seller'
+                  <>
+                    <button
+                      className='bg-gray-400 text-gray-900 px-3 py-2 rounded hover:bg-gray-500 transition duration-200'
+                      onClick={() => setPopupMessage('Orders clicked! (Functionality to be added)') && setPopupVisible(true)}
+                    >
+                      📦 {t('orders')}
+                    </button>
+                    <button
+                      className='bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 transition duration-200'
+                      onClick={() => setCartOpen(!cartOpen)}
+                    >
+                      🛒 {cartItems.length}
+                    </button>
+                  </>
+                )}
+
+                {/* Show Add Product only if seller role */}
+                {userRole === 'seller' && ( // Changed from 'admin' to 'seller'
                   <button
                     className='bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700 transition duration-200'
                     onClick={() => setAddMode(true)}
@@ -1586,7 +1680,7 @@ function App() {
 
         {/* Product Grid Component */}
         <ProductGrid
-          t={t} // Pass translation function
+          t={t}
           products={products}
           addToCart={addToCart}
           handleBuyNow={handleBuyNow}
@@ -1596,14 +1690,17 @@ function App() {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           isLoading={isLoading}
-          currentPage={currentPage} // Pass pagination states and handlers
+          currentPage={currentPage}
           totalPages={totalPages}
           handlePageChange={handlePageChange}
+          convertPrice={convertPrice}
+          currencySymbol={t('currencySymbol')}
+          currencyCode={t('currencyCode')}
         />
 
         {/* Product Details Modal Component */}
         <ProductDetailsModal
-          t={t} // Pass translation function
+          t={t}
           selectedProduct={selectedProduct}
           setSelectedProduct={setSelectedProduct}
           addToCart={addToCart}
@@ -1611,11 +1708,14 @@ function App() {
           setPopupMessage={setPopupMessage}
           setPopupVisible={setPopupVisible}
           setShowLoginModal={setShowLoginModal}
+          convertPrice={convertPrice}
+          currencySymbol={t('currencySymbol')}
+          currencyCode={t('currencyCode')}
         />
 
         {/* Add Product Modal Component */}
         <AddProductModal
-          t={t} // Pass translation function
+          t={t}
           addMode={addMode}
           userRole={userRole}
           setAddMode={setAddMode}
@@ -1629,7 +1729,7 @@ function App() {
 
         {/* Cart Drawer Component */}
         <CartDrawer
-          t={t} // Pass translation function
+          t={t}
           cartOpen={cartOpen}
           setCartOpen={setCartOpen}
           cartItems={cartItems}
@@ -1641,6 +1741,9 @@ function App() {
           setCartItems={setCartItems}
           sessionId={sessionId}
           products={products}
+          convertPrice={convertPrice}
+          currencySymbol={t('currencySymbol')}
+          currencyCode={t('currencyCode')}
         />
 
         {/* Global Popup Notification Component */}
@@ -1650,8 +1753,7 @@ function App() {
       {/* Auth Modal Component */}
       {showLoginModal && (
         <AuthModal
-          t={t} // Pass translation function
-          _showLoginModal={showLoginModal} // Renamed prop to satisfy ESLint
+          t={t}
           setShowLoginModal={setShowLoginModal}
           handleLogin={handleLogin}
           handleRegister={handleRegister}
@@ -1673,6 +1775,17 @@ function App() {
           sellerAddress={sellerAddress}
           setSellerAddress={setSellerAddress}
           loginError={loginError}
+        />
+      )}
+
+      {/* Settings Modal Component */}
+      {showSettingsModal && (
+        <SettingsModal
+          t={t}
+          showSettingsModal={showSettingsModal}
+          setShowSettingsModal={setShowSettingsModal}
+          userEmail={sellerEmail}
+          userRole={userRole}
         />
       )}
 
