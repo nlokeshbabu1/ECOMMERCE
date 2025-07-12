@@ -106,7 +106,9 @@ const translations = {
     next: 'Next',
     page: 'Page',
     settings: 'Settings',
-    orders: 'Orders'
+    orders: 'Orders',
+    welcomeToShopping: 'Welcome to Shopping!',
+    discoverLatestFashion: 'Discover the latest fashion trends for all ages.',
   },
   hi: {
     flag: '🇮🇳',
@@ -185,7 +187,9 @@ const translations = {
     next: 'अगला',
     page: 'पृष्ठ',
     settings: 'सेटिंग्स',
-    orders: 'आदेश'
+    orders: 'आदेश',
+    welcomeToShopping: 'खरीदारी में आपका स्वागत है!',
+    discoverLatestFashion: 'सभी उम्र के लिए नवीनतम फैशन रुझानों की खोज करें।',
   },
   es: {
     flag: '🇪🇸',
@@ -264,7 +268,9 @@ const translations = {
     next: 'Siguiente',
     page: 'Página',
     settings: 'Configuración',
-    orders: 'Pedidos'
+    orders: 'Pedidos',
+    welcomeToShopping: '¡Bienvenido a Compras!',
+    discoverLatestFashion: 'Descubre las últimas tendencias de moda para todas las edades.',
   },
   fr: {
     flag: '🇫🇷',
@@ -340,10 +346,12 @@ const translations = {
     failedToFetchProducts: 'Échec de la récupération des produits ! Votre serveur backend est-il en cours d\'exécution sur',
     checkBackendServerAt: 'Veuillez vérifier votre serveur backend sur',
     previous: 'Précédent',
-    next: 'Suivant',
+    next: 'Siguiente',
     page: 'Page',
     settings: 'Paramètres',
-    orders: 'Commandes'
+    orders: 'Commandes',
+    welcomeToShopping: 'Bienvenue au shopping !',
+    discoverLatestFashion: 'Découvrez les dernières tendances de la mode pour tous les âges.',
   },
   de: {
     flag: '🇩🇪',
@@ -422,7 +430,9 @@ const translations = {
     next: 'Weiter',
     page: 'Seite',
     settings: 'Einstellungen',
-    orders: 'Bestellungen'
+    orders: 'Bestellungen',
+    welcomeToShopping: 'Willkommen beim Einkaufen!',
+    discoverLatestFashion: 'Entdecken Sie die neuesten Modetrends für jedes Alter.',
   },
   jp: {
     flag: '🇯🇵',
@@ -501,10 +511,12 @@ const translations = {
     next: '次へ',
     page: 'ページ',
     settings: '設定',
-    orders: '注文'
+    orders: '注文',
+    welcomeToShopping: 'ショッピングへようこそ！',
+    discoverLatestFashion: 'あらゆる年齢層の最新ファッションを発見してください。',
   },
   kr: {
-    flag: '�🇷',
+    flag: '🇰🇷',
     name: '한국어',
     storeName: '현대 의류 매장',
     currencySymbol: '₩',
@@ -580,8 +592,30 @@ const translations = {
     next: '下一页',
     page: '页',
     settings: '设置',
-    orders: '订单'
+    orders: '订单',
+    welcomeToShopping: '쇼핑에 오신 것을 환영합니다!',
+    discoverLatestFashion: '모든 연령대를 위한 최신 패션 트렌드를 만나보세요.',
   },
+};
+
+// Reusable Popup Notification Component
+const GlobalPopup = ({ message, visible, setVisible }) => {
+  useEffect(() => {
+    if (visible) {
+      const timer = setTimeout(() => {
+        setVisible(false);
+      }, 3000); // Popup disappears after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [visible, setVisible]);
+
+  if (!visible) return null;
+
+  return (
+    <div className='fixed top-6 right-6 z-50 bg-green-600 text-white px-6 py-3 rounded shadow-lg transition transform animate-bounce'>
+      {message}
+    </div>
+  );
 };
 
 // Global Styles Component
@@ -640,29 +674,51 @@ const GlobalStyles = () => (
     .product-item:nth-child(13) { animation-delay: 0.7s; }
     .product-item:nth-child(14) { animation-delay: 0.75s; }
     .product-item:nth-child(15) { animation-delay: 0.8s; }
+
+    /* Keyframes for image fading slideshow */
+    @keyframes image-fade {
+      0% { opacity: 0; }
+      10% { opacity: 1; }
+      25% { opacity: 1; }
+      35% { opacity: 0; }
+      100% { opacity: 0; }
+    }
+
+    .image-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 1; /* Ensure it's visible */
+      animation: none; /* Remove previous animation */
+    }
     `}
   </style>
 );
 
-// Reusable Popup Notification Component
-const GlobalPopup = ({ message, visible, setVisible }) => {
-  useEffect(() => {
-    if (visible) {
-      const timer = setTimeout(() => {
-        setVisible(false);
-      }, 3000); // Popup disappears after 3 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [visible, setVisible]);
-
-  if (!visible) return null;
+// Welcome Panel Component for AuthModal
+const WelcomePanel = ({ t }) => {
+  // Only one image for the background
+  const image = 'https://placehold.co/400x600/3498db/ffffff?text=Fashion'; // A generic fashion image
 
   return (
-    <div className='fixed top-6 right-6 z-50 bg-green-600 text-white px-6 py-3 rounded shadow-lg transition transform animate-bounce'>
-      {message}
+    <div className='hidden md:flex flex-col items-center justify-center p-8 bg-gradient-to-br from-purple-600 to-blue-500 rounded-l-3xl relative overflow-hidden flex-1'>
+      {/* Single Background Image */}
+      <img
+        src={image}
+        alt="Fashion Background"
+        className="image-slide"
+      />
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center p-8 text-center z-10">
+        <h2 className='text-4xl font-bold text-white mb-4 drop-shadow-lg'>{t('welcomeToShopping')}</h2>
+        {/* Removed the tagline as requested */}
+      </div>
     </div>
   );
 };
+
 
 // AuthModal Component
 const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSellerRegister, email, setEmail, password, setPassword, isRegistering, setIsRegistering, showSellerRegisterModal, setShowSellerRegisterModal, sellerName, setSellerName, sellerPhone, setSellerPhone, sellerGSTNumber, setSellerGSTNumber, sellerAddress, setSellerAddress, loginError }) => {
@@ -710,189 +766,195 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
   };
 
   return (
-    <div className='fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50'>
-      <div className='relative z-10 w-full max-w-sm p-8 bg-white/90 backdrop-blur-md border border-gray-300 rounded-3xl shadow-2xl overflow-hidden md:p-10'>
-        <button
-          className='absolute top-4 right-4 text-gray-700 text-xl'
-          onClick={() => setShowLoginModal(false)}
-        >
-          &times;
-        </button>
-        {showSellerRegisterModal ? (
-          // Seller Registration Form
-          <>
-            <h2 className='text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg'>
-              {t('sellerRegistration')}
-            </h2>
-            <input
-              className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
-              type='text'
-              placeholder={t('displayName')}
-              value={sellerName}
-              onChange={(e) => setSellerName(e.target.value)}
-              required
-            />
-            <input
-              className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
-              type='text'
-              placeholder={t('phone')}
-              value={sellerPhone}
-              onChange={(e) => setSellerPhone(e.target.value)}
-              required
-            />
-            <input
-              className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
-              type='text'
-              placeholder={t('gstNumber')}
-              value={sellerGSTNumber}
-              onChange={(e) => setSellerGSTNumber(e.target.value)}
-              required
-            />
-            <textarea
-              className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 resize-y'
-              placeholder={t('address')}
-              value={sellerAddress}
-              onChange={(e) => setSellerAddress(e.target.value)}
-              required
-            ></textarea>
-            <input
-              className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
-              type='email'
-              placeholder={t('email')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setFocusField('email')}
-              onBlur={() => setFocusField(null)}
-              required
-            />
-            <input
-              className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6'
-              type='password'
-              placeholder={t('password')}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onFocus={() => setFocusField('password')}
-              onBlur={() => setFocusField(null)}
-              required
-            />
-            {/* CAPTCHA for Seller Registration */}
-            <div className='flex items-center justify-between mb-4'>
-              <span className='text-xl font-bold text-gray-800 bg-gray-200 px-4 py-2 rounded-lg select-none tracking-wider'>
-                {captchaValue}
-              </span>
-              <button
-                type='button'
-                onClick={generateCaptcha}
-                className='text-sm text-blue-600 hover:underline'
-              >
-                Refresh CAPTCHA
-              </button>
-            </div>
-            <input
-              className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6 ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
-              type='text'
-              placeholder='Enter CAPTCHA'
-              value={userCaptchaInput}
-              onChange={(e) => setUserCaptchaInput(e.target.value)}
-              required
-            />
-            {captchaError && <p className='text-red-500 text-sm mb-4'>Incorrect CAPTCHA. Please try again.</p>}
+    <div className='fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4'> {/* Added p-4 for mobile padding */}
+      <div className='relative z-10 w-full max-w-4xl flex bg-white/90 backdrop-blur-md border border-gray-300 rounded-3xl shadow-2xl overflow-hidden'>
+        {/* Left Panel: Welcome Message and Scrolling Background */}
+        <WelcomePanel t={t} />
 
-            <button
-              className='w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-800'
-              onClick={() => handleSubmit(handleSellerRegister)}
-            >
-              {t('registerAsSeller')}
-            </button>
-            <button
-              className='w-full py-3 px-4 bg-gray-400 hover:bg-gray-500 text-gray-900 font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-3'
-              onClick={() => setShowSellerRegisterModal(false)}
-            >
-              {t('backToLogin')}
-            </button>
-          </>
-        ) : (
-          // Regular Login/Register Form
-          <>
-            {/* Emoji face above login */}
-            <div className='flex justify-center text-4xl mb-2'>
-              <span className='text-gray-900'>{getEmoji()} <span className='text-xl text-purple-700 ml-2'>@{email || 'username'}</span></span>
-            </div>
-            <h2 className='text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg'>
-              {t(isRegistering ? 'register' : 'login')}
-            </h2>
-            <input
-              className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
-              type='email'
-              placeholder={t('email')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setFocusField('email')}
-              onBlur={() => setFocusField(null)}
-            />
-            <input
-              className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6'
-              type='password'
-              placeholder={t('password')}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onFocus={() => setFocusField('password')}
-              onBlur={() => setFocusField(null)}
-            />
-            {/* CAPTCHA for Login/Register */}
-            <div className='flex items-center justify-between mb-4'>
-              <span className='text-xl font-bold text-gray-800 bg-gray-200 px-4 py-2 rounded-lg select-none tracking-wider'>
-                {captchaValue}
-              </span>
-              <button
-                type='button'
-                onClick={generateCaptcha}
-                className='text-sm text-blue-600 hover:underline'
-              >
-                Refresh CAPTCHA
-              </button>
-            </div>
-            <input
-              className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6 ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
-              type='text'
-              placeholder='Enter CAPTCHA'
-              value={userCaptchaInput}
-              onChange={(e) => setUserCaptchaInput(e.target.value)}
-              required
-            />
-            {captchaError && <p className='text-red-500 text-sm mb-4'>Incorrect CAPTCHA. Please try again.</p>}
+        {/* Right Panel: Login/Register Form */}
+        <div className='flex-1 p-8 md:p-10 relative'>
+          <button
+            className='absolute top-4 right-4 text-gray-700 text-xl'
+            onClick={() => setShowLoginModal(false)}
+          >
+            &times;
+          </button>
+          {showSellerRegisterModal ? (
+            // Seller Registration Form
+            <>
+              <h2 className='text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg'>
+                {t('sellerRegistration')}
+              </h2>
+              <input
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                type='text'
+                placeholder={t('displayName')}
+                value={sellerName}
+                onChange={(e) => setSellerName(e.target.value)}
+                required
+              />
+              <input
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                type='text'
+                placeholder={t('phone')}
+                value={sellerPhone}
+                onChange={(e) => setSellerPhone(e.target.value)}
+                required
+              />
+              <input
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                type='text'
+                placeholder={t('gstNumber')}
+                value={sellerGSTNumber}
+                onChange={(e) => setSellerGSTNumber(e.target.value)}
+                required
+              />
+              <textarea
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 resize-y'
+                placeholder={t('address')}
+                value={sellerAddress}
+                onChange={(e) => setSellerAddress(e.target.value)}
+                required
+              ></textarea>
+              <input
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                type='email'
+                placeholder={t('email')}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setFocusField('email')}
+                onBlur={() => setFocusField(null)}
+                required
+              />
+              <input
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6'
+                type='password'
+                placeholder={t('password')}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => setFocusField('password')}
+                onBlur={() => setFocusField(null)}
+                required
+              />
+              {/* CAPTCHA for Seller Registration */}
+              <div className='flex items-center justify-between mb-4'>
+                <span className='text-xl font-bold text-gray-800 bg-gray-200 px-4 py-2 rounded-lg select-none tracking-wider'>
+                  {captchaValue}
+                </span>
+                <button
+                  type='button'
+                  onClick={generateCaptcha}
+                  className='text-sm text-blue-600 hover:underline'
+                >
+                  Refresh CAPTCHA
+                </button>
+              </div>
+              <input
+                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6 ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
+                type='text'
+                placeholder='Enter CAPTCHA'
+                value={userCaptchaInput}
+                onChange={(e) => setUserCaptchaInput(e.target.value)}
+                required
+              />
+              {captchaError && <p className='text-red-500 text-sm mb-4'>Incorrect CAPTCHA. Please try again.</p>}
 
-            <button
-              className='w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-gray-800'
-              onClick={() => handleSubmit(isRegistering ? handleRegister : handleLogin)}
-            >
-              {t(isRegistering ? 'register' : 'login')}
-            </button>
-            <p className='text-center text-sm text-gray-700 mt-4'>
-              {isRegistering ? t('alreadyHaveAccount') : t('dontHaveAccount')}{' '}
               <button
-                className='text-purple-700 hover:text-purple-500 font-medium transition duration-300 ease-in-out'
-                onClick={() => setIsRegistering(!isRegistering)}
+                className='w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-800'
+                onClick={() => handleSubmit(handleSellerRegister)}
               >
-                {t(isRegistering ? 'loginHere' : 'registerHere')}
+                {t('registerAsSeller')}
               </button>
-            </p>
-            <button
-              className='w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-4'
-              onClick={() => setShowSellerRegisterModal(true)}
-            >
-              {t('registerAsSeller')}
-            </button>
-          </>
-        )}
+              <button
+                className='w-full py-3 px-4 bg-gray-400 hover:bg-gray-500 text-gray-900 font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-3'
+                onClick={() => setShowSellerRegisterModal(false)}
+              >
+                {t('backToLogin')}
+              </button>
+            </>
+          ) : (
+            // Regular Login/Register Form
+            <>
+              {/* Emoji face above login */}
+              <div className='flex justify-center text-4xl mb-2'>
+                <span className='text-gray-900'>{getEmoji()} <span className='text-xl text-purple-700 ml-2'>@{email || 'username'}</span></span>
+              </div>
+              <h2 className='text-3xl md:text-4xl font-bold mb-6 text-center text-purple-700 drop-shadow-lg'>
+                {t(isRegistering ? 'register' : 'login')}
+              </h2>
+              <input
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                type='email'
+                placeholder={t('email')}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setFocusField('email')}
+                onBlur={() => setFocusField(null)}
+              />
+              <input
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6'
+                type='password'
+                placeholder={t('password')}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => setFocusField('password')}
+                onBlur={() => setFocusField(null)}
+              />
+              {/* CAPTCHA for Login/Register */}
+              <div className='flex items-center justify-between mb-4'>
+                <span className='text-xl font-bold text-gray-800 bg-gray-200 px-4 py-2 rounded-lg select-none tracking-wider'>
+                  {captchaValue}
+                </span>
+                <button
+                  type='button'
+                  onClick={generateCaptcha}
+                  className='text-sm text-blue-600 hover:underline'
+                >
+                  Refresh CAPTCHA
+                </button>
+              </div>
+              <input
+                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6 ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
+                type='text'
+                placeholder='Enter CAPTCHA'
+                value={userCaptchaInput}
+                onChange={(e) => setUserCaptchaInput(e.target.value)}
+                required
+              />
+              {captchaError && <p className='text-red-500 text-sm mb-4'>Incorrect CAPTCHA. Please try again.</p>}
 
-        {loginError && (
-          <div className='absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center text-white text-center p-6 rounded-2xl animate-pulse z-20'>
-            <img src='https://i.postimg.cc/SQTP0QMw/download.jpg' alt='Ghost' className='w-32 h-32 animate-bounce mb-4' />
-            <p className='text-lg font-semibold text-red-400'>Wrong password... 👻</p>
-            <p className='text-sm mt-1 text-purple-200'>The Halloween spirit has awakened!</p>
-          </div>
-        )}
+              <button
+                className='w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-gray-800'
+                onClick={() => handleSubmit(isRegistering ? handleRegister : handleLogin)}
+              >
+                {t(isRegistering ? 'register' : 'login')}
+              </button>
+              <p className='text-center text-sm text-gray-700 mt-4'>
+                {isRegistering ? t('alreadyHaveAccount') : t('dontHaveAccount')}{' '}
+                <button
+                  className='text-purple-700 hover:text-purple-500 font-medium transition duration-300 ease-in-out'
+                  onClick={() => setIsRegistering(!isRegistering)}
+                >
+                  {t(isRegistering ? 'loginHere' : 'registerHere')}
+                </button>
+              </p>
+              <button
+                className='w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-4'
+                onClick={() => setShowSellerRegisterModal(true)}
+              >
+                {t('registerAsSeller')}
+              </button>
+            </>
+          )}
+
+          {loginError && (
+            <div className='absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center text-white text-center p-6 rounded-2xl animate-pulse z-20'>
+              <img src='https://placehold.co/300x200/FF0000/FFFFFF?text=Error' alt='Ghost' className='w-32 h-32 animate-bounce mb-4' />
+              <p className='text-lg font-semibold text-red-400'>Wrong password... 👻</p>
+              <p className='text-sm mt-1 text-purple-200'>The Halloween spirit has awakened!</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -935,7 +997,7 @@ const ProductGrid = ({ t, products, addToCart, handleBuyNow, setSelectedProduct,
               className='border border-gray-300 p-4 rounded-lg bg-white/70 backdrop-blur-sm hover:shadow-lg transition-shadow duration-200 product-item'
             >
               <img
-                src={p.image || 'https://via.placeholder.com/150/EEEEEE/000000?text=No+Image'}
+                src={p.image || 'https://placehold.co/300x200/EEEEEE/000000?text=No+Image'}
                 alt={p.name}
                 className='w-full h-40 object-cover rounded mb-2 cursor-pointer'
                 onClick={() => setSelectedProduct(p)}
@@ -1000,7 +1062,7 @@ const ProductDetailsModal = ({ t, selectedProduct, setSelectedProduct, addToCart
     <div className='fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50'>
       <div className='bg-white p-6 rounded-lg border border-gray-300 max-w-md w-full text-gray-900 animate-slide-in-up'>
         <img
-          src={selectedProduct.image || 'https://via.placeholder.com/300/EEEEEE/000000?text=No+Image'}
+          src={selectedProduct.image || 'https://placehold.co/300x200/EEEEEE/000000?text=No+Image'}
           alt={selectedProduct.name}
           className='w-full h-60 object-cover rounded mb-4'
         />
@@ -1202,7 +1264,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
                 className='flex items-center justify-between bg-gray-100 p-3 rounded-lg mb-3 shadow-md'
               >
                 <img
-                    src={item.product.image || 'https://via.placeholder.com/50/EEEEEE/000000?text=Item'}
+                    src={item.product.image || 'https://placehold.co/50/EEEEEE/000000?text=Item'}
                     alt={item.product.name}
                     className='w-16 h-16 object-cover rounded-md mr-3'
                 />
@@ -1427,20 +1489,29 @@ function App() {
       }
       console.log(`Fetching products from: ${url}`); // Log the URL for debugging
       const res = await axios.get(url);
-      console.log('Raw response data from product service:', res.data);
+      console.log('Raw response data from product service:', res.data); // Log the raw response
 
+      // IMPORTANT: Backend now returns an object with 'products' and 'total_count'
+      // Based on your console log, res.data is directly the array of products.
       const fetchedProducts = Array.isArray(res.data) ? res.data : [];
+      // Assuming total count is the number of items fetched if not explicitly provided in a 'total_count' field.
+      // If your backend *does* send a total_count in a different structure (e.g., in headers or a nested object),
+      // you'll need to adjust this line accordingly.
       const fetchedTotalProducts = fetchedProducts.length;
 
       const processedProducts = fetchedProducts.map(product => ({
         ...product,
-        image: product.image || 'https://via.placeholder.com/150/222222/FFFFFF?text=No+Image',
-        stockAvailable: parseInt(product.stockavailable),
-        size: product.size,
+        // Prioritize 'image' but fallback to 'image_url' if backend uses snake_case
+        image: product.image || product.image_url || 'https://placehold.co/150/222222/FFFFFF?text=No+Image',
+        // Prioritize 'stockAvailable' but fallback to 'stock_available' if backend uses snake_case
+        stockAvailable: parseInt(product.stockAvailable || product.stock_available || product.stockavailable), // Added product.stockavailable
+        // Prioritize 'size' but fallback to 'product_size' if backend uses different naming
+        size: product.size || product.product_size,
         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
       }));
       setProducts(processedProducts);
-      setTotalProductsCount(fetchedTotalProducts);
+      setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      console.log('Processed products for display:', processedProducts); // Log processed products
 
     } catch (err) {
       console.error('Error fetching products:', err);
@@ -1638,7 +1709,10 @@ function App() {
                   <>
                     <button
                       className='bg-gray-400 text-gray-900 px-3 py-2 rounded hover:bg-gray-500 transition duration-200'
-                      onClick={() => setPopupMessage('Orders clicked! (Functionality to be added)') && setPopupVisible(true)}
+                      onClick={() => {
+                        setPopupMessage('Orders clicked! (Functionality to be added)');
+                        setPopupVisible(true);
+                      }}
                     >
                       📦 {t('orders')}
                     </button>
