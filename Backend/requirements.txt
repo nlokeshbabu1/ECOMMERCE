@@ -5,4 +5,4 @@ redis
 flask-Bcrypt
 gunicorn
 python-dotenv
-
+mangum

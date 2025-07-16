@@ -9,6 +9,7 @@ import redis
 from flask_bcrypt import Bcrypt
 import uuid
 
+
 app = Flask(__name__)
 CORS(app) # Enable CORS for frontend communication
 
