@@ -18,10 +18,8 @@ CORS(app) # Enable CORS for frontend communication
 
 #uri = os.getenv("MONGO_HOST")
 
-# Using the provided hardcoded MongoDB URI.
-# In a production environment, this should ideally be managed via environment variables for security.
-uri = "mongodb+srv://admin:NGmKTeRyyEDi6zXy@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-
+uri= f"mongodb+srv://admin:Lm8C4copevLC30iY@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+#f"mongodb+srv://admin:g6XptAeuHn3Tvhwf@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 #Bcrypt
 bcrypt=Bcrypt(app)
@@ -92,6 +90,10 @@ def register():
 
     if users_collection.find_one({"email": data['email']}):
         return jsonify({"error": "User already exists"}), 409
+    
+    if "@" not in data['email'] or "." not in data['email']:
+      return jsonify({"error": "Invalid mail_id"}), 401
+
 
     hashed_pw = bcrypt.generate_password_hash(data['password']).decode('utf-8')
     
