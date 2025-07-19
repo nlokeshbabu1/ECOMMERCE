@@ -92,7 +92,7 @@ const translations = {
     purchaseSuccess: 'Successfully purchased 1x ',
     thankYouPurchase: 'Thank you for your purchase! Your order has been placed. (Frontend simulation)',
     cartIsEmpty: 'Your cart is empty!',
-    loginFailed: 'Login failed:',
+    loginFailed: 'Login failed: Invalid email or password.', // Updated for clarity
     registrationFailed: 'Registration failed! Please check your backend server at',
     sellerRegistrationFailed: 'Seller registration failed! Please check your backend server at',
     registeredSuccessLogin: 'Registered successfully. Please log in.',
@@ -100,7 +100,7 @@ const translations = {
     failedToLoadCart: 'Failed to load cart from backend. Please check your backend service.',
     errorLoadingCartDetails: 'Error loading cart details.',
     checkoutFailed: 'Checkout failed due to a server error.',
-    failedToFetchProducts: 'Failed to fetch products! Is your backend server running at',
+    failedToFetchProducts: 'Failed to fetch products! Is your backend server running?',
     checkBackendServerAt: 'Please check your backend server at',
     previous: 'Previous',
     next: 'Next',
@@ -109,6 +109,7 @@ const translations = {
     orders: 'Orders',
     welcomeToShopping: 'Welcome to Shopping!',
     discoverLatestFashion: 'Discover the latest fashion trends for all ages.',
+    invalidEmail: 'Please enter a valid email address.', // New translation
   },
   hi: {
     flag: '🇮🇳',
@@ -173,7 +174,7 @@ const translations = {
     purchaseSuccess: 'सफलतापूर्वक 1x खरीदा गया ',
     thankYouPurchase: 'आपकी खरीद के लिए धन्यवाद! आपका ऑर्डर दिया गया है। (फ्रंटएंड सिमुलेशन)',
     cartIsEmpty: 'आपका कार्ट खाली है!',
-    loginFailed: 'लॉगिन विफल:',
+    loginFailed: 'लॉगिन विफल: अमान्य ईमेल या पासवर्ड।',
     registrationFailed: 'पंजीकरण विफल! कृपया अपने बैकएंड सर्वर की जाँच करें',
     sellerRegistrationFailed: 'विक्रेता पंजीकरण विफल! कृपया अपने बैकएंड सर्वर की जाँच करें',
     registeredSuccessLogin: 'सफलतापूर्वक पंजीकृत। कृपया लॉगिन करें।',
@@ -181,8 +182,8 @@ const translations = {
     failedToLoadCart: 'बैकएंड से कार्ट लोड करने में विफल। कृपया अपने बैकएंड सेवा की जाँच करें।',
     errorLoadingCartDetails: 'कार्ट विवरण लोड करने में त्रुटि।',
     checkoutFailed: 'सर्वर त्रुटि के कारण चेकआउट विफल।',
-    failedToFetchProducts: 'उत्पाद प्राप्त करने में विफल! क्या आपका बैकएंड सर्वर चल रहा है',
-    checkBackendServerAt: 'कृपया अपने बैकएंड सर्वर की जाँच करें',
+    failedToFetchProducts: 'उत्पाद प्राप्त करने में विफल! क्या आपका बैकएंड सर्वर चल रहा है?',
+    checkBackendServerAt: 'कृपया अपने बैकएंड सर्वर की जाँच करें:',
     previous: 'पिछला',
     next: 'अगला',
     page: 'पृष्ठ',
@@ -190,6 +191,7 @@ const translations = {
     orders: 'आदेश',
     welcomeToShopping: 'खरीदारी में आपका स्वागत है!',
     discoverLatestFashion: 'सभी उम्र के लिए नवीनतम फैशन रुझानों की खोज करें।',
+    invalidEmail: 'कृपया एक मान्य ईमेल पता दर्ज करें।',
   },
   es: {
     flag: '🇪🇸',
@@ -254,7 +256,7 @@ const translations = {
     purchaseSuccess: '¡Comprado exitosamente 1x ',
     thankYouPurchase: '¡Gracias por tu compra! Tu pedido ha sido realizado. (Simulación frontend)',
     cartIsEmpty: '¡Tu carrito está vacío!',
-    loginFailed: 'Error al iniciar sesión:',
+    loginFailed: 'Error al iniciar sesión: Correo electrónico o contraseña inválidos.',
     registrationFailed: '¡Error de registro! Por favor, verifica tu servidor backend en',
     sellerRegistrationFailed: '¡Error de registro de vendedor! Por favor, verifica tu servidor backend en',
     registeredSuccessLogin: 'Registrado exitosamente. Por favor, inicia sesión.',
@@ -262,7 +264,7 @@ const translations = {
     failedToLoadCart: 'Error al cargar el carrito desde el backend. Por favor, verifica tu servicio backend.',
     errorLoadingCartDetails: 'Error al cargar los detalles del carrito.',
     checkoutFailed: 'El pago falló debido a un error del servidor.',
-    failedToFetchProducts: '¡Error al obtener productos! ¿Está funcionando tu servidor backend en',
+    failedToFetchProducts: '¡Error al obtener productos! ¿Está funcionando tu servidor backend?',
     checkBackendServerAt: 'Por favor, verifica tu servidor backend en',
     previous: 'Anterior',
     next: 'Siguiente',
@@ -335,7 +337,7 @@ const translations = {
     purchaseSuccess: 'Acheté avec succès 1x ',
     thankYouPurchase: 'Merci pour votre achat ! Votre commande a été passée. (Simulation frontend)',
     cartIsEmpty: 'Votre panier est vide !',
-    loginFailed: 'Échec de la connexion :',
+    loginFailed: 'Échec de la connexion : E-mail ou mot de passe invalide.',
     registrationFailed: 'Échec de l\'inscription ! Veuillez vérifier votre serveur backend sur',
     sellerRegistrationFailed: 'Échec de l\'inscription du vendeur ! Veuillez vérifier votre serveur backend sur',
     registeredSuccessLogin: 'Inscrit avec succès. Veuillez vous connecter.',
@@ -343,7 +345,7 @@ const translations = {
     failedToLoadCart: 'Échec du chargement du panier depuis le backend. Veuillez vérifier votre service backend.',
     errorLoadingCartDetails: 'Erreur lors du chargement des détails du panier.',
     checkoutFailed: 'Le paiement a échoué en raison d\'une erreur de serveur.',
-    failedToFetchProducts: 'Échec de la récupération des produits ! Votre serveur backend est-il en cours d\'exécution sur',
+    failedToFetchProducts: 'Échec de la récupération des produits ! Votre serveur backend est-il en cours d\'exécution?',
     checkBackendServerAt: 'Veuillez vérifier votre serveur backend sur',
     previous: 'Précédent',
     next: 'Siguiente',
@@ -416,7 +418,7 @@ const translations = {
     purchaseSuccess: 'Erfolgreich 1x gekauft ',
     thankYouPurchase: 'Vielen Dank für Ihren Einkauf! Ihre Bestellung wurde aufgegeben. (Frontend-Simulation)',
     cartIsEmpty: 'Ihr Warenkorb ist leer!',
-    loginFailed: 'Login fehlgeschlagen:',
+    loginFailed: 'Login fehlgeschlagen: Ungültige E-Mail oder Passwort.',
     registrationFailed: 'Registrierung fehlgeschlagen! Bitte überprüfen Sie Ihren Backend-Server unter',
     sellerRegistrationFailed: 'Verkäuferregistrierung fehlgeschlagen! Bitte überprüfen Sie Ihren Backend-SERVER unter',
     registeredSuccessLogin: 'Erfolgreich registriert. Bitte melden Sie sich an.',
@@ -424,7 +426,7 @@ const translations = {
     failedToLoadCart: 'Warenkorb konnte vom Backend nicht geladen werden. Bitte überprüfen Sie Ihren Backend-Service.',
     errorLoadingCartDetails: 'Fehler beim Laden der Warenkorbdetails.',
     checkoutFailed: 'Der Checkout ist aufgrund eines Serverfehlers fehlgeschlagen.',
-    failedToFetchProducts: 'Produkte konnten nicht abgerufen werden! Läuft Ihr Backend-Server unter',
+    failedToFetchProducts: 'Produkte konnten nicht abgerufen werden! Läuft Ihr Backend-Server?',
     checkBackendServerAt: 'Bitte überprüfen Sie Ihren Backend-Server unter',
     previous: 'Zurück',
     next: 'Weiter',
@@ -497,7 +499,7 @@ const translations = {
     purchaseSuccess: '1x の購入に成功しました: ',
     thankYouPurchase: 'ご購入ありがとうございます！ご注文が完了しました。（フロントエンドシミュレーション）',
     cartIsEmpty: 'カートは空です！',
-    loginFailed: 'ログイン失敗:',
+    loginFailed: 'ログイン失敗: 無効なメールアドレスまたはパスワード。',
     registrationFailed: '登録失敗！バックエンドサーバーを確認してください:',
     sellerRegistrationFailed: '販売者登録失敗！バックエンドサーバーを確認してください:',
     registeredSuccessLogin: '登録に成功しました。ログインしてください。',
@@ -512,8 +514,8 @@ const translations = {
     page: 'ページ',
     settings: '設定',
     orders: '注文',
-    welcomeToShopping: 'ショッピングへようこそ！',
-    discoverLatestFashion: 'あらゆる年齢層の最新ファッションを発見してください。',
+    welcomeToShopping: '쇼핑にようこそ！',
+    discoverLatestFashion: 'あらゆる年齢層の最新ファッションをチェックしましょう。',
   },
   kr: {
     flag: '🇰🇷',
@@ -578,7 +580,7 @@ const translations = {
     purchaseSuccess: '1x ',
     thankYouPurchase: '구매해주셔서 감사합니다! 주문이 접수되었습니다. (프론트엔드 시뮬레이션)',
     cartIsEmpty: '장바구니가 비어있습니다!',
-    loginFailed: '로그인 실패:',
+    loginFailed: '로그인 실패: 잘못된 이메일 또는 비밀번호입니다.',
     registrationFailed: '등록 실패! 백엔드 서버를 확인해주세요:',
     sellerRegistrationFailed: '판매자 등록 실패! 백엔드 서버를 확인해주세요:',
     registeredSuccessLogin: '성공적으로 등록되었습니다. 로그인해주세요。',
@@ -594,12 +596,12 @@ const translations = {
     settings: '设置',
     orders: '订单',
     welcomeToShopping: '쇼핑에 오신 것을 환영합니다!',
-    discoverLatestFashion: '모든 연령대를 위한 최신 패션 트렌드를 만나보세요.',
+    discoverLatestFashion: '모든 연령대를 위한 최신 패션 트렌드를 만나보세요。',
   },
 };
 
 // Reusable Popup Notification Component
-const GlobalPopup = ({ message, visible, setVisible }) => {
+const GlobalPopup = ({ message, visible, setVisible, type = 'success' }) => { // Added type prop with default
   useEffect(() => {
     if (visible) {
       const timer = setTimeout(() => {
@@ -611,8 +613,10 @@ const GlobalPopup = ({ message, visible, setVisible }) => {
 
   if (!visible) return null;
 
+  const bgColorClass = type === 'error' ? 'bg-red-600' : 'bg-green-600'; // Conditional background color
+
   return (
-    <div className='fixed top-6 right-6 z-50 bg-green-600 text-white px-6 py-3 rounded shadow-lg transition transform animate-bounce'>
+    <div className={`fixed top-6 right-6 z-50 ${bgColorClass} text-white px-6 py-3 rounded shadow-lg transition transform animate-bounce`}>
       {message}
     </div>
   );
@@ -721,11 +725,15 @@ const WelcomePanel = ({ t }) => {
 
 
 // AuthModal Component
-const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSellerRegister, email, setEmail, password, setPassword, isRegistering, setIsRegistering, showSellerRegisterModal, setShowSellerRegisterModal, sellerName, setSellerName, sellerPhone, setSellerPhone, sellerGSTNumber, setSellerGSTNumber, sellerAddress, setSellerAddress, loginError }) => {
+const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSellerRegister, email, setEmail, password, setPassword, isRegistering, setIsRegistering, showSellerRegisterModal, setShowSellerRegisterModal, sellerName, setSellerName, sellerPhone, setSellerPhone, sellerGSTNumber, setSellerGSTNumber, sellerAddress, setSellerAddress, setPopupMessage, setPopupVisible }) => {
   const [focusField, setFocusField] = useState(null);
   const [captchaValue, setCaptchaValue] = useState('');
   const [userCaptchaInput, setUserCaptchaInput] = useState('');
   const [captchaError, setCaptchaError] = useState(false);
+  // New state for password strength
+  const [passwordStrength, setPasswordStrength] = useState({ text: '', color: 'text-gray-500', messages: [] });
+  // New state for email validation error
+  const [emailError, setEmailError] = useState('');
 
   // Function to generate a simple CAPTCHA string
   const generateCaptcha = () => {
@@ -739,9 +747,87 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
     setCaptchaError(false); // Clear any previous CAPTCHA error
   };
 
+  // Function to determine password strength
+  const getPasswordStrength = (password) => {
+    let strength = 0;
+    const messages = [];
+
+    if (password.length >= 8) {
+      strength += 1;
+      messages.push('At least 8 characters');
+    } else {
+      messages.push('Needs at least 8 characters');
+    }
+    if (password.match(/[a-z]/)) {
+      strength += 1;
+      messages.push('Lowercase letter');
+    } else {
+      messages.push('Needs lowercase letter');
+    }
+    if (password.match(/[A-Z]/)) {
+      strength += 1;
+      messages.push('Uppercase letter');
+    } else {
+      messages.push('Needs uppercase letter');
+    }
+    if (password.match(/[0-9]/)) {
+      strength += 1;
+      messages.push('Number');
+    } else {
+      messages.push('Needs a number');
+    }
+    if (password.match(/[^a-zA-Z0-9]/)) {
+      strength += 1;
+      messages.push('Special character');
+    } else {
+      messages.push('Needs a special character');
+    }
+
+    if (password.length === 0) {
+      return { text: '', color: 'text-gray-500', messages: [] };
+    }
+
+    if (strength === 5) {
+      return { text: 'Very Strong', color: 'text-green-600', messages };
+    } else if (strength >= 4) {
+      return { text: 'Strong', color: 'text-blue-600', messages };
+    } else if (strength >= 3) {
+      return { text: 'Medium', color: 'text-yellow-600', messages };
+    } else if (strength >= 1) {
+      return { text: 'Weak', color: 'text-orange-600', messages };
+    } else {
+      return { text: 'Very Weak', color: 'text-red-600', messages };
+    }
+  };
+
+  // Basic email validation regex
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
   useEffect(() => {
     generateCaptcha(); // Generate CAPTCHA on component mount
   }, []);
+
+  // Update password strength when password changes (only for registration)
+  useEffect(() => {
+    if (isRegistering || showSellerRegisterModal) { // Apply for both registration forms
+      setPasswordStrength(getPasswordStrength(password));
+    } else {
+      setPasswordStrength({ text: '', color: 'text-gray-500', messages: [] }); // Clear for login
+    }
+  }, [password, isRegistering, showSellerRegisterModal]);
+
+  // Handle email input change and validate
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (e.target.value && !validateEmail(e.target.value)) {
+      setEmailError(t('invalidEmail'));
+    } else {
+      setEmailError('');
+    }
+  };
 
   // Determines the emoji to display based on input field focus and password content.
   const getEmoji = () => {
@@ -756,12 +842,24 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
 
   // Handle form submission (login/register/seller register)
   const handleSubmit = (actionHandler) => {
+    // Perform email validation before CAPTCHA check
+    if (!validateEmail(email)) {
+      setEmailError(t('invalidEmail'));
+      setPopupMessage(t('invalidEmail'));
+      setPopupVisible(true);
+      return;
+    } else {
+      setEmailError('');
+    }
+
     if (userCaptchaInput !== captchaValue) {
       setCaptchaError(true);
+      setPopupMessage('Incorrect CAPTCHA. Please try again.'); // Popup for CAPTCHA error
+      setPopupVisible(true);
       generateCaptcha(); // Regenerate CAPTCHA on incorrect attempt
       return;
     }
-    // If CAPTCHA is correct, proceed with the actual action
+    // If CAPTCHA and email are correct, proceed with the actual action
     actionHandler();
   };
 
@@ -817,17 +915,18 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 required
               ></textarea>
               <input
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1 ${emailError ? 'border-red-500' : 'border-gray-300'}`}
                 type='email'
                 placeholder={t('email')}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 onFocus={() => setFocusField('email')}
                 onBlur={() => setFocusField(null)}
                 required
               />
+              {emailError && <p className='text-red-500 text-sm mb-4'>{emailError}</p>}
               <input
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6'
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1'
                 type='password'
                 placeholder={t('password')}
                 value={password}
@@ -836,6 +935,16 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 onBlur={() => setFocusField(null)}
                 required
               />
+              {(isRegistering || showSellerRegisterModal) && password.length > 0 && (
+                <div className={`text-sm mt-1 mb-4 ${passwordStrength.color}`}>
+                  Password Strength: <span className="font-semibold">{passwordStrength.text}</span>
+                  <ul className="list-disc list-inside text-xs mt-1">
+                    {passwordStrength.messages.map((msg, index) => (
+                      <li key={index}>{msg}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               {/* CAPTCHA for Seller Registration */}
               <div className='flex items-center justify-between mb-4'>
                 <span className='text-xl font-bold text-gray-800 bg-gray-200 px-4 py-2 rounded-lg select-none tracking-wider'>
@@ -883,16 +992,17 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 {t(isRegistering ? 'register' : 'login')}
               </h2>
               <input
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1 ${emailError ? 'border-red-500' : 'border-gray-300'}`}
                 type='email'
                 placeholder={t('email')}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 onFocus={() => setFocusField('email')}
                 onBlur={() => setFocusField(null)}
               />
+              {emailError && <p className='text-red-500 text-sm mb-4'>{emailError}</p>}
               <input
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6'
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1'
                 type='password'
                 placeholder={t('password')}
                 value={password}
@@ -900,6 +1010,16 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 onFocus={() => setFocusField('password')}
                 onBlur={() => setFocusField(null)}
               />
+              {isRegistering && password.length > 0 && (
+                <div className={`text-sm mt-1 mb-4 ${passwordStrength.color}`}>
+                  Password Strength: <span className="font-semibold">{passwordStrength.text}</span>
+                  <ul className="list-disc list-inside text-xs mt-1">
+                    {passwordStrength.messages.map((msg, index) => (
+                      <li key={index}>{msg}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               {/* CAPTCHA for Login/Register */}
               <div className='flex items-center justify-between mb-4'>
                 <span className='text-xl font-bold text-gray-800 bg-gray-200 px-4 py-2 rounded-lg select-none tracking-wider'>
@@ -945,14 +1065,6 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 {t('registerAsSeller')}
               </button>
             </>
-          )}
-
-          {loginError && (
-            <div className='absolute inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center text-white text-center p-6 rounded-2xl animate-pulse z-20'>
-              <img src='https://placehold.co/300x200/FF0000/FFFFFF?text=Error' alt='Ghost' className='w-32 h-32 animate-bounce mb-4' />
-              <p className='text-lg font-semibold text-red-400'>Wrong password... 👻</p>
-              <p className='text-sm mt-1 text-purple-200'>The Halloween spirit has awakened!</p>
-            </div>
           )}
         </div>
       </div>
@@ -1227,7 +1339,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
         } catch (err) {
           console.error('Error fetching cart from backend:', err);
           const errorMessage = err.response?.data?.error || `${t('failedToLoadCart')} ${API_URL}`;
-          setPopupMessage(errorMessage);
+          setPopupMessage(errorMessage, 'error'); // Pass type 'error'
           setPopupVisible(true);
         }
       }
@@ -1314,7 +1426,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
                         } catch (error) {
                             console.error('Error during checkout:', error);
                             const errorMessage = error.response?.data?.error || `${t('checkoutFailed')} ${API_URL}`;
-                            setPopupMessage(errorMessage);
+                            setPopupMessage(errorMessage, 'error'); // Pass type 'error'
                             setPopupVisible(true);
                         }
                     } else {
@@ -1376,7 +1488,7 @@ function App() {
   const [category, setCategory] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
-  const [loginError, setLoginError] = useState(false);
+  // Removed loginError state as it's no longer needed for the ghost animation
   const [cartItems, setCartItems] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -1384,6 +1496,7 @@ function App() {
 
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
+  const [popupType, setPopupType] = useState('success'); // New state for popup type
 
   const [showSellerRegisterModal, setShowSellerRegisterModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -1406,8 +1519,16 @@ function App() {
   const [totalProductsCount, setTotalProductsCount] = useState(0);
 
   // Language state and translation function
-  const [language, setLanguage] = useState(localStorage.getItem('language') || 'en');
+  // Set default language to 'en' explicitly, ignoring localStorage for initial load
+  const [language, setLanguage] = useState('en');
   const t = (key) => translations[language][key] || key;
+
+  // Custom setPopupMessage function to also set type
+  const showPopup = (message, type = 'success') => {
+    setPopupMessage(message);
+    setPopupType(type);
+    setPopupVisible(true);
+  };
 
   // Handles user login by sending credentials to the backend.
   const handleLogin = async () => {
@@ -1422,9 +1543,13 @@ function App() {
       setShowLoginModal(false);
     } catch (err) {
       console.error('Login failed:', err);
-      setLoginError(true);
-      setPopupMessage(`${t('loginFailed')} ${err.message}. ${t('checkBackendServerAt')} ${API_URL}`); // Use API_URL
-      setPopupVisible(true);
+      let specificErrorMessage = t('loginFailed');
+      if (err.response && err.response.data && err.response.data.error) {
+        specificErrorMessage = err.response.data.error;
+      } else if (axios.isAxiosError(err) && err.code === 'ERR_NETWORK') {
+        specificErrorMessage = `Network Error: ${t('checkBackendServerAt')} ${API_URL}.`;
+      }
+      showPopup(specificErrorMessage, 'error'); // Show specific error in global popup
     }
   };
 
@@ -1432,15 +1557,18 @@ function App() {
   const handleRegister = async () => {
     try {
       await axios.post(`${API_URL}/api/register`, { email, password }); // Use API_URL
-      setPopupMessage(t('registeredSuccessLogin'));
-      setPopupVisible(true);
+      showPopup(t('registeredSuccessLogin'), 'success');
       setTimeout(() => setPopupVisible(false), 2000);
       setIsRegistering(false);
     } catch (err) {
       console.error('Registration failed:', err);
-      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('registrationFailed')} ${API_URL}`; // Use API_URL
-      setPopupMessage(errorMessage);
-      setPopupVisible(true);
+      let specificErrorMessage = t('registrationFailed');
+      if (err.response && err.response.data && err.response.data.error) {
+        specificErrorMessage = err.response.data.error;
+      } else if (axios.isAxiosError(err) && err.code === 'ERR_NETWORK') {
+        specificErrorMessage = `Network Error: ${t('checkBackendServerAt')} ${API_URL}.`;
+      }
+      showPopup(specificErrorMessage, 'error');
     }
   };
 
@@ -1451,17 +1579,20 @@ function App() {
         email, password, SellerName: sellerName, SellerPhone: sellerPhone,
         SellerGSTNumber: sellerGSTNumber, SellerAddres: sellerAddress,
       });
-      setPopupMessage(t('sellerRegisteredSuccessLogin'));
-      setPopupVisible(true);
+      showPopup(t('sellerRegisteredSuccessLogin'), 'success');
       setTimeout(() => setPopupVisible(false), 2000);
       setShowSellerRegisterModal(false);
       setEmail(''); setPassword(''); setSellerName(''); setSellerPhone('');
       setSellerGSTNumber(''); setSellerAddress('');
     } catch (err) {
       console.error('Seller registration failed:', err);
-      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('sellerRegistrationFailed')} ${API_URL}`; // Use API_URL
-      setPopupMessage(errorMessage);
-      setPopupVisible(true);
+      let specificErrorMessage = t('sellerRegistrationFailed');
+      if (err.response && err.response.data && err.response.data.error) {
+        specificErrorMessage = err.response.data.error;
+      } else if (axios.isAxiosError(err) && err.code === 'ERR_NETWORK') {
+        specificErrorMessage = `Network Error: ${t('checkBackendServerAt')} ${API_URL}.`;
+      }
+      showPopup(specificErrorMessage, 'error');
     }
   };
 
@@ -1475,6 +1606,7 @@ function App() {
     setSellerEmail(null);
     setCartItems([]);
     setShowLoginModal(false);
+    showPopup('Logged out successfully!', 'success'); // Popup for logout success
   };
 
   // Fetches products from the backend with pagination parameters.
@@ -1515,9 +1647,13 @@ function App() {
 
     } catch (err) {
       console.error('Error fetching products:', err);
-      const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('failedToFetchProducts')} ${API_URL}?`; // Use API_URL
-      setPopupMessage(errorMessage);
-      setPopupVisible(true);
+      let errorMessage = `${t('failedToFetchProducts')} ${t('checkBackendServerAt')} ${API_URL}`;
+      if (axios.isAxiosError(err) && err.code === 'ERR_NETWORK') {
+        errorMessage = `Network Error: ${t('failedToFetchProducts')} ${t('checkBackendServerAt')} ${API_URL}`;
+      } else if (err.response && err.response.data && err.response.data.error) {
+        errorMessage = err.response.data.error;
+      }
+      showPopup(errorMessage, 'error');
     } finally {
       setIsLoading(false);
     }
@@ -1534,8 +1670,7 @@ function App() {
   // Add to Cart Logic (now interacts with Cart Service)
   const addToCart = async (displayId, backendProductId) => {
     if (!sessionId) {
-      setPopupMessage(t('loginRequiredAddToCart'));
-      setPopupVisible(true);
+      showPopup(t('loginRequiredAddToCart'), 'error');
       setShowLoginModal(true);
       return;
     }
@@ -1546,8 +1681,7 @@ function App() {
     const currentQuantityInCart = existingCartItem ? existingCartItem.quantity : 0;
 
     if (productToAdd.stockAvailable !== undefined && productToAdd.stockAvailable !== null && currentQuantityInCart >= productToAdd.stockAvailable) {
-      setPopupMessage(`${t('outOfStock')}${productToAdd.name}${t('maxAvailableAdded')}`);
-      setPopupVisible(true);
+      showPopup(`${t('outOfStock')}${productToAdd.name}${t('maxAvailableAdded')}`, 'error');
       return;
     }
 
@@ -1568,22 +1702,19 @@ function App() {
       );
       setCartItems(newCartItems.filter(item => item !== null));
 
-      setPopupMessage(`${productToAdd.name}${t('itemAddedToCart')}`);
-      setPopupVisible(true);
+      showPopup(`${productToAdd.name}${t('itemAddedToCart')}`, 'success');
 
     } catch (err) {
       console.error('Error adding to cart via service:', err);
       const errorMessage = err.response?.data?.error || `${t('failedToAddItemToCart')} ${API_URL}`; // Use API_URL
-      setPopupMessage(errorMessage);
-      setPopupVisible(true);
+      showPopup(errorMessage, 'error');
     }
   };
 
   // Remove from Cart Logic (now interacts with Cart Service)
   const removeFromCart = async (displayId, backendProductId) => {
     if (!sessionId) {
-      setPopupMessage(t('loginRequiredManageCart'));
-      setPopupVisible(true);
+      showPopup(t('loginRequiredManageCart'), 'error');
       setShowLoginModal(true);
       return;
     }
@@ -1598,10 +1729,10 @@ function App() {
           product_id: backendProductId,
           quantity: existingCartItem.quantity - 1
         });
-        setPopupMessage(t('itemQuantityDecreased'));
+        showPopup(t('itemQuantityDecreased'), 'success');
       } else {
         await axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: backendProductId } }); // Use API_URL
-        setPopupMessage(t('itemRemovedFromCart'));
+        showPopup(t('itemRemovedFromCart'), 'success');
       }
 
       const cartRes = await axios.get(`${API_URL}/api/cart/${sessionId}`); // Use API_URL
@@ -1613,28 +1744,24 @@ function App() {
           })
       );
       setCartItems(newCartItems.filter(item => item !== null));
-      setPopupVisible(true);
 
     } catch (err) {
       console.error('Error removing from cart via service:', err);
       const errorMessage = err.response?.data?.error || `${t('failedToRemoveItem')} ${API_URL}`; // Use API_URL
-      setPopupMessage(errorMessage);
-      setPopupVisible(true);
+      showPopup(errorMessage, 'error');
     }
   };
 
   // Handle Buy Now Logic (no change to backend interaction yet as it's local stock decrement)
   const handleBuyNow = (productToBuy) => {
     if (!sessionId) {
-      setPopupMessage(t('loginRequiredPurchase'));
-      setPopupVisible(true);
+      showPopup(t('loginRequiredPurchase'), 'error');
       setShowLoginModal(true);
       return;
     }
 
     if (productToBuy.stockAvailable <= 0) {
-      setPopupMessage(`${t('outOfStockShort')}${productToBuy.name}${t('outOfStockLong')}`);
-      setPopupVisible(true);
+      showPopup(`${t('outOfStockShort')}${productToBuy.name}${t('outOfStockLong')}`, 'error');
       return;
     }
 
@@ -1642,8 +1769,7 @@ function App() {
     setProducts(updatedProducts);
     setSelectedProduct(null);
 
-    setPopupMessage(`${t('purchaseSuccess')}${productToBuy.name}!`);
-    setPopupVisible(true);
+    showPopup(`${t('purchaseSuccess')}${productToBuy.name}!`, 'success');
   };
 
   // Calculate Total Price
@@ -1655,13 +1781,6 @@ function App() {
   useEffect(() => {
     fetchProducts();
   }, [category, searchQuery, userRole, sellerEmail, language, currentPage]);
-
-  useEffect(() => {
-    if (loginError) {
-      const timer = setTimeout(() => setLoginError(false), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [loginError]);
 
   // Save selected language to localStorage
   useEffect(() => {
@@ -1710,8 +1829,7 @@ function App() {
                     <button
                       className='bg-gray-400 text-gray-900 px-3 py-2 rounded hover:bg-gray-500 transition duration-200'
                       onClick={() => {
-                        setPopupMessage('Orders clicked! (Functionality to be added)');
-                        setPopupVisible(true);
+                        showPopup('Orders clicked! (Functionality to be added)', 'info'); // Using info type for temporary message
                       }}
                     >
                       📦 {t('orders')}
@@ -1779,7 +1897,7 @@ function App() {
           setSelectedProduct={setSelectedProduct}
           addToCart={addToCart}
           sessionId={sessionId}
-          setPopupMessage={setPopupMessage}
+          setPopupMessage={showPopup} // Pass showPopup
           setPopupVisible={setPopupVisible}
           setShowLoginModal={setShowLoginModal}
           convertPrice={convertPrice}
@@ -1795,7 +1913,7 @@ function App() {
           setAddMode={setAddMode}
           newProduct={newProduct}
           setNewProduct={setNewProduct}
-          setPopupMessage={setPopupMessage}
+          setPopupMessage={showPopup} // Pass showPopup
           setPopupVisible={setPopupVisible}
           sessionId={sessionId}
           fetchProducts={fetchProducts}
@@ -1810,7 +1928,7 @@ function App() {
           removeFromCart={removeFromCart}
           addToCart={addToCart}
           getTotalPrice={getTotalPrice}
-          setPopupMessage={setPopupMessage}
+          setPopupMessage={showPopup} // Pass showPopup
           setPopupVisible={setPopupVisible}
           setCartItems={setCartItems}
           sessionId={sessionId}
@@ -1821,7 +1939,7 @@ function App() {
         />
 
         {/* Global Popup Notification Component */}
-        <GlobalPopup message={popupMessage} visible={popupVisible} setVisible={setPopupVisible} />
+        <GlobalPopup message={popupMessage} visible={popupVisible} setVisible={setPopupVisible} type={popupType} />
       </div>
 
       {/* Auth Modal Component */}
@@ -1848,7 +1966,8 @@ function App() {
           setSellerGSTNumber={setSellerGSTNumber}
           sellerAddress={sellerAddress}
           setSellerAddress={setSellerAddress}
-          loginError={loginError}
+          setPopupMessage={showPopup} // Pass showPopup
+          setPopupVisible={setPopupVisible} // Pass setPopupVisible
         />
       )}
 
