@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  serviceName: mongodb-service
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongo
+        image: mongo:latest
+        ports:
+        - containerPort: 27017
+        resources:
+          # limits:
+          #   memory: "2Gi"
+          #   cpu: "500m"
+          # requests:
+          #   memory: "1Gi"
+          #   cpu: "250m"
+        env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mongo
+                key: user-name
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongo
+                key: password
+        volumeMounts:
+          - name: mongo-mount
+            mountPath: /data/db  
+
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-mount
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 2Gi

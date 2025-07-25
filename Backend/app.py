@@ -13,20 +13,20 @@ import uuid
 app = Flask(__name__)
 CORS(app) # Enable CORS for frontend communication
 
-# MongoDB Setup (Product Service specific collections)
-#os.getenv("MONGO_HOST", "localhost:27017")
+mongo_host = os.getenv("MONGO_HOST", "localhost")
+mongo_port = int(os.getenv("MONGO_PORT", 27017))
+mongo_db = os.getenv("MONGO_DB", "testdb")
+mongo_user = os.getenv("MONGO_USERNAME")
+mongo_pass = os.getenv("MONGO_PASSWORD")
 
-#uri = os.getenv("MONGO_HOST")
-
-uri= f"mongodb+srv://admin:Lm8C4copevLC30iY@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-#f"mongodb+srv://admin:g6XptAeuHn3Tvhwf@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = f"mongodb://{mongo_user}:{mongo_pass}@{mongo_host}:{mongo_port}/{mongo_db}?authSource=admin&retryWrites=true&w=majority"
 
 #Bcrypt
 bcrypt=Bcrypt(app)
 
 
 mongo_client = MongoClient(uri)
-db = mongo_client['clothing_ecom']
+db = mongo_client['mongo_db']
 products_collection = db['products']
 users_collection = db['users'] # Need users collection to verify seller email if session is not passed
 
@@ -38,7 +38,8 @@ print("MongoDB index on 'category' for products collection ensured.")
 # Redis Setup (for session management and potential caching in the future)
 redis_host = os.getenv("REDIS_HOST", "localhost")
 redis_port = int(os.getenv("REDIS_PORT", 6379))
-redis_client = redis.Redis(host=redis_host, port=redis_port, db=0, decode_responses=True)
+redis_password = os.getenv("REDIS_PASSWORD")
+redis_client = redis.Redis(host=redis_host, port=redis_port,password=redis_password ,db=0, decode_responses=True)
 
 
 # Helper function to get user email from session ID stored in Redis
