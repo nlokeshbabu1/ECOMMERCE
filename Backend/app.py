@@ -13,13 +13,18 @@ import uuid
 app = Flask(__name__)
 CORS(app) # Enable CORS for frontend communication
 
-mongo_host = os.getenv("MONGO_HOST", "localhost")
+mongo_host = os.getenv("MONGO_HOST")  # Not used in URI anymore
 mongo_port = int(os.getenv("MONGO_PORT", 27017))
 mongo_db = os.getenv("MONGO_DB", "testdb")
 mongo_user = os.getenv("MONGO_USERNAME")
 mongo_pass = os.getenv("MONGO_PASSWORD")
 
-uri = f"mongodb://{mongo_user}:{mongo_pass}@{mongo_host}:{mongo_port}/{mongo_db}?authSource=admin&retryWrites=true&w=majority"
+uri = (
+    f"mongodb://{mongo_user}:{mongo_pass}@"
+    f"mongodb-0.mongodb.default.svc.cluster.local:27017,"
+    f"mongodb-1.mongodb.default.svc.cluster.local:27017/"
+    f"{mongo_db}?authSource=admin&replicaSet=rs0&retryWrites=true&w=majority"
+)
 
 #Bcrypt
 bcrypt=Bcrypt(app)
