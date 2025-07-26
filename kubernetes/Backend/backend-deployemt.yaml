@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backend
 spec:
-  replicas: 1  # Adjust as needed for scaling
+  replicas: 3  # Adjust as needed for scaling
   selector:
     matchLabels:
       app: backend-app
@@ -18,11 +18,11 @@ spec:
         ports:
         - containerPort: 5000
         env:
-          - name: DB-URL
-            value: "mongodb"
+          - name: DB_URL
+            value: "mongodb-service"
           - name: MONGO_PORT
             value: "27017"
-          - name:  MONGO-DB
+          - name:  MONGO_DB
             value: "clothing_ecom"
           - name: MONGO_INITDB_ROOT_USERNAME
             valueFrom:
@@ -50,24 +50,25 @@ spec:
         readinessProbe:
           httpGet:
             path: /
-            port: 80
+            port: 5000
           initialDelaySeconds: 15  # Give time for Nginx to start
           periodSeconds: 10
 
         livenessProbe:
           httpGet:
             path: /
-            port: 80
+            port: 5000
           initialDelaySeconds: 30  # Ensure app is stable before liveness kicks in
           periodSeconds: 20
 
         # Resource Management
+
         resources:
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
           requests:
-            memory: "128Mi"
-            cpu: "300m"
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
 
 

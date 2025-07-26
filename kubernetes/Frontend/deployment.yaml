@@ -17,6 +17,9 @@ spec:
         image: nlokeshbabu/frontend:16387021921
         ports:
         - containerPort: 80
+        env:
+          - name: REACT_APP_BACKEND_URL
+            value: "http://backend-service:5000"
         
         # Health Probes
         readinessProbe:
@@ -41,5 +44,3 @@ spec:
           requests:
             memory: "128Mi"
             cpu: "300m"
-
-

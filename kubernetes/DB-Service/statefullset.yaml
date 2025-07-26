@@ -3,11 +3,11 @@ kind: StatefulSet
 metadata:
   name: mongodb
 spec:
+  serviceName: mongodb-service
+  replicas: 2
   selector:
     matchLabels:
       app: mongodb
-  serviceName: mongodb-service
-  replicas: 2
   template:
     metadata:
       labels:
@@ -15,35 +15,70 @@ spec:
     spec:
       containers:
       - name: mongo
-        image: mongo:latest
+        image: mongo:6.0    # Use a fixed version instead of latest for stability
         ports:
         - containerPort: 27017
+        
+        # ✅ Command-line args for Replica Set
         args:
           - "--replSet"
           - "rs0"
           - "--bind_ip_all"
-        resources:
-          # limits:
-          #   memory: "2Gi"
-          #   cpu: "500m"
-          # requests:
-          #   memory: "1Gi"
-          #   cpu: "250m"
-        env:
-          - name: MONGO_INITDB_ROOT_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: mongo
-                key: user-name
-          - name: MONGO_INITDB_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mongo
-                key: password
-        volumeMounts:
-          - name: mongo-mount
-            mountPath: /data/db  
 
+        # ✅ Resource Requests & Limits (recommended for production)
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+
+        # ✅ Environment Variables for credentials
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo
+              key: user-name
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo
+              key: password
+
+        # ✅ Volume for Persistent Data
+        volumeMounts:
+        - name: mongo-mount
+          mountPath: /data/db  
+
+        # ✅ Liveness Probe (Checks MongoDB health)
+        livenessProbe:
+          exec:
+            command:
+            - mongosh
+            - --quiet
+            - --eval
+            - "db.adminCommand('ping')"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        # ✅ Readiness Probe (Ensures pod is ready to accept traffic)
+        readinessProbe:
+          exec:
+            command:
+            - mongosh
+            - --quiet
+            - --eval
+            - "db.adminCommand('ping')"
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+  # ✅ Persistent Volume Claim for each pod
   volumeClaimTemplates:
   - metadata:
       name: mongo-mount

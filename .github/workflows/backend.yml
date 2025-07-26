@@ -63,6 +63,30 @@ jobs:
             push: true
             tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{github.run_id}}
 
+
+  update-k8s-file:
+    name: updating k8s files
+    runs-on: ubuntu-lates
+    needs: docker
+    steps:
+      - name: checkout the code
+        uses: actions/checkout@v4
+        with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Update image tag in k8s file
+        run: |
+          sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{github.run_id}}|g" kubernetes/Backend/backend-deployemt.yaml    
+            
+            
+      - name: Commit the changes
+        run: |
+                    git config --global user.email "lokeshbabu.nalluri1111@gmail.com"
+                    git config --global user.name "nlokeshbabu1"
+                    git add kubernetes/Backend/backend-deployemt.yaml
+                    git commit -m "Update image tag in k8s file"
+                    git push --force
+
     
           
 
