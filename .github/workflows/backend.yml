@@ -66,7 +66,7 @@ jobs:
 
   update-k8s-file:
     name: updating k8s files
-    runs-on: ubuntu-lates
+    runs-on: ubuntu-latest
     needs: docker
     steps:
       - name: checkout the code
@@ -86,8 +86,3 @@ jobs:
                     git add kubernetes/Backend/backend-deployemt.yaml
                     git commit -m "Update image tag in k8s file"
                     git push --force
-
-    
-          
-
-        
