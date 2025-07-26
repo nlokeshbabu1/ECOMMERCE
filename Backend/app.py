@@ -194,6 +194,7 @@ def selleregister():
         return jsonify({"error": "User already exists"}), 409
 
     hashed_pw = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    
 
     users_collection.insert_one({
         'email': data['email'],

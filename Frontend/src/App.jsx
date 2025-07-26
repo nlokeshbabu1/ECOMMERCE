@@ -8,7 +8,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL;
 // --- Currency Conversion Rates (Simulated) ---
 const exchangeRates = {
   USD: 1.0,
-  INR: 83.5,
+  INR: 86.4,
   EUR: 0.93,
   JPY: 156.5,
   KRW: 1380.0,
