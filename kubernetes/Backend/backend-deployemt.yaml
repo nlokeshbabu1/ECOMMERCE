@@ -49,14 +49,14 @@ spec:
         # Health Probes
         readinessProbe:
           httpGet:
-            path: /
+            path: /healthz
             port: 5000
           initialDelaySeconds: 15  # Give time for Nginx to start
           periodSeconds: 10
 
         livenessProbe:
           httpGet:
-            path: /
+            path: /healthz
             port: 5000
           initialDelaySeconds: 30  # Ensure app is stable before liveness kicks in
           periodSeconds: 20
