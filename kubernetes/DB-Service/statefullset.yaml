@@ -24,6 +24,9 @@ spec:
           - "--replSet"
           - "rs0"
           - "--bind_ip_all"
+          - "--auth"    #MongoDB requires a shared keyFile for internal authentication between the nodes.
+          - "--keyFile"
+          - "/etc/secrets/mongo-keyfile"
 
         # ✅ Resource Requests & Limits (recommended for production)
         resources:
@@ -51,6 +54,9 @@ spec:
         volumeMounts:
         - name: mongo-mount
           mountPath: /data/db  
+        - name: mongo-keyfile
+          mountPath: /etc/secrets
+          readOnly: true
 
         # ✅ Liveness Probe (Checks MongoDB health)
         livenessProbe:
@@ -77,6 +83,11 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 5
           failureThreshold: 3
+        
+      volumes:
+        - name: mongo-keyfile
+          secret:
+            secretName: mongo-keyfile-secret
 
   # ✅ Persistent Volume Claim for each pod
   volumeClaimTemplates:
