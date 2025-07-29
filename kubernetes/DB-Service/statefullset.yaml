@@ -18,6 +18,9 @@ spec:
         image: mongo:6.0    # Use a fixed version instead of latest for stability
         ports:
         - containerPort: 27017
+
+        command: # Changed from args to command
+          - mongod        
         
         # ✅ Command-line args for Replica Set
         args:
@@ -26,7 +29,7 @@ spec:
           - "--bind_ip_all"
           - "--auth"    #MongoDB requires a shared keyFile for internal authentication between the nodes.
           - "--keyFile"
-          - "/etc/secrets/mongo-keyfile"
+          - "/etc/secrets/mongo-keyfile/mongo-keyfile"
 
         # ✅ Resource Requests & Limits (recommended for production)
         resources:
@@ -55,7 +58,7 @@ spec:
         - name: mongo-mount
           mountPath: /data/db  
         - name: mongo-keyfile
-          mountPath: /etc/secrets/
+          mountPath: /etc/secrets/mongo-keyfile
           readOnly: true
 
         # ✅ Liveness Probe (Checks MongoDB health)
@@ -88,7 +91,7 @@ spec:
         - name: mongo-keyfile
           secret:
             secretName: mongo-keyfile-secret
-            defaultMode: 0600 
+
 
   # ✅ Persistent Volume Claim for each pod
   volumeClaimTemplates:
