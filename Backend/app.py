@@ -17,8 +17,9 @@ CORS(app) # Enable CORS for frontend communication
 
 mongo_port = int(os.getenv("MONGO_PORT", 27017))
 mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
-mongo_user = os.getenv("MONGO_INITDB_ROOT_USERNAME")
-mongo_pass = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
+
+mongo_user = quote_plus(os.getenv("MONGO_INITDB_ROOT_USERNAME", ""))
+mongo_pass = quote_plus(os.getenv("MONGO_INITDB_ROOT_PASSWORD", ""))
 
 if not mongo_user or not mongo_pass:
     raise RuntimeError("MongoDB credentials are not set in environment variables")
@@ -30,12 +31,12 @@ uri = (
     f"{mongo_db}?authSource=admin&replicaSet=rs0&retryWrites=true&w=majority"
 )
 
-#Bcrypt
-bcrypt=Bcrypt(app)
+# Bcrypt for password hashing
+bcrypt = Bcrypt(app)
 
-
+# Mongo client connection
 mongo_client = MongoClient(uri)
-db = mongo_client['mongo_db']
+db = mongo_client[mongo_db]
 products_collection = db['products']
 users_collection = db['users'] # Need users collection to verify seller email if session is not passed
 
