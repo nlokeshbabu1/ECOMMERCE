@@ -65,23 +65,26 @@ spec:
         livenessProbe:
           exec:
             command:
-            - mongosh
-            - --quiet
-            - --eval
-            - "db.adminCommand('ping')"
+            # IMPORTANT: Kubernetes doesn't expand environment variables directly in the
+            # 'command' or 'args' array elements. You need to wrap the command in 'sh -c'
+            # to allow shell variable expansion.
+            # For production, it's best practice to create a dedicated, low-privilege
+            # probe user in MongoDB rather than using the root credentials directly for probes.
+            - sh
+            - -c
+            - "mongosh --quiet --host 127.0.0.1 --port 27017 --username $(MONGO_INITDB_ROOT_USERNAME) --password $(MONGO_INITDB_ROOT_PASSWORD) --authenticationDatabase admin --eval 'db.adminCommand(\"ping\")'"
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
 
-        # ✅ Readiness Probe (Ensures pod is ready to accept traffic)
+        # ✅ Readiness Probe (Ensures pod is ready to accept traffic with authentication)
         readinessProbe:
           exec:
             command:
-            - mongosh
-            - --quiet
-            - --eval
-            - "db.adminCommand('ping')"
+            - sh
+            - -c
+            - "mongosh --quiet --host 127.0.0.1 --port 27017 --username $(MONGO_INITDB_ROOT_USERNAME) --password $(MONGO_INITDB_ROOT_PASSWORD) --authenticationDatabase admin --eval 'db.adminCommand(\"ping\")'"
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 5
