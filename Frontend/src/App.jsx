@@ -3,14 +3,13 @@ import axios from 'axios';
 
 // --- Single Backend API Endpoint ---
 // All frontend API calls will now go to this single endpoint.
-
-process.env.REACT_APP_API_URL = 'http://localhost:5000';
-const API_URL = process.env.REACT_APP_BACKEND_URL;
+// This should be a direct string, not process.env.API_URL for browser environments.
+const API_URL = 'http://localhost:5000';
 
 // --- Currency Conversion Rates (Simulated) ---
 const exchangeRates = {
   USD: 1.0,
-  INR: 86.4,
+  INR: 83.5,
   EUR: 0.93,
   JPY: 156.5,
   KRW: 1380.0,
@@ -35,8 +34,8 @@ const translations = {
     flag: '🇬🇧',
     name: 'English',
     storeName: 'Modern Clothing Store',
-    currencySymbol: '$',
-    currencyCode: 'USD',
+    currencySymbol: '₹', // Changed to Indian Rupee symbol
+    currencyCode: 'INR',  // Changed to Indian Rupee code
     loginRegister: 'Login / Register',
     signOut: 'Sign Out',
     addProduct: '+ Add Product',
@@ -110,11 +109,12 @@ const translations = {
     settings: 'Settings',
     orders: 'Orders',
     welcomeToShopping: 'Welcome to Shopping!',
-    discoverLatestFashion: 'Discover the latest fashion trends for all ages.',
+        discoverLatestFashion: 'Discover the latest fashion trends for all ages.',
     invalidEmail: 'Please enter a valid email address.', // New translation
+    forgotPassword: 'Forgot Password?',
   },
   hi: {
-    flag: '🇮🇳',
+    flag: '🇮�',
     name: 'हिन्दी',
     storeName: 'आधुनिक कपड़ों की दुकान',
     currencySymbol: '₹',
@@ -194,6 +194,7 @@ const translations = {
     welcomeToShopping: 'खरीदारी में आपका स्वागत है!',
     discoverLatestFashion: 'सभी उम्र के लिए नवीनतम फैशन रुझानों की खोज करें।',
     invalidEmail: 'कृपया एक मान्य ईमेल पता दर्ज करें।',
+    forgotPassword: 'पासवर्ड भूल गए?',
   },
   es: {
     flag: '🇪🇸',
@@ -275,6 +276,8 @@ const translations = {
     orders: 'Pedidos',
     welcomeToShopping: '¡Bienvenido a Compras!',
     discoverLatestFashion: 'Descubre las últimas tendencias de moda para todas las edades.',
+    invalidEmail: 'Por favor, introduce una dirección de correo electrónico válida.',
+    forgotPassword: '¿Olvidaste tu contraseña?',
   },
   fr: {
     flag: '🇫🇷',
@@ -354,8 +357,10 @@ const translations = {
     page: 'Page',
     settings: 'Paramètres',
     orders: 'Commandes',
-    welcomeToShopping: 'Bienvenue au shopping !',
+    welcomeToShopping: 'Bienvenido al shopping !',
     discoverLatestFashion: 'Découvrez les dernières tendances de la mode pour tous les âges.',
+    invalidEmail: 'Veuillez saisir une adresse e-mail valide.',
+    forgotPassword: 'Mot de passe oublié?',
   },
   de: {
     flag: '🇩🇪',
@@ -437,6 +442,7 @@ const translations = {
     orders: 'Bestellungen',
     welcomeToShopping: 'Willkommen beim Einkaufen!',
     discoverLatestFashion: 'Entdecken Sie die neuesten Modetrends für jedes Alter.',
+    forgotPassword: 'Passwort vergessen?',
   },
   jp: {
     flag: '🇯🇵',
@@ -508,7 +514,7 @@ const translations = {
     sellerRegisteredSuccessLogin: '販売者登録に成功しました！ログインしてください。',
     failedToLoadCart: 'バックエンドからカートを読み込めませんでした。バックエンドサービスを確認してください。',
     errorLoadingCartDetails: 'カート詳細の読み込み中にエラーが発生했습니다。',
-    checkoutFailed: 'サーバーエラーによりチェックアウトに失敗했습니다。',
+    checkoutFailed: 'サーバーエラーによりチェックアウトに失敗しました。',
     failedToFetchProducts: '상품을 가져오지 못했습니다! 백엔드 서버가 실행 중입니까?',
     checkBackendServerAt: '백엔드 서버를 확인해주세요:',
     previous: '前へ',
@@ -518,6 +524,7 @@ const translations = {
     orders: '注文',
     welcomeToShopping: '쇼핑にようこそ！',
     discoverLatestFashion: 'あらゆる年齢層の最新ファッションをチェックしましょう。',
+    forgotPassword: 'パスワードをお忘れですか？',
   },
   kr: {
     flag: '🇰🇷',
@@ -599,6 +606,7 @@ const translations = {
     orders: '订单',
     welcomeToShopping: '쇼핑에 오신 것을 환영합니다!',
     discoverLatestFashion: '모든 연령대를 위한 최신 패션 트렌드를 만나보세요。',
+    forgotPassword: '비밀번호를 잊으셨나요?',
   },
 };
 
@@ -700,6 +708,21 @@ const GlobalStyles = () => (
       opacity: 1; /* Ensure it's visible */
       animation: none; /* Remove previous animation */
     }
+
+    /* Spinner styles */
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #fff;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     `}
   </style>
 );
@@ -736,6 +759,11 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
   const [passwordStrength, setPasswordStrength] = useState({ text: '', color: 'text-gray-500', messages: [] });
   // New state for email validation error
   const [emailError, setEmailError] = useState('');
+  // New state for show password toggle
+  const [showPassword, setShowPassword] = useState(false);
+  // New state for authentication loading
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
 
   // Function to generate a simple CAPTCHA string
   const generateCaptcha = () => {
@@ -843,7 +871,7 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
   };
 
   // Handle form submission (login/register/seller register)
-  const handleSubmit = (actionHandler) => {
+  const handleSubmit = async (actionHandler) => {
     // Perform email validation before CAPTCHA check
     if (!validateEmail(email)) {
       setEmailError(t('invalidEmail'));
@@ -861,8 +889,13 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
       generateCaptcha(); // Regenerate CAPTCHA on incorrect attempt
       return;
     }
-    // If CAPTCHA and email are correct, proceed with the actual action
-    actionHandler();
+
+    setIsAuthenticating(true); // Set loading state
+    try {
+      await actionHandler();
+    } finally {
+      setIsAuthenticating(false); // Clear loading state
+    }
   };
 
   return (
@@ -886,7 +919,7 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 {t('sellerRegistration')}
               </h2>
               <input
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 shadow-sm'
                 type='text'
                 placeholder={t('displayName')}
                 value={sellerName}
@@ -894,7 +927,7 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 required
               />
               <input
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 shadow-sm'
                 type='text'
                 placeholder={t('phone')}
                 value={sellerPhone}
@@ -902,7 +935,7 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 required
               />
               <input
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4'
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 shadow-sm'
                 type='text'
                 placeholder={t('gstNumber')}
                 value={sellerGSTNumber}
@@ -910,14 +943,14 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 required
               />
               <textarea
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 resize-y'
+                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-4 resize-y shadow-sm'
                 placeholder={t('address')}
                 value={sellerAddress}
                 onChange={(e) => setSellerAddress(e.target.value)}
                 required
               ></textarea>
               <input
-                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1 ${emailError ? 'border-red-500' : 'border-gray-300'}`}
+                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1 shadow-sm ${emailError ? 'border-red-500' : 'border-gray-300'}`}
                 type='email'
                 placeholder={t('email')}
                 value={email}
@@ -927,16 +960,25 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 required
               />
               {emailError && <p className='text-red-500 text-sm mb-4'>{emailError}</p>}
-              <input
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1'
-                type='password'
-                placeholder={t('password')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={() => setFocusField('password')}
-                onBlur={() => setFocusField(null)}
-                required
-              />
+              <div className='relative mb-1'>
+                <input
+                  className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out shadow-sm pr-10'
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder={t('password')}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setFocusField('password')}
+                  onBlur={() => setFocusField(null)}
+                  required
+                />
+                <button
+                  type='button'
+                  className='absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-600 hover:text-gray-800'
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
               {(isRegistering || showSellerRegisterModal) && password.length > 0 && (
                 <div className={`text-sm mt-1 mb-4 ${passwordStrength.color}`}>
                   Password Strength: <span className="font-semibold">{passwordStrength.text}</span>
@@ -961,7 +1003,7 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 </button>
               </div>
               <input
-                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6 ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
+                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6 shadow-sm ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
                 type='text'
                 placeholder='Enter CAPTCHA'
                 value={userCaptchaInput}
@@ -971,14 +1013,17 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
               {captchaError && <p className='text-red-500 text-sm mb-4'>Incorrect CAPTCHA. Please try again.</p>}
 
               <button
-                className='w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-800'
+                className='w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-800 flex items-center justify-center'
                 onClick={() => handleSubmit(handleSellerRegister)}
+                disabled={isAuthenticating}
               >
+                {isAuthenticating ? <div className="spinner mr-2"></div> : null}
                 {t('registerAsSeller')}
               </button>
               <button
                 className='w-full py-3 px-4 bg-gray-400 hover:bg-gray-500 text-gray-900 font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-3'
                 onClick={() => setShowSellerRegisterModal(false)}
+                disabled={isAuthenticating}
               >
                 {t('backToLogin')}
               </button>
@@ -994,7 +1039,7 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 {t(isRegistering ? 'register' : 'login')}
               </h2>
               <input
-                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1 ${emailError ? 'border-red-500' : 'border-gray-300'}`}
+                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1 shadow-sm ${emailError ? 'border-red-500' : 'border-gray-300'}`}
                 type='email'
                 placeholder={t('email')}
                 value={email}
@@ -1003,15 +1048,24 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 onBlur={() => setFocusField(null)}
               />
               {emailError && <p className='text-red-500 text-sm mb-4'>{emailError}</p>}
-              <input
-                className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-1'
-                type='password'
-                placeholder={t('password')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={() => setFocusField('password')}
-                onBlur={() => setFocusField(null)}
-              />
+              <div className='relative mb-1'>
+                <input
+                  className='w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out shadow-sm pr-10'
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder={t('password')}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setFocusField('password')}
+                  onBlur={() => setFocusField(null)}
+                />
+                <button
+                  type='button'
+                  className='absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-600 hover:text-gray-800'
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
               {isRegistering && password.length > 0 && (
                 <div className={`text-sm mt-1 mb-4 ${passwordStrength.color}`}>
                   Password Strength: <span className="font-semibold">{passwordStrength.text}</span>
@@ -1036,7 +1090,7 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 </button>
               </div>
               <input
-                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-6 ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
+                className={`w-full p-3 bg-gray-100 border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-500 text-gray-900 transition duration-300 ease-in-out mb-3 shadow-sm ${captchaError ? 'border-red-500' : 'border-gray-300'}`}
                 type='text'
                 placeholder='Enter CAPTCHA'
                 value={userCaptchaInput}
@@ -1046,9 +1100,11 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
               {captchaError && <p className='text-red-500 text-sm mb-4'>Incorrect CAPTCHA. Please try again.</p>}
 
               <button
-                className='w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-gray-800'
+                className='w-full py-3 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-gray-800 flex items-center justify-center'
                 onClick={() => handleSubmit(isRegistering ? handleRegister : handleLogin)}
+                disabled={isAuthenticating}
               >
+                {isAuthenticating ? <div className="spinner mr-2"></div> : null}
                 {t(isRegistering ? 'register' : 'login')}
               </button>
               <p className='text-center text-sm text-gray-700 mt-4'>
@@ -1056,14 +1112,29 @@ const AuthModal = ({ t, setShowLoginModal, handleLogin, handleRegister, handleSe
                 <button
                   className='text-purple-700 hover:text-purple-500 font-medium transition duration-300 ease-in-out'
                   onClick={() => setIsRegistering(!isRegistering)}
+                  disabled={isAuthenticating}
                 >
                   {t(isRegistering ? 'loginHere' : 'registerHere')}
                 </button>
               </p>
+              <p className='text-center text-sm mt-2'>
+                <button
+                  className='text-blue-600 hover:text-blue-800 font-medium transition duration-300 ease-in-out'
+                  onClick={() => {
+                    setPopupMessage('Forgot Password functionality to be implemented.');
+                    setPopupVisible(true);
+                  }}
+                  disabled={isAuthenticating}
+                >
+                  {t('forgotPassword')}
+                </button>
+              </p>
               <button
-                className='w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-4'
+                className='w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800 mt-4 flex items-center justify-center'
                 onClick={() => setShowSellerRegisterModal(true)}
+                disabled={isAuthenticating}
               >
+                {isAuthenticating ? <div className="spinner mr-2"></div> : null}
                 {t('registerAsSeller')}
               </button>
             </>
@@ -1201,7 +1272,7 @@ const ProductDetailsModal = ({ t, selectedProduct, setSelectedProduct, addToCart
           className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2 transition duration-200'
           onClick={() => {
             if (!sessionId) {
-              setPopupMessage(t('loginRequiredAddToCart'));
+              setPopupMessage(t('loginRequiredAddToCart'), 'error');
               setPopupVisible(true);
               setTimeout(() => setPopupVisible(false), 2000);
               setShowLoginModal(true);
@@ -1241,7 +1312,7 @@ const AddProductModal = ({ t, addMode, userRole, setAddMode, newProduct, setNewP
     e.preventDefault();
     // Ensure all required fields are filled, including size
     if (!newProduct.name || !newProduct.price || !newProduct.category || newProduct.stockAvailable === '' || !newProduct.size) {
-      setPopupMessage(t('fillAllFields'));
+      setPopupMessage(t('fillAllFields'), 'error');
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
       return;
@@ -1254,7 +1325,7 @@ const AddProductModal = ({ t, addMode, userRole, setAddMode, newProduct, setNewP
         stockAvailable: parseInt(newProduct.stockAvailable),
         session_id: sessionId,
       });
-      setPopupMessage(t('productAddedSuccess'));
+      setPopupMessage(t('productAddedSuccess'), 'success');
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 2000);
       setAddMode(false);
@@ -1266,7 +1337,7 @@ const AddProductModal = ({ t, addMode, userRole, setAddMode, newProduct, setNewP
     } catch (err) {
       console.error('Failed to add product:', err);
       const errorMessage = err.response && err.response.data && err.response.data.error ? err.response.data.error : `${t('failedToAddProduct')} ${API_URL}`;
-      setPopupMessage(errorMessage);
+      setPopupMessage(errorMessage, 'error');
       setPopupVisible(true);
       setTimeout(() => setPopupVisible(false), 5000);
     }
@@ -1322,7 +1393,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
       return detailedCartItems.filter(item => item !== null);
     } catch (error) {
       console.error('Error fetching cart product details:', error);
-      setPopupMessage(t('errorLoadingCartDetails'));
+      setPopupMessage(t('errorLoadingCartDetails'), 'error');
       setPopupVisible(true);
       return [];
     }
@@ -1419,7 +1490,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
                             await Promise.all(cartItems.map(item =>
                                 axios.delete(`${API_URL}/api/cart`, { data: { session_id: sessionId, product_id: item.product._id } }) // Use API_URL
                             ));
-                            setPopupMessage(t('thankYouPurchase'));
+                            setPopupMessage(t('thankYouPurchase'), 'success');
                             setPopupVisible(true);
                             setCartItems([]);
                             setCartOpen(false);
@@ -1432,7 +1503,7 @@ const CartDrawer = ({ t, cartOpen, setCartOpen, cartItems, removeFromCart, addTo
                             setPopupVisible(true);
                         }
                     } else {
-                        setPopupMessage(t('cartIsEmpty'));
+                        setPopupMessage(t('cartIsEmpty'), 'info'); // Changed to info type
                         setPopupVisible(true);
                     }
                 }}
@@ -1543,6 +1614,7 @@ function App() {
       setUserRole(res.data.role);
       setSellerEmail(res.data.user_email); // Ensure sellerEmail is set on login
       setShowLoginModal(false);
+      showPopup('Login successful!', 'success'); // Success popup for login
     } catch (err) {
       console.error('Login failed:', err);
       let specificErrorMessage = t('loginFailed');
@@ -1651,7 +1723,8 @@ function App() {
       console.error('Error fetching products:', err);
       let errorMessage = `${t('failedToFetchProducts')} ${t('checkBackendServerAt')} ${API_URL}`;
       if (axios.isAxiosError(err) && err.code === 'ERR_NETWORK') {
-        errorMessage = `Network Error: ${t('failedToFetchProducts')} ${t('checkBackendServerAt')} ${API_URL}`;
+        errorMessage = `Network Error: ${t('failedToFetchProducts')} ${t('checkBackendServerAt')} ${API_URL}.`;
+        console.error('Axios Network Error details:', err.message); // Added this line for better debugging
       } else if (err.response && err.response.data && err.response.data.error) {
         errorMessage = err.response.data.error;
       }
