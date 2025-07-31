@@ -3,6 +3,8 @@ import axios from 'axios';
 
 // --- Single Backend API Endpoint ---
 // All frontend API calls will now go to this single endpoint.
+
+process.env.REACT_APP_API_URL = 'http://localhost:5000';
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 // --- Currency Conversion Rates (Simulated) ---
