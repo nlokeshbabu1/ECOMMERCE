@@ -1,0 +1,2665 @@
+
+> client@1.0.0 test
+> jest
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1644 |         _displayId: product._id || (Date.now().toString() + Math.random().toString(36).substring(2))
+      1645 |       }));
+    > 1646 |       setProducts(processedProducts);
+           |       ^
+      1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setProducts (src/App.jsx:1646:7)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1645 |       }));
+      1646 |       setProducts(processedProducts);
+    > 1647 |       setTotalProductsCount(fetchedTotalProducts); // Update total count state
+           |       ^
+      1648 |       console.log('Processed products for display:', processedProducts); // Log processed products
+      1649 |
+      1650 |     } catch (err) {
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setTotalProductsCount (src/App.jsx:1647:7)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.error
+    Warning: An update to App inside a test was not wrapped in act(...).
+    
+    When testing, code that causes React state updates should be wrapped into act(...):
+    
+    act(() => {
+      /* fire events that update state */
+    });
+    /* assert on the output */
+    
+    This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+        at App (/home/bhel/e-commerce-latest/Frontend/src/App.jsx:1483:37)
+
+      1658 |       showPopup(errorMessage, 'error');
+      1659 |     } finally {
+    > 1660 |       setIsLoading(false);
+           |       ^
+      1661 |     }
+      1662 |   };
+      1663 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at setIsLoading (src/App.jsx:1660:7)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Product 1',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Product 2',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p3',
+        _displayId: 'dp3',
+        name: 'Product 3',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p4',
+        _displayId: 'dp4',
+        name: 'Product 4',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p5',
+        _displayId: 'dp5',
+        name: 'Product 5',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p6',
+        _displayId: 'dp6',
+        name: 'Product 6',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p7',
+        _displayId: 'dp7',
+        name: 'Product 7',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p8',
+        _displayId: 'dp8',
+        name: 'Product 8',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Product 1',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Product 2',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p3',
+        _displayId: 'p3',
+        name: 'Product 3',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p4',
+        _displayId: 'p4',
+        name: 'Product 4',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p5',
+        _displayId: 'p5',
+        name: 'Product 5',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p6',
+        _displayId: 'p6',
+        name: 'Product 6',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p7',
+        _displayId: 'p7',
+        name: 'Product 7',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p8',
+        _displayId: 'p8',
+        name: 'Product 8',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Product 1',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Product 2',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p3',
+        _displayId: 'dp3',
+        name: 'Product 3',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p4',
+        _displayId: 'dp4',
+        name: 'Product 4',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p5',
+        _displayId: 'dp5',
+        name: 'Product 5',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p6',
+        _displayId: 'dp6',
+        name: 'Product 6',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p7',
+        _displayId: 'dp7',
+        name: 'Product 7',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p8',
+        _displayId: 'dp8',
+        name: 'Product 8',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p9',
+        _displayId: 'dp9',
+        name: 'Product 9',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p10',
+        _displayId: 'dp10',
+        name: 'Product 10',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Product 1',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Product 2',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p3',
+        _displayId: 'p3',
+        name: 'Product 3',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p4',
+        _displayId: 'p4',
+        name: 'Product 4',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p5',
+        _displayId: 'p5',
+        name: 'Product 5',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p6',
+        _displayId: 'p6',
+        name: 'Product 6',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p7',
+        _displayId: 'p7',
+        name: 'Product 7',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p8',
+        _displayId: 'p8',
+        name: 'Product 8',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p9',
+        _displayId: 'p9',
+        name: 'Product 9',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p10',
+        _displayId: 'p10',
+        name: 'Product 10',
+        price: 10,
+        category: 'men',
+        stockAvailable: 5,
+        image: 'img.jpg',
+        size: 'M'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
+  console.log
+    Fetching products from: undefined/api/products?category=&q=&page=1&limit=8
+
+      at log (src/App.jsx:1624:15)
+
+  console.log
+    Raw response data from product service: [
+      {
+        _id: 'p1',
+        _displayId: 'dp1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'dp2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1626:15)
+
+  console.log
+    Processed products for display: [
+      {
+        _id: 'p1',
+        _displayId: 'p1',
+        name: 'Shirt',
+        price: 25,
+        category: 'men',
+        stockAvailable: 10,
+        image: 'shirt.jpg',
+        size: 'M'
+      },
+      {
+        _id: 'p2',
+        _displayId: 'p2',
+        name: 'Dress',
+        price: 50,
+        category: 'women',
+        stockAvailable: 5,
+        image: 'dress.jpg',
+        size: 'S'
+      }
+    ]
+
+      at log (src/App.jsx:1648:15)
+
