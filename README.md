@@ -1,6 +1,6 @@
 # ECOMMERCE- 🛒
 
-A modern, full-stack clothing ecommerce web application built with **React**, **Flask**, and **MongoDB**. This project features user authentication, product browsing by category, a shopping cart, and a visually appealing UI.
+A modern, full-stack clothing ecommerce web application built with **React**, **Flask**, and **MongoDB**. This project features user authentication, product browsing by category, a shopping cart, and secure checkout.
 
 ![App Screenshot](public/login-bg.jpg)
 
@@ -112,6 +112,29 @@ ECOMMERCE-/
 │
 └── README.md
 ```
+
+---
+
+## ⚙️ DevSecOps Pipeline
+
+Below is an overview of the DevSecOps pipeline implemented for this project. This pipeline ensures secure, automated, and reliable delivery of application changes using best practices in CI/CD and security.
+
+![DevSecOps Pipeline](public/DevSecOps.jpg)
+
+### Pipeline Stages
+
+1. **Developer**: Code is written and committed.
+2. **GitHub**: Source code is pushed to the GitHub repository.
+3. **Static Code Analysis**: Automated tools perform static code analysis to identify code issues and vulnerabilities.
+4. **Build**: The build process is triggered (npm or equivalent for Node.js projects).
+5. **Docker**: Application is containerized using Docker.
+    - **Build**: Docker image is built.
+    - **Scan**: The image is scanned for vulnerabilities.
+    - **Push**: Secure image is pushed to a container registry.
+6. **Update Image Tag**: Image tags are updated to track new versions.
+7. **GitHub**: Updated configuration is pushed back to GitHub.
+8. **ArgoCD**: ArgoCD pulls the latest configuration and deploys to the Kubernetes cluster.
+9. **Kubernetes**: The application is deployed/updated in the cluster, ensuring high availability and scalability.
 
 ---
 
