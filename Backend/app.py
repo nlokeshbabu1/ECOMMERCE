@@ -15,24 +15,26 @@ CORS(app) # Enable CORS for frontend communication
 
 #mongo_host = os.getenv("MONGO_HOST")  # Not used in URI anymore
 
-mongo_port = int(os.getenv("MONGO_PORT", 27017))
+# mongo_port = int(os.getenv("MONGO_PORT", 27017))
 mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
 
-mongo_user = quote_plus(os.getenv("MONGO_INITDB_ROOT_USERNAME", ""))
-mongo_pass = quote_plus(os.getenv("MONGO_INITDB_ROOT_PASSWORD", ""))
+# mongo_user = quote_plus(os.getenv("MONGO_INITDB_ROOT_USERNAME", ""))
+# mongo_pass = quote_plus(os.getenv("MONGO_INITDB_ROOT_PASSWORD", ""))
 
-if not mongo_user or not mongo_pass:
-    raise RuntimeError("MongoDB credentials are not set in environment variables")
+# if not mongo_user or not mongo_pass:
+#     raise RuntimeError("MongoDB credentials are not set in environment variables")
 
-uri = (
-    f"mongodb://{mongo_user}:{mongo_pass}@"
-    f"mongodb-0.mongodb-service.default.svc.cluster.local:27017,"
-    f"mongodb-1.mongodb-service.default.svc.cluster.local:27017/"
-    f"{mongo_db}?authSource=admin&replicaSet=rs0&retryWrites=true&w=majority"
-)
+# uri = (
+#     f"mongodb://{mongo_user}:{mongo_pass}@"
+#     f"mongodb-0.mongodb-service.default.svc.cluster.local:27017,"
+#     f"mongodb-1.mongodb-service.default.svc.cluster.local:27017/"
+#     f"{mongo_db}?authSource=admin&replicaSet=rs0&retryWrites=true&w=majority"
+# )
 
 # Bcrypt for password hashing
 bcrypt = Bcrypt(app)
+
+uri = f"mongodb+srv://admin:QCfuMLC0m3eUfndG@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 # Mongo client connection
 mongo_client = MongoClient(uri)
@@ -48,8 +50,9 @@ print("MongoDB index on 'category' for products collection ensured.")
 # Redis Setup (for session management and potential caching in the future)
 redis_host = os.getenv("REDIS_HOST", "localhost")
 redis_port = int(os.getenv("REDIS_PORT", 6379))
-redis_password = os.getenv("REDIS_PASSWORD")
-redis_client = redis.Redis(host=redis_host, port=redis_port,password=redis_password ,db=0, decode_responses=True)
+# redis_password = os.getenv("REDIS_PASSWORD")
+#redis_client = redis.Redis(host=redis_host, port=redis_port,password=redis_password ,db=0, decode_responses=True)
+redis_client = redis.Redis(host=redis_host, port=redis_port,db=0, decode_responses=True)
 
 
 # Helper function to get user email from session ID stored in Redis
