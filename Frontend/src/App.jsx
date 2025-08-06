@@ -28,6 +28,9 @@ const translations = {
 };
 
 // --- Lazy-Loaded Components ---
+const HomePage = lazy(() => import('./pages/HomePage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 const AuthModal = lazy(() => import('./components/AuthModal'));
 const ProductDetailsModal = lazy(() => import('./components/ProductDetailsModal'));
 const AddProductModal = lazy(() => import('./components/AddProductModal'));
@@ -50,6 +53,49 @@ const GlobalPopup = ({ message, visible, setVisible, type = 'success' }) => {
     return ( <div className={`fixed top-6 right-6 z-[100] ${bgColorClass} text-white px-6 py-3 rounded shadow-lg transition transform animate-bounce`}>{message}</div> );
 };
 const GlobalStyles = () => ( <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } .spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-top: 4px solid #fff; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; } .animated-background { background: linear-gradient(270deg, #f0f0f0, #ffffff, #f0f0f0); background-size: 200% 200%; animation: gradient-animation 15s ease infinite; } @keyframes gradient-animation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }`}</style> );
+
+
+// --- Layout Component ---
+// This component provides the consistent header and footer for every page.
+function MainLayout({ t, language, setLanguage, currency, setCurrency, sessionId, cartItems, setCartOpen, setShowLoginModal, handleLogout, setShowSettingsModal }) {
+  return (
+    <div className='relative z-10 p-4 max-w-7xl mx-auto flex flex-col min-h-screen'>
+      <header className='flex justify-between items-center mb-8 bg-white/80 backdrop-blur-lg p-4 rounded-xl shadow-md border border-gray-200 sticky top-4 z-20'>
+        <Link to="/" className='text-3xl font-extrabold text-purple-700'>🛍️ {t('storeName')}</Link>
+        <nav className="hidden md:flex items-center gap-6">
+            <Link to="/" className="text-gray-600 hover:text-purple-700 font-medium transition-colors">Home</Link>
+            <Link to="/about" className="text-gray-600 hover:text-purple-700 font-medium transition-colors">About</Link>
+            <Link to="/contact" className="text-gray-600 hover:text-purple-700 font-medium transition-colors">Contact</Link>
+        </nav>
+        <div className='flex items-center gap-3'>
+            <select className='bg-gray-100 text-gray-800 border-transparent p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500' value={language} onChange={(e) => setLanguage(e.target.value)}>
+                {Object.keys(translations).map((langKey) => (<option key={langKey} value={langKey}>{translations[langKey].flag}</option>))}
+            </select>
+            {sessionId ? (
+              <>
+                <button className='bg-gray-200 text-gray-800 p-2 rounded-lg hover:bg-gray-300 transition' onClick={() => setShowSettingsModal(true)}>⚙️</button>
+                <button className='relative bg-purple-600 text-white p-2 rounded-lg hover:bg-purple-700 transition' onClick={() => setCartOpen(true)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    {cartItems.length > 0 && <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">{cartItems.reduce((acc, item) => acc + item.quantity, 0)}</span>}
+                </button>
+                <button className='bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition' onClick={handleLogout}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                </button>
+              </>
+            ) : (
+              <button className='bg-purple-600 hover:bg-purple-700 text-white font-semibold px-5 py-2 rounded-lg transition' onClick={() => setShowLoginModal(true)}>{t('loginRegister')}</button>
+            )}
+        </div>
+      </header>
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+      <footer className='w-full text-center py-6 mt-8'>
+        <p className="text-gray-500">&copy; {new Date().getFullYear()} {t('storeName')}. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}
 
 function App() {
   // --- STATE MANAGEMENT ---
