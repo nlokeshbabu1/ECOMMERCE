@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -39,7 +40,27 @@ const CartDrawer = ({
       }
     };
     syncCartWithBackend();
+
   }, [sessionId, cartOpen, products]);
+
+    // Get the navigate function from React Router
+    const navigate = useNavigate();
+
+
+    const handleClose = () => {
+      // Check if there is a focused element and blur it.
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      setCartOpen(false);
+    };
+
+    // This is the new handler function for the button
+    const handleCheckout = () => {
+      handleClose();
+ //     setCartOpen(false); // First, close the cart drawer
+      navigate('/checkout'); // Then, navigate to the checkout page
+    };
 
   const currentTotalPrice = getTotalPrice();
 
@@ -47,7 +68,7 @@ const CartDrawer = ({
     // This className handles the slide-in/slide-out animation
     <div
       className={`fixed top-0 right-0 h-full w-full md:w-96 bg-white/90 backdrop-blur-lg shadow-2xl transform transition-transform duration-300 ease-in-out z-40 ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}
-      aria-hidden={!cartOpen}
+  //    aria-hidden={!cartOpen}
     >
       <div className='p-6 h-full flex flex-col'>
         <div className='flex justify-between items-center mb-6 pb-4 border-b border-gray-300'>
@@ -83,9 +104,13 @@ const CartDrawer = ({
               <span>{t('total')}:</span>
               <span className='text-green-600'>{currencySymbol}{convertPrice(currentTotalPrice, currencyCode)}</span>
           </div>
-          <button className='w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700' onClick={() => showPopup("Checkout not implemented.", "info")}>
+          <button
+              onClick={handleCheckout}
+              disabled={cartItems.length === 0}
+              className='w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed'
+            >
               {t('proceedToCheckout')}
-          </button>
+            </button>
         </div>
       </div>
     </div>

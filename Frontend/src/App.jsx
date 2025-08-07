@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 
 // --- Production-Ready Backend API Endpoint ---
@@ -31,6 +32,7 @@ const translations = {
 const HomePage = lazy(() => import('./pages/HomePage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 const AuthModal = lazy(() => import('./components/AuthModal'));
 const ProductDetailsModal = lazy(() => import('./components/ProductDetailsModal'));
 const AddProductModal = lazy(() => import('./components/AddProductModal'));
@@ -194,7 +196,7 @@ function App() {
         SellerName: sellerName,
         SellerPhone: sellerPhone,
         SellerGSTNumber: sellerGSTNumber,
-        SellerAddres: sellerAddress,
+        SellerAddress: sellerAddress,
       });
       showPopup(t('sellerRegisteredSuccessLogin'), 'success');
       setShowSellerRegisterModal(false);
