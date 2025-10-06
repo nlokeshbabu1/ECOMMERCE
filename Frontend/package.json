@@ -12,14 +12,22 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "setupFiles": [
+      "<rootDir>/src/jest.setup.js"
+    ],
     "setupFilesAfterEnv": [
-      "/home/bhel/e-commerce-latest/Frontend/src/setupTests.js"
+      "<rootDir>/src/setupTests.js"
     ],
     "transform": {
       "^.+\\.(js|jsx|mjs|cjs|ts|tsx)$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.meta.env": "<rootDir>/__mocks__/importMetaEnv.js"
     }
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^5.0.0",
+    "@stripe/stripe-js": "^8.0.0",
     "@tailwindcss/postcss": "^4.1.10",
     "@tailwindcss/vite": "^4.1.10",
     "framer-motion": "^12.17.0",

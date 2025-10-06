@@ -11,9 +11,10 @@ import uuid
 
 
 app = Flask(__name__)
-CORS(app) # Enable CORS for frontend communication
-
-#mongo_host = os.getenv("MONGO_HOST")  # Not used in URI anymore
+# Enable CORS for all origins. This is crucial for allowing your frontend to communicate with the backend.
+# In a production environment, you might want to restrict this to your frontend's domain.
+#CORS(app)
+CORS(app)
 
 # mongo_port = int(os.getenv("MONGO_PORT", 27017))
 mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
@@ -123,6 +124,14 @@ def register():
 @app.route('/api/products', methods=['GET'])
 def get_products():
     category = request.args.get('category')
+    search_query = request.args.get('q')
+    try:
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 10))
+    except ValueError:
+        return jsonify({"error": "Invalid page or limit parameter"}), 400
+
+    skip = (page - 1) * limit
     session_id = request.args.get('session_id') # Pass session ID for role-based filtering
 
     query = {}
@@ -130,6 +139,10 @@ def get_products():
     # Optional filter by category
     if category:
         query["category"] = category
+
+    # Optional filter by search query (case-insensitive search on name and description)
+    if search_query:
+        query["$or"] = [{"name": {"$regex": search_query, "$options": "i"}}, {"description": {"$regex": search_query, "$options": "i"}}]
 
     # Role-based product filtering
     if session_id:
@@ -142,13 +155,20 @@ def get_products():
             # If user is not a 'seller' (e.g., 'user' role or no role), no seller_email filter is applied,
             # so they will see all products (unless category filter is present).
     
-    products_cursor = products_collection.find(query)
+    # Get total count for pagination
+    total_count = products_collection.count_documents(query)
+
+    # Apply pagination to the query
+    products_cursor = products_collection.find(query).skip(skip).limit(limit)
     products = []
     for product in products_cursor:
         product['_id'] = str(product['_id']) # Convert ObjectId to string
         products.append(product)
 
-    return jsonify(products)
+    return jsonify({
+        "products": products,
+        "total_count": total_count
+    })
 
 
 # Add product to Databases

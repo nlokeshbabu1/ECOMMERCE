@@ -189,7 +189,7 @@ const AuthModal = ({
               
               <p className='text-center text-sm mt-4'>
                 {isRegistering ? t('alreadyHaveAccount') : t('dontHaveAccount')}{' '}
-                <button className='text-purple-700 font-medium' onClick={() => setIsRegistering(!isRegistering)}>{t(isRegistering ? 'loginHere' : 'registerHere')}</button>
+                <button className='text-purple-700 font-medium' onClick={() => setIsRegistering(!isRegistering)} data-testid='register-here-button'>{t(isRegistering ? 'loginHere' : 'registerHere')}</button>
               </p>
               <p className='text-center text-sm mt-2'>
                 <button className='text-blue-600 font-medium' onClick={() => showPopup('Forgot Password functionality to be implemented.', 'info')}>{t('forgotPassword')}</button>
