@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// --- Single Backend API Endpoint ---
-// All frontend API calls will now go to this single endpoint.
+// --- Production-Ready Backend API Endpoint ---
+const API_URL = window.__API_URL__ === '__API_URL__' ? 'http://localhost:5000' : window.__API_URL__;
 
-//process.env.REACT_APP_API_URL = 'http://localhost:5000';
-const API_URL = 'http://localhost:5000';
 
 // --- Currency Conversion Rates (Simulated) ---
 const exchangeRates = {
