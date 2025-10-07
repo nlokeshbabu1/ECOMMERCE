@@ -4,6 +4,8 @@ metadata:
   name: myapp-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1 # 
+#    cert-manager.io/cluster-issuer: letsencrypt-prod
+#    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   rules:
   - host: myapp.local
