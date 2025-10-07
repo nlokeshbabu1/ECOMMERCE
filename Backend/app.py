@@ -11,10 +11,9 @@ import uuid
 
 
 app = Flask(__name__)
-# Enable CORS for all origins. This is crucial for allowing your frontend to communicate with the backend.
-# In a production environment, you might want to restrict this to your frontend's domain.
-#CORS(app)
-CORS(app)
+# Enable CORS for a specific origin. This is crucial for allowing your frontend to communicate with the backend.
+# In a production environment, you should restrict this to your frontend's domain.
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
 # mongo_port = int(os.getenv("MONGO_PORT", 27017))
 mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
@@ -35,7 +34,10 @@ mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
 # Bcrypt for password hashing
 bcrypt = Bcrypt(app)
 
-uri = f"mongodb+srv://admin:QCfuMLC0m3eUfndG@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = os.getenv("MONGO_URI")
+if not uri:
+    raise RuntimeError("MONGO_URI environment variable is not set.")
+
 
 # Mongo client connection
 mongo_client = MongoClient(uri)
@@ -302,5 +304,3 @@ def remove_from_cart():
 def healthz():
     return "OK", 200
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000) # Product Service on port 5000 (Monolithic)
