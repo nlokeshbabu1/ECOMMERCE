@@ -142,7 +142,7 @@ jobs:
             context: Frontend
             file: Frontend/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{github.run_id}}
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ github.workflow }}-${{ github.run_id }}
 
   trivy_scan:
     runs-on: ubuntu-latest
@@ -151,7 +151,7 @@ jobs:
         - name: Run Trivy vulnerability scanner
           uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
           with:
-            image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{github.run_id}}'
+            image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ github.workflow }}-${{ github.run_id }}'
             format: 'sarif'
             template: '@/contrib/sarif.tpl'
             output: 'trivy-results.sarif'
