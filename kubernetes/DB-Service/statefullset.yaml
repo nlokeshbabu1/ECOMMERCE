@@ -90,6 +90,9 @@ spec:
           timeoutSeconds: 5
           failureThreshold: 3
         
+        securityContext:
+          readOnlyRootFilesystem: true
+
       volumes:
         - name: mongo-keyfile
           secret:

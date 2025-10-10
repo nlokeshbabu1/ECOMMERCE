@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 1  # Adjust as needed for scaling
+  replicas: 2  # Adjust as needed for scaling
   selector:
     matchLabels:
       app: frontend-app
@@ -18,9 +18,15 @@ spec:
         ports:
         - containerPort: 80
         env:
-          - name: REACT_APP_BACKEND_URL
+          - name: VITE_API_URL
             value: "http://backend-service:5000"
         
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            sed -i "s|__API_URL__|${VITE_API_URL}|g" /usr/share/nginx/html/index.html;
+            nginx -g 'daemon off;'
+
         # Health Probes
         readinessProbe:
           httpGet:
@@ -44,3 +50,8 @@ spec:
           requests:
             memory: "128Mi"
             cpu: "300m"
+
+        securityContext:
+          runAsUser: 101 # Nginx user
+          runAsGroup: 101 # Nginx user
+          readOnlyRootFilesystem: true

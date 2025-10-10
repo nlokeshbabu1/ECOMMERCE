@@ -18,12 +18,8 @@ spec:
         ports:
         - containerPort: 5000
         env:
-          - name: DB_URL
-            value: "mongodb-service"
-          - name: MONGO_PORT
-            value: "27017"
-          - name:  MONGO_DB
-            value: "clothing_ecom"
+          - name: MONGO_URI
+            value: "mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@mongodb-service:27017/clothing_ecom?authSource=admin"
           - name: MONGO_INITDB_ROOT_USERNAME
             valueFrom:
               secretKeyRef:
@@ -71,4 +67,5 @@ spec:
             memory: "512Mi"
             cpu: "500m"
 
-
+        securityContext:
+          readOnlyRootFilesystem: true

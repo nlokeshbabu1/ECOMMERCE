@@ -18,23 +18,26 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 # mongo_port = int(os.getenv("MONGO_PORT", 27017))
 mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
 
-mongo_user = quote_plus(os.getenv("MONGO_INITDB_ROOT_USERNAME", ""))
-mongo_pass = quote_plus(os.getenv("MONGO_INITDB_ROOT_PASSWORD", ""))
+# mongo_user = quote_plus(os.getenv("MONGO_INITDB_ROOT_USERNAME", ""))
+# mongo_pass = quote_plus(os.getenv("MONGO_INITDB_ROOT_PASSWORD", ""))
 
-if not mongo_user or not mongo_pass:
-    raise RuntimeError("MongoDB credentials are not set in environment variables")
+# if not mongo_user or not mongo_pass:
+#     raise RuntimeError("MongoDB credentials are not set in environment variables")
 
-uri = (
-    f"mongodb://{mongo_user}:{mongo_pass}@"
-    f"mongodb-0.mongodb-service.default.svc.cluster.local:27017,"
-    f"mongodb-1.mongodb-service.default.svc.cluster.local:27017/"
-    f"{mongo_db}?authSource=admin&replicaSet=rs0&retryWrites=true&w=majority"
-)
+# uri = (
+#     f"mongodb://{mongo_user}:{mongo_pass}@"
+#     f"mongodb-0.mongodb-service.default.svc.cluster.local:27017,"
+#     f"mongodb-1.mongodb-service.default.svc.cluster.local:27017/"
+#     f"{mongo_db}?authSource=admin&replicaSet=rs0&retryWrites=true&w=majority"
+# )
 
 # Bcrypt for password hashing
 bcrypt = Bcrypt(app)
 
-uri = f"mongodb+srv://admin:QCfuMLC0m3eUfndG@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = os.getenv("MONGO_URI")
+if not uri:
+    raise RuntimeError("MONGO_URI environment variable is not set.")
+
 
 # Mongo client connection
 mongo_client = MongoClient(uri)
@@ -50,8 +53,9 @@ print("MongoDB index on 'category' for products collection ensured.")
 # Redis Setup (for session management and potential caching in the future)
 redis_host = os.getenv("REDIS_HOST", "localhost")
 redis_port = int(os.getenv("REDIS_PORT", 6379))
-redis_password = os.getenv("REDIS_PASSWORD")
-redis_client = redis.Redis(host=redis_host, port=redis_port,password=redis_password ,db=0, decode_responses=True)
+# redis_password = os.getenv("REDIS_PASSWORD")
+#redis_client = redis.Redis(host=redis_host, port=redis_port,password=redis_password ,db=0, decode_responses=True)
+redis_client = redis.Redis(host=redis_host, port=redis_port,db=0, decode_responses=True)
 
 
 # Helper function to get user email from session ID stored in Redis
@@ -122,6 +126,14 @@ def register():
 @app.route('/api/products', methods=['GET'])
 def get_products():
     category = request.args.get('category')
+    search_query = request.args.get('q')
+    try:
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 10))
+    except ValueError:
+        return jsonify({"error": "Invalid page or limit parameter"}), 400
+
+    skip = (page - 1) * limit
     session_id = request.args.get('session_id') # Pass session ID for role-based filtering
 
     query = {}
@@ -129,6 +141,10 @@ def get_products():
     # Optional filter by category
     if category:
         query["category"] = category
+
+    # Optional filter by search query (case-insensitive search on name and description)
+    if search_query:
+        query["$or"] = [{"name": {"$regex": search_query, "$options": "i"}}, {"description": {"$regex": search_query, "$options": "i"}}]
 
     # Role-based product filtering
     if session_id:
@@ -141,13 +157,20 @@ def get_products():
             # If user is not a 'seller' (e.g., 'user' role or no role), no seller_email filter is applied,
             # so they will see all products (unless category filter is present).
     
-    products_cursor = products_collection.find(query)
+    # Get total count for pagination
+    total_count = products_collection.count_documents(query)
+
+    # Apply pagination to the query
+    products_cursor = products_collection.find(query).skip(skip).limit(limit)
     products = []
     for product in products_cursor:
         product['_id'] = str(product['_id']) # Convert ObjectId to string
         products.append(product)
 
-    return jsonify(products)
+    return jsonify({
+        "products": products,
+        "total_count": total_count
+    })
 
 
 # Add product to Databases

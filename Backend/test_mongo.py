@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 
-uri= f"mongodb+srv://admin:g6XptAeuHn3Tvhwf@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri= f"mongodb+srv://admin:QCfuMLC0m3eUfndG@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 #f"mongodb+srv://admin:g6XptAeuHn3Tvhwf@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 
