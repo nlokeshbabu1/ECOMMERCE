@@ -18,13 +18,13 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 # mongo_port = int(os.getenv("MONGO_PORT", 27017))
 mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
 
-username = quote_plus(os.getenv("MONGO_INITDB_ROOT_USERNAME", ""))
-password = quote_plus(os.getenv("MONGO_INITDB_ROOT_PASSWORD", ""))
+username = os.getenv("MONGO_INITDB_ROOT_USERNAME", "")
+password = os.getenv("MONGO_INITDB_ROOT_PASSWORD", "")
 
 # Encode special characters (like @, !, $, etc.)
 encoded_password = quote_plus(password)
 
-MONGO_URI = f"mongodb://{username}:{encoded_password}@mongodb-service:27017/clothing_ecom?authSource=admin"
+MONGO_URI = f"mongodb://{username}:{encoded_password}@mongodb-service:27017/clothing_ecom?authSource=admin&replicaSet=rs0"
 
 # Bcrypt for password hashing
 bcrypt = Bcrypt(app)
