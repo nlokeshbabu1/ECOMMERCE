@@ -60,6 +60,8 @@ spec:
         - name: mongo-keyfile
           mountPath: /etc/secrets/mongo-keyfile
           readOnly: true
+        - name: tmp-volume
+          mountPath: /tmp
 
         # ✅ Liveness Probe (Checks MongoDB health)
         livenessProbe:
@@ -89,15 +91,13 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 5
           failureThreshold: 3
-        
-        securityContext:
-          readOnlyRootFilesystem: true
-
       volumes:
         - name: mongo-keyfile
           secret:
             secretName: mongo-keyfile-secret
             defaultMode: 0400
+        - name: tmp-volume
+          emptyDir: {}
 
 
   # ✅ Persistent Volume Claim for each pod

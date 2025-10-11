@@ -18,18 +18,13 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 # mongo_port = int(os.getenv("MONGO_PORT", 27017))
 mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
 
-# mongo_user = quote_plus(os.getenv("MONGO_INITDB_ROOT_USERNAME", ""))
-# mongo_pass = quote_plus(os.getenv("MONGO_INITDB_ROOT_PASSWORD", ""))
+username = quote_plus(os.getenv("MONGO_INITDB_ROOT_USERNAME", ""))
+password = quote_plus(os.getenv("MONGO_INITDB_ROOT_PASSWORD", ""))
 
-# if not mongo_user or not mongo_pass:
-#     raise RuntimeError("MongoDB credentials are not set in environment variables")
+# Encode special characters (like @, !, $, etc.)
+encoded_password = quote_plus(password)
 
-# uri = (
-#     f"mongodb://{mongo_user}:{mongo_pass}@"
-#     f"mongodb-0.mongodb-service.default.svc.cluster.local:27017,"
-#     f"mongodb-1.mongodb-service.default.svc.cluster.local:27017/"
-#     f"{mongo_db}?authSource=admin&replicaSet=rs0&retryWrites=true&w=majority"
-# )
+MONGO_URI = f"mongodb://{username}:{encoded_password}@mongodb-service:27017/clothing_ecom?authSource=admin"
 
 # Bcrypt for password hashing
 bcrypt = Bcrypt(app)

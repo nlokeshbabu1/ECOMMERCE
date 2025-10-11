@@ -74,6 +74,11 @@ db.products.find({ 'category': 'women' })
 
 ### Install Redis with Replication and Production Settings
 
+'''sh
+helm repo add bitnami https://charts.bitnami.com/bitnami
+'''
+
+
 ```sh
 helm install redis bitnami/redis \
   --set architecture=replication \
