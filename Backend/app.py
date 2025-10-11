@@ -29,13 +29,8 @@ MONGO_URI = f"mongodb://{username}:{encoded_password}@mongodb-service:27017/clot
 # Bcrypt for password hashing
 bcrypt = Bcrypt(app)
 
-uri = os.getenv("MONGO_URI")
-if not uri:
-    raise RuntimeError("MONGO_URI environment variable is not set.")
-
-
 # Mongo client connection
-mongo_client = MongoClient(uri)
+mongo_client = MongoClient(MONGO_URI)
 db = mongo_client[mongo_db]
 products_collection = db['products']
 users_collection = db['users'] # Need users collection to verify seller email if session is not passed
