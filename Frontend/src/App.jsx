@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 
 // --- Production-Ready Backend API Endpoint ---
-const API_URL = window.API_BASE_URL === '__API_URL__' ? 'http://localhost:5000' : window.__API_URL__;
+const API_URL = window.API_BASE_URL === '__API_URL__' ? 'http://localhost:5000' : window.API_BASE_URL;
 
 // --- Configuration & Helpers ---
 const exchangeRates = {
