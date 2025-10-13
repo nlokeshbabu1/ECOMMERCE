@@ -13,6 +13,21 @@ To install or update the ingress, run the installation script:
 ./install_ingress.sh
 ```
 
+## MongoDB Secrets
+
+Before deploying MongoDB, you need to create secrets for authentication:
+
+### Create MongoDB Keyfile Secret
+```bash
+openssl rand -base64 741 > mongo-keyfile
+kubectl create secret generic mongo-keyfile-secret --from-file=mongo-keyfile=./mongo-keyfile
+```
+
+### Create MongoDB Credentials Secret
+```bash
+kubectl create secret generic mongo --from-literal=user-name='admin' --from-literal=password='password123'
+```
+
 ## MongoDB Replica Set Operations
 
 This section provides example commands and configurations for setting up MongoDB with replica sets.
