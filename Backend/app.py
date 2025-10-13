@@ -13,7 +13,7 @@ import uuid
 app = Flask(__name__)
 # Enable CORS for a specific origin. This is crucial for allowing your frontend to communicate with the backend.
 # In a production environment, you should restrict this to your frontend's domain.
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000, http://backend-service:5000"}})
 
 # mongo_port = int(os.getenv("MONGO_PORT", 27017))
 mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
