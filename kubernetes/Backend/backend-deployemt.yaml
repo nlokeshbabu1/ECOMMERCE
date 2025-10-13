@@ -30,7 +30,7 @@ spec:
                 key: password
 
           - name: REDIS_HOST
-            value: "redis-master.redis.svc.cluster.local"
+            value: "redis-master.default.svc.cluster.local"
           - name: REDIS_PORT
             value: "6379"
           - name: REDIS_PASSWORD
