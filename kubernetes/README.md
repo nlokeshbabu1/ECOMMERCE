@@ -1,6 +1,21 @@
-# MongoDB Replica Set & Redis Production Setup
+# Kubernetes Setup for E-Commerce Application
 
-This guide provides example commands and configurations for setting up MongoDB with replica sets and installing Redis for production use in a Kubernetes environment.
+This guide provides example commands and configurations for setting up various components of the e-commerce application in a Kubernetes environment.
+
+## Ingress Configuration
+
+The ingress.yaml file configures routing for the application:
+- Requests to `/api/` are routed to the backend-service on port 5000
+- All other requests are routed to the frontend-service on port 80
+
+To install or update the ingress, run the installation script:
+```bash
+./install_ingress.sh
+```
+
+## MongoDB Replica Set Operations
+
+This section provides example commands and configurations for setting up MongoDB with replica sets.
 
 ---
 
@@ -74,9 +89,9 @@ db.products.find({ 'category': 'women' })
 
 ### Install Redis with Replication and Production Settings
 
-'''sh
+```sh
 helm repo add bitnami https://charts.bitnami.com/bitnami
-'''
+```
 
 
 ```sh
