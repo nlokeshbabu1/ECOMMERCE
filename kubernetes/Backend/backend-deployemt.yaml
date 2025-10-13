@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend-app
-        image: nlokeshbabu/backend:18428315413
+        image: nlokeshbabu/backend:18460925329
         ports:
         - containerPort: 5000
         env:
