@@ -43,9 +43,9 @@ print("MongoDB index on 'category' for products collection ensured.")
 # Redis Setup (for session management and potential caching in the future)
 redis_host = os.getenv("REDIS_HOST", "localhost")
 redis_port = int(os.getenv("REDIS_PORT", 6379))
-# redis_password = os.getenv("REDIS_PASSWORD")
-#redis_client = redis.Redis(host=redis_host, port=redis_port,password=redis_password ,db=0, decode_responses=True)
-redis_client = redis.Redis(host=redis_host, port=redis_port,db=0, decode_responses=True)
+redis_password = os.getenv("REDIS_PASSWORD")
+redis_client = redis.Redis(host=redis_host, port=redis_port,password=redis_password ,db=0, decode_responses=True)
+#redis_client = redis.Redis(host=redis_host, port=redis_port,db=0, decode_responses=True)
 
 
 # Helper function to get user email from session ID stored in Redis
