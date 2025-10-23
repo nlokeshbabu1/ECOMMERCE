@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 2  # Adjust as needed for scaling
+  selector:
+    matchLabels:
+      app: frontend-app
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+    spec:
+      containers:
+      - name: frontend-app
+        image: nlokeshbabu/frontend:{{ .Values.image.tag }}
+        ports:
+        - containerPort: 80
+        env:
+          - name: VITE_API_URL
+            value: "http://backend-service:5000"
+        
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            sed -i "s|__API_URL__|${VITE_API_URL}|g" /usr/share/nginx/html/index.html;
+            nginx -g 'daemon off;'
+
+        # Health Probes
+        readinessProbe:
+            {{ toYaml .Values.readinessProbe | nindent 12 }}
+
+        livenessProbe:
+            {{ toYaml .Values.livenessProbe | nindent 12 }}
+
+        # Resource Management
+        resources:
+            {{ toYaml .Values.resources | nindent 12 }}

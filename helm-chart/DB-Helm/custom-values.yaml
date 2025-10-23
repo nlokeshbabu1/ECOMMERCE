@@ -1,0 +1,52 @@
+# Secure custom values for MongoDB Helm chart
+
+# Authentication settings - Using Kubernetes secrets instead of hardcoded passwords
+auth:
+  enabled: true
+  rootPassword: root@123
+  username: admin
+  password: admin@123
+  database: clothing_ecom
+  # existingRootPasswordSecret: "mongodb-root-password"  # Name of existing secret containing root password
+  # existingPasswordSecret: "mongodb-app-password"       # Name of existing secret containing app user password
+
+# Persistent storage settings
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: ""  # Use default storage class
+
+# # Security settings
+# securityContext:
+#   enabled: true
+#   runAsUser: 999
+#   runAsGroup: 999
+#   fsGroup: 999
+
+# Network settings
+# networkPolicy:
+#   enabled: true
+
+# Replica Set settings - Enable for production
+replicaSet:
+  enabled: true
+  name: rs0
+  replicas: 3  # Use 3 replicas for production
+
+# Resources
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+# Service settings
+service:
+  type: ClusterIP
+  port: 27017
+
+# # Image settings
+# image:
+#   tag: 6.0.5 # Use a specific, recent version

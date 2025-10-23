@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import os
 
 # Get Mongo URL from environment variable or hardcode for testing
-MONGO_URL = f"mongodb+srv://admin:Lm8C4copevLC30iY@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+MONGO_URL = f"mongodb+srv://admin:LWTHHRv5HTvcRIXQ@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 client = MongoClient(MONGO_URL)
 db = client['clothing_ecom']

@@ -5,10 +5,10 @@ import axios from 'axios';
 // --- Production-Ready Backend API Endpoint ---
 // Use relative path for API calls to allow ingress routing in cluster
 // This allows the ingress to route /api/* requests to the backend service
-//const API_URL = window.API_BASE_URL === '__API_URL__' ? 'http://localhost:5000' : 
- //              window.API_BASE_URL;
+const API_URL = window.API_BASE_URL === '__API_URL__' ? 'http://localhost:5000' : 
+               window.API_BASE_URL;
 
-const API_URL = window.API_BASE_URL || '';
+//const API_URL = window.API_BASE_URL || '';
 
 // --- Configuration & Helpers ---
 const exchangeRates = {
