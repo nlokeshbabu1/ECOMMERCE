@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: nlokeshbabu/frontend:18462562775
+        image: nlokeshbabu/frontend:18744479679
         ports:
         - containerPort: 80
         env:
