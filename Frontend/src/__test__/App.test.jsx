@@ -100,7 +100,17 @@ describe('App Component', () => {
       await waitFor(() => screen.getByPlaceholderText(/Email/i));
       fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: 'user@example.com' } });
       fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: 'password123' } });
-      const captcha = await screen.findByText(/[A-Z0-9]{6}/);
+      
+      // Find the CAPTCHA code by looking inside the dialog for the specific CAPTCHA span
+      const dialog = await screen.findByRole('dialog');
+      const captchaElements = within(dialog).getAllByText(/[A-Z0-9]{6}/);
+      // Get the CAPTCHA code from the element that matches the styling used in the component
+      const captcha = captchaElements.find(el => 
+        el.className && 
+        el.className.includes('text-xl') && 
+        el.className.includes('font-bold') && 
+        el.className.includes('select-none')
+      );
       fireEvent.change(screen.getByPlaceholderText(/Enter CAPTCHA/i), { target: { value: captcha.textContent } });
       fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: /login/i }));
 
@@ -123,7 +133,17 @@ describe('App Component', () => {
       await waitFor(() => screen.getByPlaceholderText(/Email/i));
       fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: 'user@example.com' } });
       fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: 'wrongpassword' } });
-      const captcha = await screen.findByText(/[A-Z0-9]{6}/);
+      
+      // Find the CAPTCHA code by looking inside the dialog for the specific CAPTCHA span
+      const dialog = await screen.findByRole('dialog');
+      const captchaElements = within(dialog).getAllByText(/[A-Z0-9]{6}/);
+      // Get the CAPTCHA code from the element that matches the styling used in the component
+      const captcha = captchaElements.find(el => 
+        el.className && 
+        el.className.includes('text-xl') && 
+        el.className.includes('font-bold') && 
+        el.className.includes('select-none')
+      );
       fireEvent.change(screen.getByPlaceholderText(/Enter CAPTCHA/i), { target: { value: captcha.textContent } });
       fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: /login/i }));
 
@@ -143,7 +163,17 @@ describe('App Component', () => {
         await waitFor(() => screen.getByRole('button', { name: /^Register$/i }));
         fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: 'newuser@example.com' } });
         fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: 'newpassword123' } });
-        const captcha = await screen.findByText(/[A-Z0-9]{6}/);
+        
+        // Find the CAPTCHA code by looking inside the dialog for the specific CAPTCHA span
+        const dialog = await screen.findByRole('dialog');
+        const captchaElements = within(dialog).getAllByText(/[A-Z0-9]{6}/);
+        // Get the CAPTCHA code from the element that matches the styling used in the component
+        const captcha = captchaElements.find(el => 
+          el.className && 
+          el.className.includes('text-xl') && 
+          el.className.includes('font-bold') && 
+          el.className.includes('select-none')
+        );
         fireEvent.change(screen.getByPlaceholderText(/Enter CAPTCHA/i), { target: { value: captcha.textContent } });
         fireEvent.click(screen.getByRole('button', { name: /^Register$/i }));
 
@@ -234,16 +264,19 @@ describe('App Component', () => {
         // Wait for cart to be populated
         await waitFor(() => expect(within(screen.getByRole('banner')).getByText('1')).toBeInTheDocument());
   
-        // Open the cart drawer
-        fireEvent.click(screen.getByRole('button', { name: /🛒/i }));
+        // Open the cart drawer - target the header cart button specifically
+        // The header contains the main cart button we need
+        const header = screen.getByRole('banner');
+        const cartButton = within(header).getByLabelText(/cart/i);
+        fireEvent.click(cartButton);
   
         // Wait for cart items to appear
         const cartDrawer = await screen.findByRole('heading', { name: /Your Cart/i });
         const cartDialog = cartDrawer.closest('div.fixed');
         await waitFor(() => expect(within(cartDialog).getByText('Classic Tee')).toBeInTheDocument());
   
-        // Click the remove button for the item
-        fireEvent.click(within(cartDialog).getByRole('button', { name: '-' }));
+        // Click the remove button for the item - use the aria-label
+        fireEvent.click(within(cartDialog).getByRole('button', { name: /Remove/ }));
   
         await waitFor(() => {
             expect(axios.delete).toHaveBeenCalledWith(expect.stringContaining('/api/cart'), {
@@ -278,7 +311,7 @@ describe('App Component', () => {
       fireEvent.change(within(dialog).getByPlaceholderText('stockAvailable'), { target: { value: newProduct.stockAvailable } });
       fireEvent.change(within(dialog).getByPlaceholderText('size'), { target: { value: newProduct.size } });
 
-      fireEvent.click(within(dialog).getByRole('button', { name: /addProductButton/i }));
+      fireEvent.click(within(dialog).getByRole('button', { name: /Add Product/i }));
 
       await waitFor(() => {
         expect(axios.post).toHaveBeenCalledWith(expect.stringContaining('/api/addproducts'), expect.objectContaining({
