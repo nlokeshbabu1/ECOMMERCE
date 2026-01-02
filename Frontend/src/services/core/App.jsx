@@ -1,11 +1,12 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Link, Outlet, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
+import { eventBus, sharedState, authService, cartService } from './services/core/communication';
 
 // --- Production-Ready Backend API Endpoint ---
 // Use relative path for API calls to allow ingress routing in cluster
 // This allows the ingress to route /api/* requests to the backend service
-// const API_URL = window.API_BASE_URL === '__API_URL__' ? 'http://localhost:5000' : 
+// const API_URL = window.API_BASE_URL === '__API_URL__' ? 'http://localhost:5000' :
 //                window.API_BASE_URL;
 
 const API_URL = window.API_BASE_URL || '';
@@ -29,34 +30,34 @@ const convertPrice = (price, targetCurrencyCode) => {
     return (basePriceUSD * rate).toFixed(2);
 };
 const translations = {
-  en: { 
-    flag: '🇬🇧', 
-    name: 'English', 
-    storeName: 'Modern Clothing Store', 
-    loginRegister: 'Login / Register', 
-    signOut: 'Sign Out', 
-    addProduct: '+ Add Product', 
-    addProductButton: 'Add Product', 
-    yourCart: 'Your Cart', 
-    total: 'Total', 
-    proceedToCheckout: 'Proceed to Checkout', 
-    noItemsInCart: 'No items in the cart.', 
-    addToCart: 'Add to Cart', 
-    buyNow: 'Buy Now', 
-    loadingProducts: 'Loading products...', 
-    allCategories: 'All Categories', 
-    men: 'Men', 
-    women: 'Women', 
-    kids: 'Kids', 
-    searchProducts: 'Search products...', 
-    close: 'Close', 
-    settings: 'Settings', 
-    orders: 'Orders', 
-    itemAddedToCart: ' added to cart!', 
-    itemRemovedFromCart: 'Item removed from cart.', 
-    failedToFetchProducts: 'Failed to fetch products', 
-    failedToLoadCart: 'Could not load cart.', 
-    sellerRegisteredSuccessLogin: 'Seller registered successfully! Please login.', 
+  en: {
+    flag: '🇬🇧',
+    name: 'English',
+    storeName: 'Modern Clothing Store',
+    loginRegister: 'Login / Register',
+    signOut: 'Sign Out',
+    addProduct: '+ Add Product',
+    addProductButton: 'Add Product',
+    yourCart: 'Your Cart',
+    total: 'Total',
+    proceedToCheckout: 'Proceed to Checkout',
+    noItemsInCart: 'No items in the cart.',
+    addToCart: 'Add to Cart',
+    buyNow: 'Buy Now',
+    loadingProducts: 'Loading products...',
+    allCategories: 'All Categories',
+    men: 'Men',
+    women: 'Women',
+    kids: 'Kids',
+    searchProducts: 'Search products...',
+    close: 'Close',
+    settings: 'Settings',
+    orders: 'Orders',
+    itemAddedToCart: ' added to cart!',
+    itemRemovedFromCart: 'Item removed from cart.',
+    failedToFetchProducts: 'Failed to fetch products',
+    failedToLoadCart: 'Could not load cart.',
+    sellerRegisteredSuccessLogin: 'Seller registered successfully! Please login.',
     sellerRegistrationFailed: 'Seller registration failed!',
     selectLanguage: 'Select language',
     selectCurrency: 'Select currency',
@@ -69,27 +70,27 @@ const translations = {
 };
 
 // --- Lazy-Loaded Components ---
-const HomePage = lazy(() => import('./pages/HomePage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
-const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
-const OrdersPage = lazy(() => import('./pages/OrdersPage'));
-const AuthModal = lazy(() => import('./components/AuthModal'));
-const ProductDetailsModal = lazy(() => import('./components/ProductDetailsModal'));
-const AddProductModal = lazy(() => import('./components/AddProductModal'));
-const CartDrawer = lazy(() => import('./components/CartDrawer'));
-const SettingsModal = lazy(() => import('./components/SettingsModal'));
-const ProductGrid = lazy(() => import('./components/ProductGrid'));
-const Chatbot = lazy(() => import('./components/Chatbot'));
+const HomePage = lazy(() => import('./services/catalog'));
+const AboutPage = lazy(() => import('./services/core'));
+const ContactPage = lazy(() => import('./services/core'));
+const CheckoutPage = lazy(() => import('./services/checkout'));
+const OrdersPage = lazy(() => import('./services/orders'));
+const AuthModal = lazy(() => import('./services/auth'));
+const ProductDetailsModal = lazy(() => import('./services/catalog'));
+const AddProductModal = lazy(() => import('./services/catalog'));
+const CartDrawer = lazy(() => import('./services/cart'));
+const SettingsModal = lazy(() => import('./services/user'));
+const ProductGrid = lazy(() => import('./services/catalog'));
+const Chatbot = lazy(() => import('./services/support'));
 
 // --- UI Components ---
-const FullScreenSpinner = () => ( 
+const FullScreenSpinner = () => (
   <div className="fixed inset-0 bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center z-[101]">
     <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-  </div> 
+  </div>
 );
 
-const ProductGridSkeleton = () => ( 
+const ProductGridSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     {Array.from({ length: 8 }).map((_, i) => (
       <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse shadow-sm">
@@ -114,7 +115,7 @@ const GlobalPopup = ({ message, visible, setVisible, type = 'success' }) => {
     }, [visible, setVisible]);
     if (!visible) return null;
     const bgColorClass = type === 'error' ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-green-500 to-green-600';
-    return ( 
+    return (
       <div className={`fixed top-6 right-6 z-[100] ${bgColorClass} text-white px-6 py-3 rounded-xl shadow-lg transition-all duration-300 transform ${visible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
         <div className="flex items-center">
           {type === 'error' ? (
@@ -128,7 +129,7 @@ const GlobalPopup = ({ message, visible, setVisible, type = 'success' }) => {
           )}
           <span>{message}</span>
         </div>
-      </div> 
+      </div>
     );
 };
 
@@ -136,7 +137,7 @@ const GlobalPopup = ({ message, visible, setVisible, type = 'success' }) => {
 function ModernHeader({ t, language, setLanguage, currency, setCurrency, sessionId, userRole, cartItems, setCartOpen, setShowLoginModal, handleLogout, setShowSettingsModal, setAddMode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -154,7 +155,7 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
               🛍️ {t('storeName')}
             </Link>
           </div>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             <Link to="/" className="text-gray-700 hover:text-purple-600 font-medium transition-colors duration-300 relative group">
@@ -170,14 +171,14 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-300 group-hover:w-full"></span>
             </Link>
           </nav>
-          
+
           <div className="flex items-center gap-3">
             {/* Language Selector */}
             <label className="flex flex-col">
               <span className="text-xs text-gray-600 mb-1">{t('selectLanguage')}</span>
-              <select 
+              <select
                 className='bg-gray-100 text-gray-800 border-transparent p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300'
-                value={language} 
+                value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
                 {Object.keys(translations).map((langKey) => (
@@ -187,13 +188,13 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
                 ))}
               </select>
             </label>
-            
+
             {/* Currency Selector */}
             <label className="flex flex-col">
               <span className="text-xs text-gray-600 mb-1">{t('selectCurrency')}</span>
-              <select 
+              <select
                 className='bg-gray-100 text-gray-800 border-transparent p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300'
-                value={currency} 
+                value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
               >
                 {Object.keys(currencies).map((code) => (
@@ -201,9 +202,9 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
                 ))}
               </select>
             </label>
-            
+
             {/* Mobile Menu Button - only visible on mobile */}
-            <button 
+            <button
               className="md:hidden text-gray-700 p-2 rounded-lg hover:bg-gray-100"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
@@ -211,12 +212,12 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
               </svg>
             </button>
-            
+
             {/* Auth buttons - Desktop */}
             <div className="hidden md:flex items-center gap-2">
               {sessionId ? (
                 <>
-                  <button 
+                  <button
                     className='p-2 rounded-full hover:bg-purple-100 text-purple-700 transition-all duration-300 relative group'
                     onClick={() => setShowSettingsModal(true)}
                   >
@@ -225,8 +226,8 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </button>
-                  
-                  <button 
+
+                  <button
                     className='relative p-2 rounded-full hover:bg-purple-100 text-purple-700 transition-all duration-300 group'
                     onClick={() => setCartOpen(true)}
                     aria-label="Cart"
@@ -240,17 +241,17 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
                       </span>
                     )}
                   </button>
-                  
+
                   {userRole === 'seller' && (
-                    <button 
+                    <button
                       className='bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-md'
                       onClick={() => setAddMode(true)}
                     >
                       {t('addProduct')}
                     </button>
                   )}
-                  
-                  <button 
+
+                  <button
                     className='bg-gradient-to-r from-red-500 to-pink-600 text-white px-4 py-2 rounded-lg hover:from-red-600 hover:to-pink-700 transition-all duration-300 shadow-md'
                     onClick={handleLogout}
                   >
@@ -258,7 +259,7 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
                   </button>
                 </>
               ) : (
-                <button 
+                <button
                   className='bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold px-5 py-2 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-md'
                   onClick={() => setShowLoginModal(true)}
                 >
@@ -268,36 +269,36 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
             </div>
           </div>
         </div>
-        
+
         {/* Mobile Menu - only visible on mobile */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
             <nav className="flex flex-col gap-3">
-              <Link 
-                to="/" 
-                className="text-gray-700 hover:text-purple-600 font-medium py-2 transition-colors duration-300" 
+              <Link
+                to="/"
+                className="text-gray-700 hover:text-purple-600 font-medium py-2 transition-colors duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('welcome')}
               </Link>
-              <Link 
-                to="/about" 
-                className="text-gray-700 hover:text-purple-600 font-medium py-2 transition-colors duration-300" 
+              <Link
+                to="/about"
+                className="text-gray-700 hover:text-purple-600 font-medium py-2 transition-colors duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('about', 'About')}
               </Link>
-              <Link 
-                to="/contact" 
-                className="text-gray-700 hover:text-purple-600 font-medium py-2 transition-colors duration-300" 
+              <Link
+                to="/contact"
+                className="text-gray-700 hover:text-purple-600 font-medium py-2 transition-colors duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('contact', 'Contact')}
               </Link>
-              
+
               {sessionId ? (
                 <>
-                  <button 
+                  <button
                     className="text-left text-gray-700 hover:text-purple-600 font-medium py-2 transition-colors duration-300"
                     onClick={() => {
                       setShowSettingsModal(true);
@@ -307,7 +308,7 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
                     {t('settings')}
                   </button>
                   {userRole === 'seller' && (
-                    <button 
+                    <button
                       className="text-left bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium py-2 px-4 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300"
                       onClick={() => {
                         setAddMode(true);
@@ -317,7 +318,7 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
                       {t('addProduct')}
                     </button>
                   )}
-                  <button 
+                  <button
                     className="text-left bg-gradient-to-r from-red-500 to-pink-600 text-white font-medium py-2 px-4 rounded-lg hover:from-red-600 hover:to-pink-700 transition-all duration-300"
                     onClick={handleLogout}
                   >
@@ -325,7 +326,7 @@ function ModernHeader({ t, language, setLanguage, currency, setCurrency, session
                   </button>
                 </>
               ) : (
-                <button 
+                <button
                   className="bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300"
                   onClick={() => {
                     setShowLoginModal(true);
@@ -379,13 +380,60 @@ function App() {
   const t = (key) => translations[language]?.[key] || key;
   const currencySymbol = currencies[currency]?.symbol || '₹';
 
+  // Initialize state from shared state
+  useEffect(() => {
+    const userState = sharedState.getState('user');
+    if (userState) {
+      setSessionId(userState.sessionId);
+      setUserRole(userState.userRole);
+      setUserEmail(userState.userEmail);
+    }
+
+    const cartState = sharedState.getState('cart');
+    if (cartState) {
+      setCartItems(cartState.items || []);
+    }
+
+    const preferencesState = sharedState.getState('preferences');
+    if (preferencesState) {
+      setLanguage(preferencesState.language);
+      setCurrency(preferencesState.currency);
+    }
+  }, []);
+
+  // Subscribe to shared state changes
+  useEffect(() => {
+    const userStateCallback = (newState) => {
+      setSessionId(newState.sessionId);
+      setUserRole(newState.userRole);
+      setUserEmail(newState.userEmail);
+    };
+
+    const cartStateCallback = (newState) => {
+      setCartItems(newState.items || []);
+    };
+
+    const preferencesStateCallback = (newState) => {
+      setLanguage(newState.language);
+      setCurrency(newState.currency);
+    };
+
+    sharedState.subscribe('user', userStateCallback);
+    sharedState.subscribe('cart', cartStateCallback);
+    sharedState.subscribe('preferences', preferencesStateCallback);
+
+    return () => {
+      // Cleanup subscriptions if needed
+    };
+  }, []);
+
   // --- HELPER & API FUNCTIONS ---
   const showPopup = (message, type = 'success') => {
     setPopupMessage(message);
     setPopupType(type);
     setPopupVisible(true);
   };
-  
+
   const fetchProducts = async (page = 1) => {
     setIsLoading(true);
     try {
@@ -407,12 +455,17 @@ function App() {
   const handleLogin = async () => {
     try {
       const res = await axios.post(`${API_URL}/api/login`, { email, password });
+      // Use auth service to update shared state
+      authService.login({
+        sessionId: res.data.session_id,
+        role: res.data.role,
+        userEmail: res.data.user_email
+      });
+
       localStorage.setItem('session_id', res.data.session_id);
       localStorage.setItem('user_role', res.data.role);
       localStorage.setItem('user_email', res.data.user_email);
-      setSessionId(res.data.session_id);
-      setUserRole(res.data.role);
-      setUserEmail(res.data.user_email);
+
       setShowLoginModal(false);
       showPopup('Login successful!', 'success');
     } catch (err) {
@@ -439,7 +492,7 @@ function App() {
       showPopup('Address is required', 'error');
       return;
     }
-    
+
     try {
       await axios.post(`${API_URL}/api/selleregister`, {
         email,
@@ -463,7 +516,7 @@ function App() {
       showPopup(errorMessage, 'error');
     }
   };
-  
+
   const submitAddProduct = async () => {
     const { name, price, category, stockAvailable, size } = newProduct;
     if (!name || !price || !category || stockAvailable === '' || !size) {
@@ -487,9 +540,8 @@ function App() {
 
   const handleLogout = () => {
     localStorage.clear();
-    setSessionId(null);
-    setUserRole(null);
-    setUserEmail(null);
+    // Use auth service to update shared state
+    authService.logout();
     setCartItems([]);
     showPopup('Logged out successfully!');
   };
@@ -510,7 +562,10 @@ function App() {
           return product ? { product, quantity: backendCartData[productId] } : null;
         })
       );
-      setCartItems(detailedCartItems.filter(Boolean));
+      const cartItems = detailedCartItems.filter(Boolean);
+      setCartItems(cartItems);
+      // Update shared state
+      cartService.updateCart(cartItems);
     } catch (error) {
       showPopup(t('failedToLoadCart'), 'error');
     }
@@ -555,32 +610,41 @@ function App() {
         fetchProducts(currentPage);
     }
   }, [currentPage]);
-  
+
   useEffect(() => {
     if (sessionId && products.length > 0) {
         fetchCart();
     }
   }, [sessionId, products]);
 
-  useEffect(() => { localStorage.setItem('language', language); }, [language]);
-  useEffect(() => { localStorage.setItem('currency', currency); }, [currency]);
+  useEffect(() => {
+    localStorage.setItem('language', language);
+    // Update shared state
+    sharedState.setState('preferences', { language });
+  }, [language]);
+
+  useEffect(() => {
+    localStorage.setItem('currency', currency);
+    // Update shared state
+    sharedState.setState('preferences', { currency });
+  }, [currency]);
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 text-gray-900'>
       <GlobalPopup message={popupMessage} visible={popupVisible} setVisible={setPopupVisible} type={popupType} />
-      
-      <ModernHeader 
-        t={t} 
-        language={language} 
-        setLanguage={setLanguage} 
-        currency={currency} 
-        setCurrency={setCurrency} 
-        sessionId={sessionId} 
+
+      <ModernHeader
+        t={t}
+        language={language}
+        setLanguage={setLanguage}
+        currency={currency}
+        setCurrency={setCurrency}
+        sessionId={sessionId}
         userRole={userRole}
-        cartItems={cartItems} 
-        setCartOpen={setCartOpen} 
-        setShowLoginModal={setShowLoginModal} 
-        handleLogout={handleLogout} 
+        cartItems={cartItems}
+        setCartOpen={setCartOpen}
+        setShowLoginModal={setShowLoginModal}
+        handleLogout={handleLogout}
         setShowSettingsModal={setShowSettingsModal}
         setAddMode={setAddMode}
       />
@@ -588,37 +652,37 @@ function App() {
       <main className="container mx-auto px-4 py-6 flex-grow">
         <Suspense fallback={<ProductGridSkeleton />}>
           {window.location.pathname === '/checkout' ? (
-            <CheckoutPage 
-              t={t} 
-              cartItems={cartItems} 
-              getTotalPrice={getTotalPrice} 
-              currencySymbol={currencySymbol} 
-              showPopup={showPopup} 
+            <CheckoutPage
+              t={t}
+              cartItems={cartItems}
+              getTotalPrice={getTotalPrice}
+              currencySymbol={currencySymbol}
+              showPopup={showPopup}
               sessionId={sessionId}
             />
           ) : window.location.pathname === '/orders' ? (
-            <OrdersPage 
-              t={t} 
-              sessionId={sessionId} 
-              showPopup={showPopup} 
+            <OrdersPage
+              t={t}
+              sessionId={sessionId}
+              showPopup={showPopup}
             />
           ) : (
             <ProductGrid
-              t={t} 
-              products={products} 
-              setSelectedProduct={setSelectedProduct} 
-              category={category} 
-              setCategory={setCategory} 
-              searchQuery={searchQuery} 
-              setSearchQuery={setSearchQuery} 
-              isLoading={isLoading} 
-              currentPage={currentPage} 
-              totalPages={totalPages} 
-              handlePageChange={setCurrentPage} 
-              convertPrice={convertPrice} 
-              currencySymbol={currencySymbol} 
-              currencyCode={currency} 
-              addToCart={addToCart} 
+              t={t}
+              products={products}
+              setSelectedProduct={setSelectedProduct}
+              category={category}
+              setCategory={setCategory}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              isLoading={isLoading}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              handlePageChange={setCurrentPage}
+              convertPrice={convertPrice}
+              currencySymbol={currencySymbol}
+              currencyCode={currency}
+              addToCart={addToCart}
               handleBuyNow={handleBuyNow}
               sessionId={sessionId}
             />
@@ -661,7 +725,7 @@ function App() {
           </div>
         </div>
       </footer>
-      
+
       <Suspense fallback={<FullScreenSpinner />}>
         {showLoginModal && <AuthModal t={t} setShowLoginModal={setShowLoginModal} handleLogin={handleLogin} handleRegister={handleRegister} handleSellerRegister={handleSellerRegister} email={email} setEmail={setEmail} password={password} setPassword={setPassword} isRegistering={isRegistering} setIsRegistering={setIsRegistering} showSellerRegisterModal={showSellerRegisterModal} setShowSellerRegisterModal={setShowSellerRegisterModal} sellerName={sellerName} setSellerName={setSellerName} sellerPhone={sellerPhone} setSellerPhone={setSellerPhone} sellerGSTNumber={sellerGSTNumber} setSellerGSTNumber={setSellerGSTNumber} sellerAddress={sellerAddress} setSellerAddress={setSellerAddress} showPopup={showPopup} />}
         {selectedProduct && <ProductDetailsModal t={t} selectedProduct={selectedProduct} setSelectedProduct={setSelectedProduct} addToCart={addToCart} handleBuyNow={handleBuyNow} convertPrice={convertPrice} currencySymbol={currencySymbol} currencyCode={currency} sessionId={sessionId} showPopup={showPopup} products={products} />}

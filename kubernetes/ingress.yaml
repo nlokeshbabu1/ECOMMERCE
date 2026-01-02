@@ -17,9 +17,58 @@ spec:
             port:
               number: 5000
       - pathType: Prefix
+        path: /auth/
+        backend:
+          service:
+            name: frontend-auth-service
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /catalog/
+        backend:
+          service:
+            name: frontend-catalog-service
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /cart/
+        backend:
+          service:
+            name: frontend-cart-service
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /checkout/
+        backend:
+          service:
+            name: frontend-checkout-service
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /orders/
+        backend:
+          service:
+            name: frontend-orders-service
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /user/
+        backend:
+          service:
+            name: frontend-user-service
+            port:
+              number: 80
+      - pathType: Prefix
+        path: /support/
+        backend:
+          service:
+            name: frontend-support-service
+            port:
+              number: 80
+      - pathType: Prefix
         path: /
         backend:
           service:
-            name: frontend-service
+            name: frontend-core-service
             port:
               number: 80

@@ -1,6 +1,6 @@
 # ECOMMERCE- 🛒
 
-A modern, full-stack clothing ecommerce web application built with **React**, **Flask**, and **MongoDB**. This project features user authentication, product browsing by category, a shopping cart, and secure checkout.
+A modern, full-stack clothing ecommerce web application built with **React micro-frontend architecture**, **Flask**, and **MongoDB**. This project features user authentication, product browsing by category, a shopping cart, and secure checkout.
 
 ![App Screenshot](public/login-bg.jpg)
 
@@ -32,10 +32,31 @@ A modern, full-stack clothing ecommerce web application built with **React**, **
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React, Tailwind CSS, Axios
+- **Frontend:** React micro-frontend architecture, Tailwind CSS, Axios
 - **Backend:** Python, Flask, Flask-CORS
 - **Database:** MongoDB (Atlas or local)
+- **Cache:** Redis for session management
 - **Other:** JWT/Session storage, RESTful APIs
+
+---
+
+## 🏗️ Microservice Architecture
+
+The frontend has been transformed into a micro-frontend architecture with the following services:
+
+- **Core Service**: Application shell and layout
+- **Auth Service**: User authentication and registration
+- **Catalog Service**: Product catalog and search
+- **Cart Service**: Shopping cart functionality
+- **Checkout Service**: Order processing and payment
+- **Orders Service**: Order history and management
+- **User Service**: User profile and settings
+- **Support Service**: Customer support and chat
+
+### Communication
+- Event bus for inter-service communication
+- Shared state management for user, cart, and preferences
+- API Gateway pattern for backend communication
 
 ---
 
@@ -67,7 +88,7 @@ Start the Flask server:
 python app.py
 ```
 
-### 3. Frontend Setup (React)
+### 3. Frontend Setup (React Micro-frontend)
 
 ```bash
 cd ../frontend
@@ -76,6 +97,16 @@ npm start
 ```
 
 By default, the React app runs on [http://localhost:3000](http://localhost:3000) and connects to the backend at [http://localhost:5000](http://localhost:5000).
+
+To run individual microservices during development:
+- `npm run dev:core` - Core service on port 3000
+- `npm run dev:auth` - Auth service on port 3001
+- `npm run dev:catalog` - Catalog service on port 3002
+- `npm run dev:cart` - Cart service on port 3003
+- `npm run dev:checkout` - Checkout service on port 3004
+- `npm run dev:orders` - Orders service on port 3005
+- `npm run dev:user` - User service on port 3006
+- `npm run dev:support` - Support service on port 3007
 
 ---
 
@@ -105,6 +136,15 @@ ECOMMERCE-/
 │
 ├── frontend/
 │   ├── src/
+│   │   ├── services/
+│   │   │   ├── core/
+│   │   │   ├── auth/
+│   │   │   ├── catalog/
+│   │   │   ├── cart/
+│   │   │   ├── checkout/
+│   │   │   ├── orders/
+│   │   │   ├── user/
+│   │   │   └── support/
 │   │   └── App.js
 │   ├── public/
 │   │   └── login-bg.jpg

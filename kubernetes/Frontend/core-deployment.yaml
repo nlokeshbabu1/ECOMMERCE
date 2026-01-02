@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-core
+  labels:
+    app: frontend-core
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-core
+  template:
+    metadata:
+      labels:
+        app: frontend-core
+    spec:
+      containers:
+      - name: frontend-core
+        image: nlokeshbabu/frontend:latest
+        ports:
+        - containerPort: 80
+        env:
+          - name: VITE_API_URL
+            value: "http://backend-service:5000"
+
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            sed -i "s|__API_URL__|${VITE_API_URL}|g" /usr/share/nginx/html/index.html;
+            nginx -g 'daemon off;'
+
+        # Health Probes
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 20
+
+        # Resource Management
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "300m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-core-service
+spec:
+  selector:
+    app: frontend-core
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP

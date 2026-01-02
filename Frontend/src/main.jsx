@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from './services/core';
 import './index.css'; // if using Tailwind or any CSS
 import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>   
+    <BrowserRouter>
     <App />
     </BrowserRouter>
   </React.StrictMode>

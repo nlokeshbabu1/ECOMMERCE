@@ -8,7 +8,15 @@
     "build": "vite build",
     "test": "jest",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "dev:auth": "vite --port 3001",
+    "dev:catalog": "vite --port 3002",
+    "dev:cart": "vite --port 3003",
+    "dev:checkout": "vite --port 3004",
+    "dev:orders": "vite --port 3005",
+    "dev:user": "vite --port 3006",
+    "dev:support": "vite --port 3007",
+    "dev:core": "vite --port 3000"
   },
   "jest": {
     "testEnvironment": "jsdom",

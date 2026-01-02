@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-cart
+  labels:
+    app: frontend-cart
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-cart
+  template:
+    metadata:
+      labels:
+        app: frontend-cart
+    spec:
+      containers:
+      - name: frontend-cart
+        image: nlokeshbabu/frontend-cart:latest
+        ports:
+        - containerPort: 80
+        env:
+          - name: VITE_API_URL
+            value: "http://backend-service:5000"
+
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            sed -i "s|__API_URL__|${VITE_API_URL}|g" /usr/share/nginx/html/index.html;
+            nginx -g 'daemon off;'
+
+        # Health Probes
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 20
+
+        # Resource Management
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-cart-service
+spec:
+  selector:
+    app: frontend-cart
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
