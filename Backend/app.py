@@ -1,54 +1,87 @@
 # product_service/product_service.py
+# AWS Lambda-compatible Flask application for E-Commerce Backend
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 import os
 from urllib.parse import quote_plus
-from bson.objectid import ObjectId # Import ObjectId
+from bson.objectid import ObjectId  # Import ObjectId
 import redis
 from flask_bcrypt import Bcrypt
 import uuid
+import awsgi
+import boto3
+import json
+from botocore.exceptions import ClientError
 
 
 app = Flask(__name__)
-# Enable CORS for a specific origin. This is crucial for allowing your frontend to communicate with the backend.
-# In a production environment, you should restrict this to your frontend's domain.
+
+# AWS Lambda Configuration
+# Detect if running in Lambda environment
+IS_LAMBDA = os.getenv('AWS_LAMBDA_FUNCTION_NAME') is not None
+
+# Initialize AWS SSM client for parameter store (Lambda environment)
+ssm_client = None
+if IS_LAMBDA:
+    try:
+        ssm_client = boto3.client('ssm')
+    except Exception as e:
+        print(f"Warning: Could not initialize SSM client: {e}")
+
+# Enable CORS for configured origins
+# In production, restrict this to your frontend's CloudFront domain
+allowed_origins = [
+    "http://localhost:3001",
+    "http://192.168.100.17:3001",
+    "http://localhost:5000",
+    "http://backend-service:5000"
+]
+
+# Add CloudFront distribution domain if available
+cloudfront_domain = os.getenv('CLOUDFRONT_DOMAIN')
+if cloudfront_domain:
+    allowed_origins.append(f"https://{cloudfront_domain}")
+
+# Add API Gateway domain if available
+api_gateway_domain = os.getenv('API_GATEWAY_DOMAIN')
+if api_gateway_domain:
+    allowed_origins.append(f"https://{api_gateway_domain}")
+
 CORS(app, resources={
     r"/api/*": {
         "origins": [
-            "http://localhost:3001",
-            "http://192.168.100.17:3001",
-            "http://localhost:5000",
-            "http://backend-service:5000"
+            # "http://localhost:3001",
+            # "http://192.168.100.17:3001",
+            # "http://localhost:5000",
+            # "http://backend-service:5000",
+            "https://dyt9uwddisagw.cloudfront.net"
         ],
-        "supports_credentials": True,
-        "allow_headers": ["Content-Type", "Authorization"],
+        # "supports_credentials": True,
+        # "allow_headers": ["Content-Type", "Authorization"],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     }
 })
 
-# mongo_port = int(os.getenv("MONGO_PORT", 27017))
-mongo_db = os.getenv("MONGO_DB", "clothing_ecom")
+# MongoDB Setup
 
-username = os.getenv("MONGO_INITDB_ROOT_USERNAME", "")
-password = os.getenv("MONGO_INITDB_ROOT_PASSWORD", "")
+#we will call ssm for mongodb 
+def mongodb_ssm():
+    ssm = boto3.client('ssm', region_name='us-east-1')
+    username = ssm.get_parameter(Name='/app/website/MONGO_INITDB_ROOT_USERNAME', WithDecryption=True)['Parameter']['Value']
+    password = ssm.get_parameter(Name='/app/website/MONGO_INITDB_ROOT_PASSWORD', WithDecryption=True)['Parameter']['Value']
+    mongo_uri = ssm.get_parameter(Name='/app/website/MONGO_URL', WithDecryption=True)['Parameter']['Value']
+    mongo_db = ssm.get_parameter(Name='/app/website/MONGO_DB', WithDecryption=True)['Parameter']['Value']
 
-# Encode special characters (like @, !, $, etc.)
-encoded_password = quote_plus(password)
+    return username, password, mongo_uri, mongo_db
 
-# Use the MONGO_URL from .env file
-MONGO_URI = os.getenv("MONGO_URL", "")
+username, password, mongo_uri, mongo_db = mongodb_ssm()
+
+MONGO_URI = f"mongodb+srv://{username}:{password}@{mongo_uri}/?retryWrites=true&w=majority&appName=Cluster0"
+
 if not MONGO_URI:
-    # Fallback to old method if MONGO_URL is not set
-    username = os.getenv("MONGO_INITDB_ROOT_USERNAME", "")
-    password = os.getenv("MONGO_INITDB_ROOT_PASSWORD", "")
-    # Encode special characters (like @, !, $, etc.)
-    encoded_password = quote_plus(password)
-    MONGO_URI = f"mongodb+srv://{username}:{encoded_password}@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-else:
-    MONGO_URI = MONGO_URI
+    raise ValueError("MONGO_URI environment variable  is not set.")
 
-#MONGO_URI = f"mongodb://{username}:{encoded_password}@mongodb-service:27017/clothing_ecom?authSource=admin&replicaSet=rs0"
 
 # Bcrypt for password hashing
 bcrypt = Bcrypt(app)
@@ -64,13 +97,21 @@ users_collection = db['users'] # Need users collection to verify seller email if
 products_collection.create_index("category")
 print("MongoDB index on 'category' for products collection ensured.")
 
-# Redis Setup (for session management and potential caching in the future)
-redis_host = os.getenv("REDIS_HOST", "localhost")
-redis_port = int(os.getenv("REDIS_PORT", 6379))
-redis_password = os.getenv("REDIS_PASSWORD")
-redis_client = redis.Redis(host=redis_host, port=redis_port,password=redis_password ,db=0, decode_responses=True)
-#redis_client = redis.Redis(host=redis_host, port=redis_port,db=0, decode_responses=True)
+#Redis connection details setup from ssm()
 
+def redis_load_ssm():
+    ssm = boto3.client('ssm', region_name='us-east-1')
+    redis_host = ssm.get_parameter(Name='/app/website/redis/REDIS_HOST', WithDecryption=True)['Parameter']['Value']
+    redis_port = ssm.get_parameter(Name='/app/website/redis/REDIS_PORT', WithDecryption=True)['Parameter']['Value']
+    redis_password = ssm.get_parameter(Name='/app/website/redis/REDIS_PASSWORD', WithDecryption=True)['Parameter']['Value']
+
+    return redis_host, redis_port, redis_password
+
+redis_host, redis_port, redis_password = redis_load_ssm()
+
+
+# Redis Setup (for session management and potential caching in the future)
+redis_client = redis.Redis(host=redis_host, port=redis_port,password=redis_password ,db=0, decode_responses=True)
 
 # Helper function to get user email from session ID stored in Redis
 # This function also verifies if the user has the 'seller' role
@@ -1210,8 +1251,18 @@ def generate_return_response(message, user_context):
     else:
         return sanitize_output(return_policy)
 
-
 @app.route('/healthz')
 def healthz():
     return "OK", 200
 
+def lambda_handler(event, context):
+    print("EVENT:", event)
+
+    if "httpMethod" not in event:
+        return {
+            "statusCode": 200,
+            "body": "Lambda is working. No API Gateway event detected."
+        }
+
+    return awsgi.response(app, event, context)
+#gunicorn --workers 4 --bind 0.0.0.0:5000 --daemon app:app
