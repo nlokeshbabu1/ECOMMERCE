@@ -1,53 +1,21 @@
 # product_service/product_service.py
-# AWS Lambda-compatible Flask application for E-Commerce Backend
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 import os
 from urllib.parse import quote_plus
-from bson.objectid import ObjectId  # Import ObjectId
+from bson.objectid import ObjectId # Import ObjectId
 import redis
 from flask_bcrypt import Bcrypt
 import uuid
 import awsgi
 import boto3
 import json
-from botocore.exceptions import ClientError
 
 
 app = Flask(__name__)
-
-# AWS Lambda Configuration
-# Detect if running in Lambda environment
-IS_LAMBDA = os.getenv('AWS_LAMBDA_FUNCTION_NAME') is not None
-
-# Initialize AWS SSM client for parameter store (Lambda environment)
-ssm_client = None
-if IS_LAMBDA:
-    try:
-        ssm_client = boto3.client('ssm')
-    except Exception as e:
-        print(f"Warning: Could not initialize SSM client: {e}")
-
-# Enable CORS for configured origins
-# In production, restrict this to your frontend's CloudFront domain
-allowed_origins = [
-    "http://localhost:3001",
-    "http://192.168.100.17:3001",
-    "http://localhost:5000",
-    "http://backend-service:5000"
-]
-
-# Add CloudFront distribution domain if available
-cloudfront_domain = os.getenv('CLOUDFRONT_DOMAIN')
-if cloudfront_domain:
-    allowed_origins.append(f"https://{cloudfront_domain}")
-
-# Add API Gateway domain if available
-api_gateway_domain = os.getenv('API_GATEWAY_DOMAIN')
-if api_gateway_domain:
-    allowed_origins.append(f"https://{api_gateway_domain}")
-
+# Enable CORS for a specific origin. This is crucial for allowing your frontend to communicate with the backend.
+# In a production environment, you should restrict this to your frontend's domain.
 CORS(app, resources={
     r"/api/*": {
         "origins": [

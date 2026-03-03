@@ -6,3 +6,4 @@ flask-Bcrypt
 gunicorn
 python-dotenv
 mangum
+aws-wsgi
