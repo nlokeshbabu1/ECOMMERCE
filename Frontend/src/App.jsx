@@ -32,7 +32,7 @@ const translations = {
   en: { 
     flag: '🇬🇧', 
     name: 'English', 
-    storeName: 'Modern Clothing Store', 
+    storeName: 'Modern Clothing Stores', 
     loginRegister: 'Login / Register', 
     signOut: 'Sign Out', 
     addProduct: '+ Add Product', 
