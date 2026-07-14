@@ -1,5 +1,5 @@
-Backend/__pycache__/
-Frontend/node_modules/
+Backend/__pycache__/*
+Frontend/node_modules/*
 bin/
 include/
 Frontend/dist/

@@ -13,34 +13,49 @@ spec:
       labels:
         app: mongodb
     spec:
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+        runAsGroup: 999
+      initContainers:
+      - name: init-keyfile
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          cp /keyfile-secret/mongo-keyfile /keyfile/mongo-keyfile
+          chmod 0400 /keyfile/mongo-keyfile
+          chown 999:999 /keyfile/mongo-keyfile
+          ls -la /keyfile/mongo-keyfile
+        volumeMounts:
+        - name: mongo-keyfile-secret
+          mountPath: /keyfile-secret
+          readOnly: true
+        - name: mongo-keyfile
+          mountPath: /keyfile
       containers:
       - name: mongo
-        image: mongo:6.0    # Use a fixed version instead of latest for stability
+        image: mongo:8.0
         ports:
         - containerPort: 27017
 
-        command: # Changed from args to command
-          - mongod        
-        
-        # ✅ Command-line args for Replica Set
         args:
           - "--replSet"
           - "rs0"
           - "--bind_ip_all"
-          - "--auth"    #MongoDB requires a shared keyFile for internal authentication between the nodes.
+          - "--auth"
           - "--keyFile"
-          - "/etc/secrets/mongo-keyfile/mongo-keyfile"
+          - "/keyfile/mongo-keyfile"
 
-        # ✅ Resource Requests & Limits (recommended for production)
         resources:
           requests:
             memory: "512Mi"
-            cpu: "250m"
+            cpu: "200m"
           limits:
             memory: "1Gi"
             cpu: "500m"
 
-        # ✅ Environment Variables for credentials
         env:
         - name: MONGO_INITDB_ROOT_USERNAME
           valueFrom:
@@ -53,59 +68,57 @@ spec:
               name: mongo
               key: password
 
-        # ✅ Volume for Persistent Data
         volumeMounts:
         - name: mongo-mount
-          mountPath: /data/db  
+          mountPath: /data/db
         - name: mongo-keyfile
-          mountPath: /etc/secrets/mongo-keyfile
+          mountPath: /keyfile
           readOnly: true
         - name: tmp-volume
           mountPath: /tmp
 
-        # ✅ Liveness Probe (Checks MongoDB health)
         livenessProbe:
-          exec:
-            command:
-            # IMPORTANT: Kubernetes doesn't expand environment variables directly in the
-            # 'command' or 'args' array elements. You need to wrap the command in 'sh -c'
-            # to allow shell variable expansion.
-            # For production, it's best practice to create a dedicated, low-privilege
-            # probe user in MongoDB rather than using the root credentials directly for probes.
-            - sh
-            - -c
-            - "mongosh --quiet --host 127.0.0.1 --port 27017 --username $(MONGO_INITDB_ROOT_USERNAME) --password $(MONGO_INITDB_ROOT_PASSWORD) --authenticationDatabase admin --eval 'db.adminCommand(\"ping\")'"
+          tcpSocket:
+            port: 27017
           initialDelaySeconds: 30
-          periodSeconds: 10
+          periodSeconds: 15
           timeoutSeconds: 5
           failureThreshold: 3
 
-        # ✅ Readiness Probe (Ensures pod is ready to accept traffic with authentication)
         readinessProbe:
           exec:
             command:
-            - sh
+            - /bin/sh
             - -c
-            - "mongosh --quiet --host 127.0.0.1 --port 27017 --username $(MONGO_INITDB_ROOT_USERNAME) --password $(MONGO_INITDB_ROOT_PASSWORD) --authenticationDatabase admin --eval 'db.adminCommand(\"ping\")'"
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 5
+            - |
+              mongosh --quiet --host 127.0.0.1 --port 27017 \
+                -u "$MONGO_INITDB_ROOT_USERNAME" \
+                -p "$MONGO_INITDB_ROOT_PASSWORD" \
+                --authenticationDatabase admin \
+                --eval 'db.adminCommand("ping")'
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 10
           failureThreshold: 3
+
       volumes:
-        - name: mongo-keyfile
+        - name: mongo-keyfile-secret
           secret:
             secretName: mongo-keyfile-secret
             defaultMode: 0400
+        - name: mongo-keyfile
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Mi
         - name: tmp-volume
           emptyDir: {}
 
-
-  # ✅ Persistent Volume Claim for each pod
   volumeClaimTemplates:
   - metadata:
       name: mongo-mount
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "gp2"
       resources:
         requests:
           storage: 2Gi

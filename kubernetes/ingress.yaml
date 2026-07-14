@@ -3,9 +3,27 @@ kind: Ingress
 metadata:
   name: myapp-ingress
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    #nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    #instance or ip 
+    alb.ingress.kubernetes.io/target-type: ip
+    #health check
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz 
+    # Listener ports
+    alb.ingress.kubernetes.io/listen-ports: |
+      [{"HTTP":80}]
+    # Load balancer attributes
+    alb.ingress.kubernetes.io/load-balancer-attributes: |
+      access_logs.s3.enabled=true,
+      access_logs.s3.bucket=observability-raw-logs-961014542927-ap-south-1-an,
+      access_logs.s3.prefix=alb/accesslogs,
+      connection_logs.s3.prefix=observability-raw-logs-961014542927-ap-south-1-an,
+      connection_logs.s3.prefix=alb/connectionlogs,
+      idle_timeout.timeout_seconds=120,
+      routing.http2.enabled=true,
+      deletion_protection.enabled=false
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
   - http:
       paths:

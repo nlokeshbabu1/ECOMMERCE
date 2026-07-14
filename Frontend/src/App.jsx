@@ -8,7 +8,7 @@ import axios from 'axios';
 // const API_URL = window.API_BASE_URL === '__API_URL__' ? 'http://localhost:5000' : 
 //                window.API_BASE_URL;
 
-const API_URL = window.API_BASE_URL || '';
+//const API_URL = window.API_BASE_URL || '';
 
 // --- Configuration & Helpers ---
 const exchangeRates = {
