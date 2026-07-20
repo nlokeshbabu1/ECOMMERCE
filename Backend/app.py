@@ -44,7 +44,8 @@ if not MONGO_URI:
     password = os.getenv("MONGO_INITDB_ROOT_PASSWORD", "")
     # Encode special characters (like @, !, $, etc.)
     encoded_password = quote_plus(password)
-    MONGO_URI = f"mongodb+srv://{username}:{encoded_password}@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    #MONGO_URI = f"mongodb+srv://{username}:{encoded_password}@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    MONGO_URI = f"mongodb+srv://{username}:{encoded_password}@localhost:27017/?authSource=admin"
 else:
     MONGO_URI = MONGO_URI
 
