@@ -1,15 +1,14 @@
 #We are using the node alpine with stage
-FROM node:23-alpine3.21 as stage
+FROM node:24-alpine3.21 as stage
 
 #This is the working Directory
 WORKDIR /app
 
 #Copy the file from host to container
-COPY package.json .
-COPY package-lock.json .
+COPY package*.json .
 
 #Install the dependency
-RUN npm install
+RUN npm ci
 
 #Copy the Index , css and main files
 COPY . .
