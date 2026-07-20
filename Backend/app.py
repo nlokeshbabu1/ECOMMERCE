@@ -45,7 +45,7 @@ if not MONGO_URI:
     # Encode special characters (like @, !, $, etc.)
     encoded_password = quote_plus(password)
     #MONGO_URI = f"mongodb+srv://{username}:{encoded_password}@cluster0.uyzde7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-    MONGO_URI = f"mongodb://{username}:{encoded_password}@localhost:27017/?authSource=admin"
+    MONGO_URI = f"mongodb://{username}:{encoded_password}@mongodb:27017/?authSource=admin"
 else:
     MONGO_URI = MONGO_URI
 
